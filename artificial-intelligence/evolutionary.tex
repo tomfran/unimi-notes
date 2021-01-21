@@ -1,0 +1,495 @@
+\documentclass[a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,      
+    urlcolor=black,
+}
+
+\newtheorem{remark}{Osservazzione}
+\newtheorem{definition}{Definizione}
+\newtheorem{theorem}{Teorema}
+
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+\title{Algoritmi evolutivi}
+\author{Francesco Tomaselli}
+\makeindex
+\begin{document}
+\maketitle
+\tableofcontents
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.8em}
+\newpage
+\section{Introduzione}
+A seguire un'introduzione alle metaeuristiche, per poi passare all'idea 
+e alle componenti che stanno alla base degli algoritmi evolutivi.
+\subsection{Metaeuristiche}
+Una metaeuristica è una tecnica che permette di risolvere problemi 
+di ottimizzazione in maniera approssimata, per iterazioni.
+
+Le metaeuristiche sono spesso applicate a problemi non risolvibili 
+in modo esatto in tempo utile. Con questo approccio si individua una soluzione
+ammissibile.
+
+L'idea di base sta nell'individuare un insieme di soluzioni possibili e 
+cercare di migliorarle ad ogni iterazione. Si usa una sorta di \emph{ricerca casuale guidata}
+che prevede l'esplorazione dello spazio di soluzioni con un certo grado di casualità, 
+ma comunque guidata da una certa metrica di qualità.
+
+Si fa notare che le metaeuristiche possono essere interrotte in qualsiasi 
+momento, non serve quindi necessariamente individuare una soluzione ottima.
+È possibile infatti prevedere un numero massimo di iterazioni dell'algoritmo, 
+sperando che siano state sufficienti a produrre una soluzione "buona".
+
+\subsection{Evoluzione simulata}
+Prendendo spunto dall'evoluzione, si possono applicare concetti naturali alla
+ricerca di una soluzione per un certo problema.
+\begin{definition}
+    Un problema di ottimizzazione è definito dalla coppia $(\Omega, f)$, dove 
+    il primo indica lo spazio di soluzioni, e il secondo una funzione di valutazione.
+    L'obbiettivo è quello di individuare il massimo globale in $\Omega$
+\end{definition}
+
+\subsubsection{Nozioni di base}
+Parlando di algoritmi evolutivi, bisogna introdurre alcune nozioni di base:
+\begin{enumerate}
+    \item \emph{Individuo}: soluzione candidata
+    \item \emph{Cromosoma}: sequenza di oggetti
+    \item \emph{Gene}: oggetto, es: bit, carattere, numero, etc.
+    \item \emph{Allele}: valore di un oggetto
+    \item \emph{Locus}: posizione di un oggetto
+    \item \emph{Fenotipo}: applicazione di una soluzione candidata
+    \item \emph{Genotipo}: codifica di una soluzione candidata
+    \item \emph{Popolazione}: set di cromosomi
+    \item \emph{Generazione}: popolazione in un certo istante di tempo
+    \item \emph{Riproduzione}: creazione di cromosomi da uno o piu cromosomi
+    \item \emph{Fitness}: qualità di una soluzione candidata
+\end{enumerate}
+
+\subsubsection{Elementi di un problema evolutivo}
+Un problema evolutivo prevede la definizione di vari elementi quali:
+\begin{enumerate}
+    \item Encoding di una soluzione candidata
+    \item Generazione della popolazione iniziale
+    \item Funzione di Fitness
+    \item Metodo di selezione
+    \item Operatori genetici di modifica dei cromosomi
+    \item Criterio di terminazione
+    \item Valori per i relativi parametri
+\end{enumerate}
+
+\subsubsection{Schema generale}
+Generalmente un'algoritmo evolutivo opera seguendo questi passi:
+\begin{enumerate}
+    \item Generazione di una popolazione iniziale
+    \item Valutazione del fitenss degli individui
+    \item Selezione basata sul fitness calcolato al punto precedente
+    \item Generazione di discendenti, partendo dai migliori individui
+    \item Mutazione randomica degli individui
+    \item Ripetizione dal punto 2, fino al raggiungimento del criterio di terminazione
+\end{enumerate}
+Ragionando sul processo utilizzato, è immediato capire che un algoritmo evolutivo non garantisce
+la qualità della soluzione trovata ma si spera che, partendo da una popolazione iniziale 
+che copre molte aree dello spazio di ricerca, migliorando iterativamente gli individui 
+si riesca a trovare una soluzione buona.
+
+\subsection{Ricerca locale}
+Come nell'ottimizzazione classica, si possono applicare varie tecniche per 
+migliorare le soluzioni individuate.
+
+Una particolare branca delle tecniche di ottimizzazione consiste nella così 
+detta ricerca locale. Si cerca quindi di migliorare localmente la soluzione 
+individuata, assumendo quindi che punti 
+vicini nello spazio di soluzioni abbiano qualità simili.
+
+\subsubsection{Gradient Ascent e Descent}
+L'applicazione di gradient ascent o descent presuppone che:
+\begin{enumerate}
+    \item Lo spazio di soluzioni $\Omega$ sia un sottoinsieme di $ \mathbb{R}^n$
+    \item La funzione di valutazione $f$ sia derivabile in ogni punto
+\end{enumerate}
+Fissati i due prerequisiti, si può procedere con gradient acent (o descent):
+\begin{enumerate}
+    \item Si sceglie un punto iniziale
+    \item Viene calcolato il gradiente del punto corrente
+    \item Si procede in direzione del gradiente o in senso opposto
+    \item I punti 2 e 3 si ripetono fino a quando si individua un minimo o massimo locale
+\end{enumerate}
+La procedura ha il grande difetto di rimanere bloccata in un minimo locale. Bisogna quindi 
+ripetere l'algoritmi cambiando punto di partenza.
+
+\subsubsection{Hill Climbing}
+Se la funzione $f$ non è differenziabile, è possibile verificare l'andamento della 
+funzione nelle prossimità del punto corrente e scegliere il vicino ottimo.
+
+L'algoritmo si può definire in 4 punti:
+\begin{enumerate}
+    \item Si parte da un punto casuale $s_0$ in $\Omega$
+    \item Viene scelto un punto $s$ nelle vicinanze di $s_t$ 
+    \item $s_{t+1}$ diventa $s$ se $f(s) > f(s_t)$, altrimenti rimane $s_t$
+    \item I punti 2 e 3 vengono ripetuti fino alla raggiunta di un criterio di terminazione
+\end{enumerate}
+Hill Climbing ha tendenza a bloccarsi in un ottimo locale, come Gradient Ascent.
+
+\subsubsection{Simulated Annealing}
+L'idea fondamentale dell'approccio è che una soluzione migliore di quella 
+attuale è sempre accettata, ma è possibile accettarne anche una peggiore 
+con una certa probabilità.
+Tale mossa potrebbe evitare di rimanere bloccati in un massimo locale.
+
+L'algoritmo è definito come segue:
+\begin{enumerate}
+    \item Si parte da un punto casuale $s_0$ in $\Omega$
+    \item Viene scelto un punto $s$ nelle vicinanze di $s_t$ 
+    \item $s_{t+1}$ diventa:
+        \begin{itemize}
+            \item $s$ se $f(s) > f(s_t)$
+            \item $s$ con probabilità $p = e^{-\frac{\Delta f}{kT}}$, dove $\Delta f$ 
+            indica la riduzione di qualità della soluzione e $T$ è il parametro temperatura, che
+            cala con il passare del tempo
+            \item $s_t$ con probabilità $1- p$
+        \end{itemize}
+    \item I punti 2 e 3 vengono ripetuti fino alla raggiunta di un criterio di terminazione
+\end{enumerate}
+Per $T$ piccoli l'apporccio equivale ad hill climbing, ma per valori grandi di $T$
+la probabilità di muoversi in una soluzione peggiore aumenta, riducendo il rischio di bloccarsi 
+in un massimo locale.
+
+\subsubsection{Threshold Accepting}
+L'idea coincide con simulated annealing, ma le soluzioni peggiori sono accettate 
+se la degradazione di qualità è inferiore ad una certa threshold.
+
+\subsubsection{Great Deluge Algorithm}
+L'idea coincide con simulated annealing, ma le soluzioni peggiori sono accettate 
+se la qualità è maggiore di un certo lower bound, incrementato nel tempo.
+
+\subsubsection{Record-to-Record Travel}
+L'approccio è molto simile al precedente, questa volta però per calcolare la degradazione 
+di qualità si fa riferimento alla soluzione ottima fino ad ora.
+
+\subsection{Altre tecniche}
+Esistono altre tecniche di ottimizzazione legate al mondo degli 
+evolutionary algorithms, che in alcuni casi sfruttano tecniche di ricerca locale, 
+ma non necessariamente.
+
+\subsubsection{Tabu search}
+L'approccio consiste nel mantenere una coda FIFO nella quale memorizzare 
+soluzioni già esplorate in passato.
+Alla creazione di un nuovo candidato si eviterà quindi di esplorare soluzioni già viste.
+Non sono considerate le mutazioni.
+
+\subsubsection{Algoritmi memetici}
+L'idea alla base dell'approccio è quella di combinare i vantaggi degli algoritmi 
+basati su popolazioni e quelli di ricerca locale.
+
+Sarà considerata quindi una popolazione iniziale di soluzioni candidate, e, per
+velocizzare l'altrimenti lento processo di ottimizzazione, ogni individuo è migliorato 
+localmente fino a raggiungere un massimo.
+
+Nonostante velocizzi il processo di ricerca, è comunque molto probabile rimanere bloccati 
+in massimi locali, e non riuscire ad esplorare a sufficienza lo spazio di soluzioni.
+
+\subsubsection{Evoluzione differenziale}
+Si utilizza un DE-operator, visto come combinazione di mutazione e ricombinazione.
+L'opertore guida la ricerca, alla creazione di un nuovo individuo, esso può rimpiazzare
+il padre se la qualità è maggiore.
+
+\subsubsection{Scatter search}
+Si genera una popolazione iniziale e si cerca di effettuare una ricerca locale attorno ad 
+essa, guidando l'esplorazione dell'algoritmo nella direzione dei migliori individui.
+
+La bontà dell'algoritmo risiede nell'esplorazione dello spazio di soluzioni.
+
+\newpage
+
+\section{Elementi base}
+Nella sezione precedente sono stati introdotti brevemente i principali elementi 
+di un algoritmo evolutivo, a seguire una descrizione più nel dettaglio.
+
+\subsection{Encoding}
+La scelta del tipo di codifica è cruciale per il giusto funzionamento
+di un algoritmo evolutivo.
+Nonostante non si sia una soluzione generale per tale scelta, un econding deve rispettare 
+alcune caratteristiche:
+\begin{enumerate}
+    \item Fenotipi simili devono essere rappresentati da genotipi simili
+    \item Soluzioni codificate in modo simile, devono avere fitness simile
+    \item Lo spazio di soluzioni $\Omega$ dovrebbe essere chiuso rispetto agli operatori genetici
+\end{enumerate}
+\subsubsection{Hamming Cliffs}
+La similarità di due genotipi è definita dalla facilità, espressa in numero 
+di mutazioni, di passaggio da uno all'altro. 
+Il problema delle Hamming Cliffs si incontra quando l'encoding usato non rispetta 
+la prima caratteristica iuntrodotta a inizio sezione.
+
+Non rispettando quel punto infatti, due soluzioni simili sarebbero codificate in maniera
+molto diversa, finendo per rendere difficile il passaggio da una all'altra, rendendo più difficoltosa 
+l'esplorazione dello spazio di soluzioni. Infatti, per passare dalla prima alla seconda, 
+pur essendo molto vicine nel dominio iniziale, sarebbero necessarie troppe mutazioni.
+\subsubsection{Epistasi}
+Il secondo principio da rispettare consiste nell'avere fitness simili per soluzioni 
+codificate in modo simile.
+Con epistasi si indica l'interazione dei geni in un cromosoma.
+
+Codifiche che presentano alta epistasi sono indesiderabili, poichè andrebbero a 
+impedire un miglioramento graduale delle soluzioni.
+\subsubsection{Chiusura dello spazio di soluzioni}
+Fissato un certo spazio di soluzioni, bisogna fare in modo che gli operatori 
+genetici non creino elementi al di fuori di tale spazio.
+Elementi fuori da $\Omega$ non sarebbero interpretabili e risulterebbero inutili.
+
+Per ovviare al problema è possibile:
+\begin{enumerate}
+    \item Scegliere un econding differente
+    \item Scegliere operatori genetici che non creino elementi al di fuori di $\Omega$
+    \item Usare meccanismi di riparazione per gli individui generati in modo errato
+    \item Introdurre una penalità che riduca il fitness di tali individui
+\end{enumerate}
+
+\subsection{Fitness e selezione}
+Il principio base della selezione è che individui migliori hanno più probabilità
+di procreare. 
+\begin{definition}
+    Con selective pressure si definisce quanto gli individui migliori 
+    siano preferiti per produrre la generazione successiva
+\end{definition}
+La selective pressure dovrebbe idealmente essere bassa nelle prime generazioni, 
+per assecondare l'esplorazione dello spazio di soluzioni, per poi diventare sempre 
+piu alta per migliorare localmente le soluzioni individuate.
+
+\subsubsection{Roulette-Wheel Selection}
+Una delle tecniche base per implementare la selezione è la Roulette-wheel selection.
+Si definisce il fitness relativo di un individuo come 
+$$ 
+f_{rel}(s) = \frac{f_{abs}(s)}{\sum_{s\prime\in pop(t)} f_{abs}(s\prime)}
+$$
+Tale valore rappresenta la probabilità con cui l'individuo può essere selezionato.
+
+\subsubsection{Dominance problem}
+Una selezione basata sul fitness come quella al punto precedente potrebbe portare a \emph{crowding}, ovvero
+il sovraffollamento di una certa regione dello spazio $\Omega$.
+Tale effetto non è desiderabile in quanto non favorisce l'esplorazione dello spazio di soluzioni.
+
+Il problema si manifesta quando esistono individui con fitness troppo alto che dominano gli altri
+nel passaggio di generazione.
+
+\subsubsection{Vanishing selective pressure}
+In contrapposizione all'avere individui con fitness troppo elevato, 
+avere valori di fitness troppo simili nella popolazione porta all'azzeramento della selective pressure.
+
+Considerando ad esempio la formula per il calcolo del fitness relativo, 
+con valori molto simili di fitness nella popolazione si otterrà $f_{rel}(s) \approx \frac{1}{\mu}$, 
+dove $\mu$ è la dimensione della popolazione.
+Un comportamento simile porta a non avere di fatto selective pressure.
+
+Una soluzione al problema consiste nello scalare la funzione di fitness, in 
+modo da evitare il comportamento appena descritto.
+
+\subsubsection{Variance problem}
+Durante la fase di selezione è possibile computare il fitness relativo e selezionare 
+probabilisticamente in base a quello.
+La natura probabilistica dell'approccio potrebbe però scartare individui molto validi.
+
+Una prima soluzione consiste nel determinare il numero di discendenti in base 
+al fitness, considerando media e deviazione standard $\mu_f(t)$ e $\sigma_f(t)$:
+\begin{itemize}
+    \item se $f(s) < \mu_t(t) - \sigma_f(t)$: 0 figli
+    \item se $\mu_t(t) - \sigma_f(t) < f(s) < \mu_t(t) + \sigma_f(t)$: 1 figlio
+    \item se $f(s) > \mu_t(t) - \sigma_f(t)$: 2 figli
+\end{itemize} 
+
+Un'altra soluzione consiste nel considerare una ruota di selezione, 
+la cui circonferenza è suddivisa in tanti archi quanti gli individui, e con grandezza
+degli archi proporzionale al fitness relativo di ogni individuo.
+Vengono fissati poi dei marker e viene fatta girare la ruota.
+Verranno poi selezionati gli individui puntati dai marker.
+
+\subsubsection{Rank-Based selection}
+Un approccio simile alla roulette-wheel selection è rank selection.
+
+Gli individui vengono inizialmente ordinati per fitness, successivamente viene 
+assegnato loro un rank in base all'ordine ottenuto.
+La selezione viene poi effettuata probabilisticamente sul rank.
+
+Tale approccio differisce da roulette-wheel selection per il fatto che non vengono 
+considerati direttamente i fitness ma solo l'ordine nella popolazione, 
+di conseguenza il valore assoluto del fitness viene ignorato, evitando che 
+alcuni individui dominino gli altri,
+
+Adattando in base al tempo le probabilità associate ai rank, si puo controllare
+la selective pressure, mettendo focus sull'esplorazione piuttosto che sul miglioramento
+della popolazione attuale.
+
+\subsubsection{Tournament selection}
+Un altro approccio per implementare la selezione consiste nello scegliere
+un certo numero di individui e farli competere, scegliendo come vincitore
+quello con fitness più alto, o decidendo probabilisticamente in base al fitness.
+
+Facendo così anche gli individui meno forti potrebbero passare alla generazione successiva, 
+nel caso in cui vengano messi a confronto con individui peggiori.
+
+\subsubsection{Elitism}
+Gli approcci probabilistici potrebbero scartare gli individui migliori 
+della generazione corrente.
+
+Per risolvere il problema si possono ammettere alla generazione successiva i primi $k$
+individui ordinati per fitness, evitando sempre un peggioramento del fitness massimo.
+
+\subsubsection{Sharing}
+La tecnica dello sharing è pensata per prevenire crowding di una certa zona 
+dello spazio $\Omega$.
+
+Nello specifico, individui che cadono in una zona affollata riceveranno una penalità
+nel fitness, andando potenzialmente a ridurre l'affollamento.
+
+\subsection{Operatori genetici}
+Gli operatori genetici sono applicati a un sottoinsieme degli individue in 
+una generazione per creare mutazioni e combinazioni di soluzioni esistenti.
+Nonostante alcune modifiche possano risultare inconvenienti, la speranza è che 
+alcune possano ottenere individui migliori.
+
+Lo spazio di soluzioni $\Omega$ può essere o non essere chiuso rispetto 
+a un operatore genetico.
+
+\subsubsection{Mutazione}
+Per mutazione si intende un piccolo cambiamento nel genotipo di un individuo.
+Si possono applicare vari tipi di mutazione, ad esempio:
+\begin{itemize}
+    \item \emph{Standard}: cambiamento del valore di un gene
+    \item \emph{Pair} swap: interscambio dei valori di due geni
+    \item \emph{Shift}: shift di una sottosequenza di geni
+    \item \emph{Permutazione} arbitraria: permutazione di una certa sottosequenza di geni
+    \item \emph{Inversione}: inversione di una sottosequenza di geni
+    \item \emph{Binaria}: inversione di alcuni geni con una certa probabilità
+    \item \emph{Gaussiana}: aggiunta ad ogni gene di un valore pescato da una distribuzione Gaussiana
+\end{itemize}
+\subsubsection{Crossover}
+Nella tecnica del crossover, si parte da due o piu genitori, e si ricombinano 
+spezzando le loro sequenze e ricombinando.
+
+Esistono varianti quali:
+\begin{itemize}
+    \item \emph{One-point}: individuato un punto di spezzamento, si ricombinano i geni dei due genitori
+    \item \emph{N-point}: si individuano n punti di spezzamento invece che uno
+    \item \emph{Uniform}: si definisce la probabilità di scambio per ogni coppia
+    \item \emph{Shuffle}: viene effettuata una permutazione dei geni, si applica one point crossover, 
+    e si riporta all'ordine iniziale
+    \item \emph{Diagonal}: simile a N-point, ma con un numero più elevato di genitori
+\end{itemize}
+
+\subsubsection{Edge recombination}
+Il cromosoma è rappresentato come un grafo.
+Ogni gene è un vertice che ha archi verso i suoi vicini. Gli archi dei due
+grafi vengono mischiati. Si preserva l’informazione relativa alla vicinanza.
+
+\subsubsection{Problemi degli operatori genetici}
+Esistono sostanzialmente due problemi negli operatori genetici:
+\begin{enumerate}
+    \item \emph{Positional bias}: si manifesta quando la probabilità che due geni
+    siano ereditati dallo stesso padre varia in base alla loro posizione relativa. Ad esempio
+    in one-point crossover, se due geni sono molto vicini, molto probabilmente saranno ereditati
+    assieme.
+    \item \emph{Distributional bias}: si manifesta se la probabilità che un certo numero di geni 
+    di un genitore passino al figlio è differente al variare del numero di geni considerato.
+    Ad esempio, in uniform crossover, la probabilità che un certo numero di geni di uno dei due genitori
+    passi al figlio è data da una binomiale. 
+\end{enumerate}
+
+\newpage
+\section{Algoritmi fondamentali}
+Introdotti i componenti fondamentali, si discutono ora alcuni tipi e varianti di algoritmi
+evolutivi, con alcuni fondamenti teorici legati alla bontà dell'evoluzione simulata.
+
+\subsection{Fondamenti teorici}
+Sebbene il funzionamento degli algoritmi evolutivi sia chiaro, 
+risulta poco intuitivo il motivo per cui funzionano, ovvero perchè riescano a 
+migliorare progressivamente le soluzioni individuate.
+
+\subsubsection{Schema theorem}
+Un mezzo teorico per determinare il comportamento di un algoritmo evolutivo è dato 
+dallo schema theorem.
+
+\begin{definition}
+    Uno schema è definito come una sequenza di uni e placeholder.
+    L'encoding di una soluzione matcha uno schema sse gli uni dello schema sono presenti 
+    nella rappresentazione binaria dell'encoding considerato.
+\end{definition}
+
+Si può definire il fitness di uno schema come il fitness medio delle soluzioni che matchano tale
+schema.
+
+Lo schema theorem dimostra che schemi con elevato fitness si riprodurranno esponenzialmente, 
+mentre schemi con fitness basso andranno a morire nelle generazioni successive.
+Di conseguenza, sempre più individui andranno a matchare schemi con fitness elevato, aumentando
+la qualità della popolazione.
+
+\subsubsection{No free lunch theorem}
+Il teorema dimostra che gli algoritmi evolutivi, in media, funzoinano tanto bene quanto qualsiasi 
+altra metaeuristica. 
+
+Si sta di fatto enunciando l'impossibilità di stabilire a priori la qualità di una soluzione
+individuata da un algoritmo evolutivo per un particolare problema del quale non si conosce nulla.
+
+\subsection{Swarm e population based optimization}
+Swarm e population based optimization sono alcune metaeuristiche utilizzate nel 
+mondo degli algoritmi evolutivi.
+
+L'idea di base fa rifermineto a spiecie naturali capaci di interagire e cooperare tra 
+loro, in modo da raggiungere un certo obiettivo.
+
+\subsubsection{Particle swarm}
+Ispirato al comportamento di uccelli e pesci, le soluzioni candidate operano aggregando 
+informazioni creando conoscenze comuni.
+
+L'idea è quella di guidare le soluzioni candidate considerando conoscenze locali e 
+globali, in modo da muoverle in gruppo verso una soluzione ottima.
+
+\subsubsection{Ant colony}
+Facendo riferimento al comportamento delle formiche, le soluzioni candidate 
+operano seguendo un certo decision graph. 
+
+Si parte da soluzioni parziali ed effettuando scelte random per 
+renderle complete. Le decisioni prese da un singolo 
+sono influenzate da quelle prese dai compagni.
+
+\subsubsection{Population-based incremental learning}
+Si parte da una popolazione iniziale ma, invece che memorizzarla, 
+si mantengono le statistiche relative ad essa.
+
+Si seguono i seguenti pattern:
+\begin{itemize}
+    \item gli individui sono generati pescando dalle statistiche memorizzate.
+    Si effettua quindi un Uniform crossover implicito alla creazione di nuove 
+    soluzioni.
+    \item ad ogni iterazione si considerano i migliori individui per aggiornare le statistiche
+    della popolazione.
+    \item le mutazioni sono in modalità bit-flipping sulle statistiche 
+    \item si considera un learning rate che regola l'esplorazione e il miglioramento locale
+\end{itemize}
+L'approccio presenta alcuni problemi, quali la possibilità di imparare dipendenze tra
+i singoli bit che rappresentano le statistiche, oppure la possibile rappresentazione 
+di popolazioni differenti tramite le stesse statistiche.
+
+
+\subsection{Algoritmi genetici}
+L'idea alla base di qeusti algoritmi consiste nell'individuare 
+una sequenza di operazioni di base per risolvere un determinato problema.
+
+Si parte quindi da un insieme di input e output e si cerca di creare un parse 
+tree in grado di ottenere gli output richiesti.
+
+\dots
+
+\subsection{Multi-criteria optimization}
+\dots
+\subsection{Algoritmi evolutivi paralleli}
+\dots
+
+\end{document}
