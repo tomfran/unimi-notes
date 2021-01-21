@@ -479,17 +479,93 @@ di popolazioni differenti tramite le stesse statistiche.
 
 
 \subsection{Algoritmi genetici}
-L'idea alla base di qeusti algoritmi consiste nell'individuare 
-una sequenza di operazioni di base per risolvere un determinato problema.
+La programmazione genetica mira a comporre un programma in grado 
+di risolvere un problema dato.
+Tale programma è espresso attraverso un \emph{parse tree}.
 
-Si parte quindi da un insieme di input e output e si cerca di creare un parse 
-tree in grado di ottenere gli output richiesti.
+\subsubsection{Processo}
+Si definiscono due insiemi: 
+\begin{itemize}
+    \item $F$: funzioni e operatori
+    \item $T$: simboli terminali
+\end{itemize}
 
-\dots
+Una soluzione candidata è rappresentata da un parse tree, che definisce
+una certa espressione, componendo elementi di $F$ e $T$.
+
+Il processo è il solito seguito da un algoritmo evolutivo, 
+ovvero creazione, selezione e applicazione di operatori genetici.
+
+\subsubsection{Introni}
+Visto che si stanno considerando parse tree che rappresentano espressioni, 
+bisogna porre attenzione ad eventuali rami inutili nell'albero.
+
+Un esempio, nel contesto delle operazioni matematiche, può essere 
+$a + 1 - 1$, dove la seconda parte dell'espressione è chiaramente inutile.
+Bisogna quindi tenerne conto in fase di ricombinazione e mutazione, per evitare 
+soluzioni candidate con queste caratteristiche.
 
 \subsection{Multi-criteria optimization}
-\dots
+È possibile avere problemi con più criteri da ottimizzare.
+Ad esempio, il problema di acquistare un'auto che sia economica, 
+ma comoda e veloce.
+
+La strada da seguire per ottimizzare non è chiara, infatti, probabilmente, 
+migliorando uno dei tre criteri, gli altri peggioreranno.
+
+\subsubsection{Pareto optimal solution}
+Definite le funzioni da ottimizzare, è possibile individuare quei punti nello 
+spazio per cui il miglioramento di una funzoine porta al peggioramento delle altre.
+
+Tali punti formano il così detto \emph{Pareto front} e concettualmente
+è proprio uno di quei punti che ottimizza il problema visto nel complesso.
+
+\subsubsection{Approccio evolutivo}
+L'idea è quella di applicare un algoritmo evolutivo al problema, 
+in modo da ottenere quante più possibili soluzioni sul Pareto front.
+
+Un approccio semplice consiste nel definire la funzione di fitness come 
+somma pesata delle funzioni da ottimizzare. Purtroppo questo favorisce
+soluzioni che massimizzano uno dei criteri, sfavorendo soluzioni intermedie, 
+ma è possibile risolvere il problema individuando le soluzioni marginali e scartandole
+in fase di selezione.
+
+Un secondo problema è quello della convergenza in un punto qualsiasi del fronte, 
+si può rimediare applicando tecniche di \emph{power law sharing}, simili a quelle 
+per evitare \emph{crowding}. Tali tecniche, tenendo conto delle zone già 
+coperte del fronte, cercheranno di coprire punti inesplorati del fronte, 
+in modo da garantire una copertura omogenea.
+
 \subsection{Algoritmi evolutivi paralleli}
-\dots
+Rispetto alle altre metaeuristiche si è osservato che gli algoritmi evolutivi spesso
+portano a risultati ottimi, ma con il prezzo di un tempo di esecuzione molto lento.
+
+È possibile parallelizzare alcune fasi del processo in modo da 
+velocizzarlo o migliorarne il risultato.
+Osservando le varie fasi si nota che sono parallelizzabili:
+\begin{itemize}
+    \item la generazione iniziale, stando attendi ad eventuali duplicati, 
+    che comunque non costituiscono grossi problemi
+    \item il calcolo del fitness degli individi, con l'accortezza di raccogliere i dati in un unico processore per 
+    calcolare il fitness relativo
+    \item la selezione se costituita da eventi indipendenti, come ad esempio tournament selection, 
+    diventa più complesso gestire etilismo
+    \item l'applicazione degli operatori genetici
+    \item il controllo di raggiungimento del criterio di terminazione
+\end{itemize}
+
+\subsubsection{Island model}
+È possibile sfruttare la parallelizzazione considerando un modello ad isola.
+Ogni isola avrà una popolazione, ed eseguirà il processo evolutivo.
+
+Si può introdurre migrazione degli individui da un isola all'altra in maniera
+random o definita da connessione tra le isole.
+
+\subsubsection{Cellular evolution}
+I processori sono organizzati in una griglia. Ogni processore è responsabile di un cromosoma.
+
+Per la selezione ogni processore calcola il massimo dei vicini, gli operatori genetici sono applicabili 
+solo tra vicini e la mutazione è gestita da ogni singolo processore.
+
 
 \end{document}
