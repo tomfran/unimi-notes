@@ -16,7 +16,7 @@
 \newtheorem{theorem}{Teorema}
 
 \setcounter{secnumdepth}{2}
-\setcounter{tocdepth}{2}
+\setcounter{tocdepth}{3}
 
 \title{Algoritmi evolutivi}
 \author{Francesco Tomaselli}
@@ -56,6 +56,15 @@ ricerca di una soluzione per un certo problema.
     il primo indica lo spazio di soluzioni, e il secondo una funzione di valutazione.
     L'obbiettivo è quello di individuare il massimo globale in $\Omega$
 \end{definition}
+\subsubsection{Principi}
+L'evoluzione simulata si basa sui principi di quella naturale, 
+in particolare tenta di generare molta diversità nella generazione iniziale, 
+per favorire un'esplorazione omogenea dello spazio di ricerca.
+
+Utilizza poi il concetto di selezione naturale e di manteninmento di tratti 
+vantaggiosi, ovvero, come in natura, gli individui più forti, o adatti all'ambiente 
+in cui si trovano, hanno piu probabilità di riprodursi e di sopravvivere di generazione 
+in generazione.
 
 \subsubsection{Nozioni di base}
 Parlando di algoritmi evolutivi, bisogna introdurre alcune nozioni di base:
@@ -89,10 +98,14 @@ Un problema evolutivo prevede la definizione di vari elementi quali:
 Generalmente un'algoritmo evolutivo opera seguendo questi passi:
 \begin{enumerate}
     \item Generazione di una popolazione iniziale
-    \item Valutazione del fitenss degli individui
-    \item Selezione basata sul fitness calcolato al punto precedente
-    \item Generazione di discendenti, partendo dai migliori individui
-    \item Mutazione randomica degli individui
+    \item Valutazione del fitness degli individui
+    \item Generazione della nuova popolazione:
+    \begin{enumerate}
+        \item Selezione dei genitori basata sul fitness calcolato al punto precedente
+        \item Generazione di discendenti, partendo dai genitori individuati al punto precedente
+        \item Mutazione randomica degli individui
+        \item Selezione di $|pop|$ individui tra i padri e i figli
+    \end{enumerate}
     \item Ripetizione dal punto 2, fino al raggiungimento del criterio di terminazione
 \end{enumerate}
 Ragionando sul processo utilizzato, è immediato capire che un algoritmo evolutivo non garantisce
@@ -158,13 +171,15 @@ L'algoritmo è definito come segue:
         \end{itemize}
     \item I punti 2 e 3 vengono ripetuti fino alla raggiunta di un criterio di terminazione
 \end{enumerate}
-Per $T$ piccoli l'apporccio equivale ad hill climbing, ma per valori grandi di $T$
+La temperatura $T$ si riduce di iterazione in iterazione, per valori
+ piccoli l'approccio equivale ad hill climbing, ma per valori grandi di $T$
 la probabilità di muoversi in una soluzione peggiore aumenta, riducendo il rischio di bloccarsi 
 in un massimo locale.
 
 \subsubsection{Threshold Accepting}
 L'idea coincide con simulated annealing, ma le soluzioni peggiori sono accettate 
-se la degradazione di qualità è inferiore ad una certa threshold.
+se la degradazione di qualità è inferiore ad una certa threshold, che si riduce
+nel tempo.
 
 \subsubsection{Great Deluge Algorithm}
 L'idea coincide con simulated annealing, ma le soluzioni peggiori sono accettate 
@@ -290,7 +305,11 @@ dove $\mu$ è la dimensione della popolazione.
 Un comportamento simile porta a non avere di fatto selective pressure.
 
 Una soluzione al problema consiste nello scalare la funzione di fitness, in 
-modo da evitare il comportamento appena descritto.
+modo da evitare il comportamento appena descritto:
+\begin{itemize}
+    \item $\sigma scaling$: scalind basato su media e varianza
+    \item \emph{linear dynamical scaling}: sottrae minimo della fitness function da tutti gli individui 
+\end{itemize}
 
 \subsubsection{Variance problem}
 Durante la fase di selezione è possibile computare il fitness relativo e selezionare 
@@ -365,7 +384,7 @@ Si possono applicare vari tipi di mutazione, ad esempio:
     \item \emph{Standard}: cambiamento del valore di un gene
     \item \emph{Pair} swap: interscambio dei valori di due geni
     \item \emph{Shift}: shift di una sottosequenza di geni
-    \item \emph{Permutazione} arbitraria: permutazione di una certa sottosequenza di geni
+    \item \emph{Permutazione arbitraria}: permutazione di una certa sottosequenza di geni
     \item \emph{Inversione}: inversione di una sottosequenza di geni
     \item \emph{Binaria}: inversione di alcuni geni con una certa probabilità
     \item \emph{Gaussiana}: aggiunta ad ogni gene di un valore pescato da una distribuzione Gaussiana
@@ -417,9 +436,9 @@ Un mezzo teorico per determinare il comportamento di un algoritmo evolutivo è d
 dallo schema theorem.
 
 \begin{definition}
-    Uno schema è definito come una sequenza di uni e placeholder.
-    L'encoding di una soluzione matcha uno schema sse gli uni dello schema sono presenti 
-    nella rappresentazione binaria dell'encoding considerato.
+    Uno schema è definito come una sequenza di uni, zeri e placeholder.
+    L'encoding di una soluzione matcha uno schema sse gli uni e gli zeri dello schema sono 
+    presenti nella rappresentazione binaria dell'encoding considerato.
 \end{definition}
 
 Si può definire il fitness di uno schema come il fitness medio delle soluzioni che matchano tale
