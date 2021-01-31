@@ -1,0 +1,69 @@
+\section{Delta Lake}
+In un contesto big data esiste la sfida di rendere transazionali le operazioni.
+In particolare potrebbe essere necessario garantire consistenza e comunicazione tra
+i processi che stanno svolgendo particolari operazioni.
+
+\subsection{Transazionalità}
+Per garantire transazionalità è necessario un controllo sulla concorrenza.
+
+\paragraph{Transazione}
+Sequenza di operazioni che soddifano le proprietà ACID.
+
+\paragraph{Rollback}
+Riportare il sistema allo stato precendete all'operazione eseguita.
+
+\paragraph{Proprietà ACID}
+Le proprietà che sono necessarie per garantire transazionalità sono:
+\begin{itemize}
+    \item \emph{Atomicity}: ogni operazione di una transazione è atomica
+    \item \emph{Consistentcy}: una transazione deve mantenere la consistenza del sistema
+    \item \emph{Isolation}: esecuzioni concorrenti portano allo stesso risultato di esecuzioni sequenziali
+    \item \emph{Durability}: una transazione non può essere ripristinata dopo un commit
+\end{itemize}
+
+\subsection{Transaction log e shipping}
+Per garantire consistenza e replciazione si possono usare transaction log e applicare
+transaction shipping.
+
+\paragraph{Transaction log} 
+Storia delle operazioni eseguite da un database, possono essere utili per effettuare
+rollback in casi di errore di alcune transazioni che hanno lasciato
+il sistema in uno stato incosistente. Questi file possono diventare molto grandi
+
+\paragraph{Transaction shipping}
+I log possono essere mandati a un server per replicare lo stato del database e avere
+una copia esatta del sistema. È un'operazione molto pesante poichè bisogna scrivere
+tutte le operazioni che sono effettuate sulle tabelle.
+
+\subsection{Delta Lake}
+L'idea è quella di garantire le ACID properties su HDFS, quindi su 
+storage distribuiti.
+
+\paragraph{Apache Parquet}
+Parquet è un formato con cui mantenere le tabelle. Consiste nel mantenerle 
+per colonna piuttosto che per riga, per velocizzare le operazioni di select.\\
+Dividendo per colonna poi si può ottimizzare lo spazio richiesto per la codifica
+dei valori nella tabella. Infatti, i valori di una colonna sono più omogenei
+di quelli presenti in un'intera riga, quindi richiedono meno spazio e si possono
+comprimere. Parquet non è abbastanza per garantire transazionalità.
+
+\paragraph{Write-ahead log} 
+Si mantengono quali oggetti fanno parte di una delta table, oltre ad 
+aclune infomazioni statistiche quali massimo, minimo, count, etc \dots\\
+Si scrivono poi le operazioni da fare sulle tabelle nel log, prima di eseguirle, 
+oltre a quelle da applicare in caso di rollback.
+
+\paragraph{Funzionalità}
+Le funzionalità principali di un Delta Lake, che lo rendono propenso a un forte lock-in, sono:
+\begin{itemize}
+    \item \emph{Time travel}: esiste la possibilità di riportare lo stato dello storage a un determinato
+    snapshot temporale.
+    \item \emph{UPSERT, DELETE e MERGE}: riscrivono in modo efficiente gli oggetti per 
+    applicare le operazioni richieste
+    \item \emph{Straming efficiente}: le informazioni sono scritte in modo veloce, poichè 
+    si suddividono in piccoli blocchi. I blocchi si uniscono dopo per velocizzare le letture
+    \item \emph{Caching}: i nodi del cluster possono cachare informazioni
+    \item \emph{Schema evolution}: si può cambiare lo schema delle tabelle continuando 
+    a leggere i vecchi file Parquet 
+\end{itemize}
+

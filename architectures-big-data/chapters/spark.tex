@@ -1,0 +1,87 @@
+\section{Spark}
+
+\subsection{Elementi}
+
+\paragraph{Resilient Distributed Dataset}
+È un dataset distribuito in memoria su cui si possono effettuare operazioni in parallelo.
+Si può ottenere da un HDFS, oppure parallelizzando qualsiasi oggetto.
+L'idea è quella di distrubuire gli elementi tramite una funzione di hash tra i nodi 
+che offrono computazione, tale distribuzione può essere forzata con un \emph{repartition}.
+L'operazione è necessaria poichè ci si potrebbe trovare in casi dove un nodo ha molti più 
+elementi degli altri, oppure per raggruppare meglio le chiavi in seguito a una join.
+
+\paragraph{Driver}
+Processo responsabile dell'esecuzione di Spark, divide l'applicazione in task piccole
+computabili dai nodi worker, che eseguiranno.\\
+Racchiude lo SparkContext, che permette di utilizzare Spark, e i metadati per l'RDD.
+
+\paragraph{Master}
+È un nodo che contiene il driver, si occupa di orchestrare il lavoro tra i nodi worker, 
+e ne monitora lo stato. Può avere un nodo di backup pronto in caso di fallimento.
+
+\paragraph{Spark Context}
+È il core di Spark, permette al driver di utilizzare il cluster. È singleton e manda segnali 
+di heartbit agli executor per monitorarne lo stato.
+
+\paragraph{Worker}
+Nodo che si occupa della computazione, contiene molti executors.
+
+\paragraph{Executors}
+Sono quelli che effettuano le computazioni vere e proprie. Hanno un id, ed è 
+garantito il backup se falliscono.
+
+\subsection{Funzionalità e caratteristiche}
+
+\paragraph{Pigrizia}
+Spark è pigro, non computa il risultato subito ma solo quando serve. 
+È possibile quindi che un errore si verifichi solo all'esecuzione di una particolare 
+riga dell'RDD. 
+
+\paragraph{Map e reduce}
+Spark offre alcune funzioni di map e reduce. La prima permette di applicare una funzione
+ad ogni entry dell'RDD, mentre la seconda permette di eseguire riduzioni. Le seconde devono essere
+commutative, poichè non è garantito l'ordine con cui si eseguono le operazioni.
+
+\paragraph{DAG Scheduler}
+Ogni qualvolta che si effettua un'operazione su un RDD non si sta facendo altro che 
+aggiugnere una task al DAG Scheduler. Il suo compito è quello ti trasformare un 
+execution plan logico in uno fisico, in modo da effettuare la computazione vera e propria.
+Ogni passo del DAG Scheduler è chiamato Stage.
+
+\paragraph{Task Scheduler}
+Uno stage su un sottoinsieme di righe è chiamata Task.
+Una Task è lanciata dal Task Scheduler ed eseguita da uno Worker 
+attraverso il Cluster manager. Il numero 
+di Task è proporzionale al numero di partizioni considerate nell'RDD.
+
+\paragraph{Shared Variables}
+All'esecuzione di una map o reduce, Spark distribuisce una copia delle 
+variabili delle funzioni tra tutte le righe. Questo comportamento 
+può portare a problemi, nel caso di variabili molto pesanti.\\
+Si introducono le shared variables, che possono essere:
+\begin{itemize}
+    \item \emph{Broadcast variables}: read-only, per esempio, dizionario 
+    condiviso in memoria su cui fare lookup
+    \item \emph{Accumulators}: write-only
+\end{itemize}
+
+\subsection{Processo}
+Definiti elementi e caratteristiche di Spark l'esecuzione puo essere riassunta 
+in questi passi:
+\begin{enumerate}
+    \item Submit di un'applicazione utilizzando spark-submit utility
+    \item Allocazione risorse necessarie dal Resource Manager
+    \item Application master si registra al Resource Manager
+    \item Spark driver manda il codice all'Application Master, convertendo il codice
+    in un DAG
+    \item Il Driver negozia con il Cluster Manager sulle risorse, e si creano gli Stage del 
+    DAG Scheduler
+    \item Gli Executors sono istanziati dagli Worker
+    \item Il driver tiene traccia dello stato degli Executors e manda le task al 
+    Cluster manager in base alla distribuzione dei dati
+    \item L'application Master crea una Container configuration per il Node Manager
+    \item È creato il primo RDD
+    \item Durante l'esecuzione il driver parla con l'Applicatin Master per monitorare
+    lo stato, al termine si rilasciano le risorse
+\end{enumerate}
+
