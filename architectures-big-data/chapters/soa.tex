@@ -1,0 +1,85 @@
+\section{Service-oriented architecture}
+L'idea di SOA è quella di fare da ponte tra il mondo IT e quello business, 
+pensando un'architettura come qualcosa basato su servizi.
+Essi collaborano e possono potenzialmente creare applicazioni molto complesse.
+
+\paragraph{Strati SOA}
+Una SOA può essere vista a cinque strati:
+\begin{enumerate}
+    \item \emph{Sistemi operativi}: asset IT attuale
+    \item \emph{Componenti dei servizi}: realizzano le funzionalità e garantisono la qualità
+    dei servizi esposti, utilizzando le risorse del punto 1
+    \item \emph{Servizi}: servizi deployati, 
+    seguono la definizione data in precedenza
+    \item \emph{Processi di business}: layer che combina i servizi del livello sottostante
+    per creare un sistema più complesso
+    \item \emph{Clienti}: user che utilizza l'applicazione, oppure altra applicazione, etc. 
+\end{enumerate}
+
+\subsection{Servizi}
+Un servizio è una risorsa identificata da un nome che esegue un compito ripetitivo.
+È descritta da una service specification, senza scendere nei dettagli, ma rimanendo 
+ad alto livello. Si puo vedere quindi come una black box.\\
+Ogni servizio offre le proprie funzionalità sotto forma di contratto.
+\paragraph{Elementi}
+Ogni servizio è costituito da:
+\begin{itemize}
+    \item \emph{Nome}
+    \item \emph{Versione}
+    \item \emph{Tipo di esecuzione}: asincrona, sincrona, \dots
+    \item \emph{Metodo di logging}: before, after, \dots
+    \item \emph{Message in}: configurazione dei messaggi in ingresso
+    \item \emph{Message out}: configurazione dei messaggi in uscita
+    \item \emph{Visibilità}
+    \item Eventuale \emph{binding} con server objects, definiti da un \emph{application 
+    container} e un \emph{integration implementation}
+\end{itemize}
+
+\paragraph{Server catalog}
+Catalogo di tutti i servizi disponibili, contiene una lista dei message in usati 
+per configurare l'esecuzione dei servizi.
+
+\paragraph{Service queue}
+Lista delle esecuzioni dei servizi. Monitorandola si può controllare lo stato dei 
+servizi in real time.
+
+\paragraph{Enterprise service bus}
+Sistema di comunicazione che permette ai servizi di comunicare con legacy systems.
+È utile per evitare la \emph{system-to-system integration} ovvero integrazioni specifiche
+per ogni sistema. L'idea è quella di far comunicare ogni sistema con l'enterprise 
+service bus, in modo da non occuparsene lato servizio, bensì lato legacy system.
+
+\paragraph{Service broker}
+Implementa il broker pattern, ha come compito il mandare 
+i servizi al corretto application server, controllando la service queue.
+Si occupa anche di controllare lo stato dei message ins e messageo outs.
+Fornisce inoltre la descrizione di un servizio quando richiesta da un client, 
+e controlla che un determinato clien abbia i requisiti di accesso richiesti.
+
+\subsection{Modelli di comunicazione}
+\paragraph{Sincrono}
+Il client compila il message in, l'ESB guida la richiesta, il service broker si occupa di 
+inviare al server corretto, il quale esegue e risponde sul message out. L'esecuzione
+è corredata da uno stato e un log. I log sono mantenuti all'interno della Service Queue Table.
+
+\paragraph{Asincrono}
+Il client compila il message in, il service broker aggiunge il servizio da eseguire in 
+coda. Quando il turno del servizio arriva, il broker troverà l'application server corretto.
+Esiste un ID, ritornato immediatamente, che il client può controllare per monitorare lo stato del servizio 
+richiesto.
+
+\paragraph{Streamed outbound file reference}
+Quando l'output è molto grande, è infattibile scrivere sul message out.
+Si può estendere la logica asincrona in modo da scrivere l'output su un certo file.
+È possibile iniziare a consumare l'output durante la scrittura.
+
+\paragraph{Pub-sub service call-back}
+L'idea di un pub-sub è che un client possa iscriversi a un determinato topic e ricevere
+una notifica ad ogni evento.
+L'ESB può evitare al client la complessità del message bus, ad ogni nuovo evento 
+un object id è passato al client.
+
+\paragraph{Batch sync data process}
+Un job CDC permette di estrarre dati incrementali da un legacy system, salvandole su un data 
+lake.
+Un servizio gateway invia queste richieste al target system, es SQL.

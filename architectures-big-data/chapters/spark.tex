@@ -86,4 +86,60 @@ in questi passi:
 \end{enumerate}
 
 \subsection{Spark to SQL}
-\dots
+La scrittura di dati da Spark a un database SQL potrebbe risultare critica e 
+rallentare di molto il sistema. Infatti, la presenza di molti worker che tentano
+di scrivere in parallelo non aiuta, rendendo il database un collo di bottiglia.
+
+\paragraph{Table index}
+Struttura dati che aumenta le performance in lettura di una particolare tabella del 
+database, non è necessario infatti effettuare una scan completa, ma si individua 
+immediatamente la riga necessaria.
+In fase di inserimento, sono necessarie scritture addizionali per aggiornare l'indice.
+
+\paragraph{Problemi}
+Esistono problemi nella scrittura da Sparkl a SQL. In particolare, le operazioni di 
+write occupano memoria, bisogna stabilire una connessione fisica e le tabelle indexed 
+vanno lockate.
+
+\paragraph{Struttura interna database}
+Un database SQL è composto da data file e log file. I primi sono raggruppati in extents 
+composti da pagine. Essi possono essere uniform, se ogni pagina è una data page, oppure 
+mixed, se alcune pagine contengono informazioni sugli indici.
+
+\paragraph{Esecuzione query}
+All'arrivo di una query, questa viene convertita in un TDS utilizzando uno tra ODBC, 
+OLEDB, SNAC, o SNI.
+Successivamente, SNI sul server decapsula il TDS e passa i comandi al query parser.
+Il query executor esegue la query e richiede agli access methods le pagine che sono 
+coinvolte dalla query. Se si parla di query non select, interviene la logica di log e lock.
+La prima logga le operazioni, la seconda effettua il lock sulle pagine per garantire ACID properties.
+
+\paragraph{Tecniche di connessione}
+Per connettersi a un dataabase esistono tre metodi:
+\begin{enumerate}
+    \item \emph{Connessione diretta}: si apre una connessione con una socket, bisogna 
+    riaprirla ogni volta
+    \item \emph{Connection pooling}: si mantengono connessioni aperte e vengono assegnate 
+    ai client che le richiedono
+    \item \emph{Pool fragmentation}: si creano molti pool e ogni client può usare il proprio
+     pool o no, differisce dal secondo perchè ogni client ha il proprio pool
+\end{enumerate}
+
+\paragraph{Creazione e update di un indice}
+Se una tabella risulta indicizzata, un inserimento deve tenere conto 
+di alcune cose.
+Utilizzando ad esempio un B-tree+, i dati sono solo nelle foglie, le distanze tra le 
+foglie non cambiano.\\
+Per creare un indice i dati sono inizialmente ordinati, si sceglie una root e si 
+aggiungono dati ad essa, quando questa è piena, si aggiunge un'altra root figlia e si procede.\\
+Per aggiornare un indice, prima si cerca la posizione dove mettere l'informazione, 
+se la pagina trovata è piena, si splitta la pagina ricorsivamente fino alla root.
+
+\paragraph{Scrittura intermedia Data Lake}
+Per risolvere il problema di scrittura in SQL da parte di worker multipli, si possono 
+scrivere tutte le informazioni su un Data Lake e successivamente scriverle in bulk su SQL.\\
+L'idea è quella di sfruttare il BCP, bulk copy program, per copiare tutte le righe nuove 
+da datalake a SQL, e utilizzare MERGE per unirle alla vecchia tabella. La MERGE può definire 
+logiche di unione.\\
+L'approccio evita la creazione di dirty pages.
+
