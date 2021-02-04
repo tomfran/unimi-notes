@@ -14,7 +14,7 @@ task parallele, infatti, all'arrivo di una nuova task, uno slot libero viene uti
 \paragraph{Name node}
 Contiene informazioni su dove i dati sono scritti. Mantiene quindi una lista 
 di risorse e i relativi nodi che le contengono. Rappresenta un sigle point of failure
-per Hadoop. Esiste un backup name node.
+per Hadoop. Esiste un nodo di backup pronto in caso di fallimento.
 
 \paragraph{Data node}
 Nodo che contiene i dati effettivi.
@@ -26,24 +26,31 @@ Un nodo master è composto da un job tracker, un task tracker, un data node e un
 \begin{center}
         \emph{Moving computation is cheaper than moving data}
 \end{center}
-Un'applicazione manda un job asincono al job tracker, aspettando in polling.
-Il job tracker cerca i dati nel name node e sceglie i task tracker più vicini
-con slot disponibili.\\
-Successivamente il job tracker manda i job ai task tracker, e ne monitora 
-lo stato attraverso i segnali di heartbeat. Nel caso di fallimento il job tracker
-può scegliere di aggiungere il task tracker a una blacklist.
+Un esempio del processo seguito da Hadoop è il seguente.
+\begin{enumerate}
+        \item Un'applicazione manda un job asincono al \emph{Job Tracker}, aspettando in polling.
+        \item Il \emph{Job Tracker} cerca i dati nel \emph{Name node} e sceglie i Task Tracker più vicini
+        con slot disponibili.
+        \item Il \emph{Job Tracker} manda i job ai \emph{Task Tracker}, e ne monitora 
+        lo stato attraverso i segnali di heartbeat. 
+        \item Nel caso di fallimento il \emph{Job Tracker}
+        può scegliere di aggiungere il \emph{Task Tracker} a una \emph{blacklist}.
+\end{enumerate}
 
 \paragraph{Confronto costi}
 Bisogna tenere presente che in un contesto come quello di Hadoop risulta 
 più economico muovere la computazione piuttosto che i dati.
 Bisogna quindi scegliere i task tracer in modo opportuno, tenendoli vicini ai 
-data node interessati, piuttosto che muovere i dati in sè ed eseguire le operazioni.
+data node interessati, piuttosto che muovere i dati in sè ed eseguire le operazioni.\\
+Nel primo caso infatti si parla di muovere magari GB di informazioni, nel secondo di muovere 
+righe di codice.
 
 \subsection{HDFS}
 HDFS è uno storage distribuito pensato per essere utilizzato su macchine poco
 performanti.
 
-Un HDFS ha un architettura master/slave, dove esiste un name node per N data node.
+\paragraph{Architettura}
+Un HDFS ha un architettura \emph{master/slave}, dove esiste un \emph{name node} per $N$ \emph{data node}.
 Il primo esegue operazioni sul file system, mentre i secondi si occupano di 
 servire le richieste del primo e di gestire cancellazione, creazione e replica dei 
 file.
@@ -54,15 +61,19 @@ blocco. Mandano segnali di heartbeat al name node.
 
 \paragraph{Replicazione dei dati}
 Si possono seguire varie strade per la replicazione dei dati in HDFS, ma bisogna 
-essere rake aware, ovvero, bisogna replicare elementi dello stesso data node nello
+essere \emph{rake aware}, ovvero, bisogna replicare elementi dello stesso data node nello
 stesso posto, in modo da rendere più semplice la gestione di richieste multiple
 in caso di fallimento di un data node.\\
-Un approccio è quello di replicare l'intero rack, diventa molto costoso 
-perchè si sta scrivendo su rack differenti. Un'altro è quello di replicare 3 
-volte, una volta sul nodo che esegue la task, e altre due su due nodi di un rack 
-differente. Le performance aumentano, essendoci 2 rack invece che possibilmente
-di piu 
-
+Esistono due approcci:
+\begin{enumerate}
+        \item Un approccio è quello di replicare l'\emph{intero rack}, diventa molto costoso 
+        perchè si sta scrivendo su rack differenti
+        \item Un'altro è quello di replicare \emph{3 
+        volte}, una volta sul nodo che esegue la task, e altre due su due nodi di un rack 
+        differente. Le performance aumentano, essendoci 2 rack invece che possibilmente
+        di più
+\end{enumerate}
+ 
 \paragraph{Quorum Journal Manager}
 I data node sono affidabili, viste le tecniche di replicazione, per estendere
 ai name node, essi potrebbero essere multipli, uno attivo e gli altri in standby.

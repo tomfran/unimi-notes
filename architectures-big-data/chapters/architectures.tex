@@ -24,9 +24,8 @@ adatti agli scopi. Nel software, si parla di framework, linguaggi di programmazi
 
 \paragraph{Point of views}
 È cruciale avere diversi punti di vista nella presentazione di un architettura, poichè 
-esitono più attori con punti di vista differenti.
-Ad ognuno interessano o meno alcuni dettagli o aspetti dell'architettura totale.
-
+esitono più attori con ruoli differenti.
+Ad ognuno interessano o meno alcuni dettagli o aspetti dell'architettura totale.\\
 Un esempio potrebbe essere una vista ad alto livello data al cliente, e una molto specifica 
 data allo sviluppatore.
 Si può pensare poi ad una vista riguardo alle spese, che molto probabilmente non importerà 
@@ -59,7 +58,7 @@ Tale dipendenza si manifesta se il costo di cambiare vendor è maggiore rispetto
 tenerlo. Per esempio, deciso un cloud o un servizio, un'azienda potrebbe avere 
 adattato il suo sviluppo a quel particolare ambiente di sviluppo. Un cambio di 
 cloud porterebbe a costi di adattamento troppo importanti.\\
-Esiste anche il knowledge lock-in, ovvero quando il costo di spiegare o impartire 
+Esiste anche il \emph{knowledge lock-in}, ovvero quando il costo di spiegare o impartire 
 una conoscenza in qualcuno costa più di mantenere la persona attuale.
 Per proteggersi da vendor lock-in si può ricorrere ad \emph{Adapter Pattern}.
 
@@ -73,7 +72,8 @@ Ad esempio: singleton, SOA, REST, P2P, MapReduce \dots
 \paragraph{Datalake}
 L'idea di un Datalake è quella di avere un luogo in cui salvare dati strutturati, 
 ottenuti da una certa sorgente in forma non strutturata. Su un datalake si salva 
-solamente, non si elimina nulla, alla modifica di un dato si inserisce la sua versione modificata.\\
+solamente, non si elimina nulla, alla modifica di un dato si inserisce la sua versione 
+modificata.\\
 Tale approccio cambia il patter \emph{ETL}, poichè, si effettua una Extract, e una 
 Load, per salvare su datalake, in un secondo momento si trasformano i dati in base 
 al contesto.
@@ -88,22 +88,37 @@ Esistono vari modi di implementare CDC:
 \begin{itemize}
     \item \emph{Invasive database side}: timestamp su righe, numero di versione, 
     indicatore di stato, trigger su tabelle
-    \item \emph{Invasive application side}: si basa su eventi, un'applicazione deve mandare informazioni sullo stato al cdc 
-    \item \emph{CPU database}: si confrontano i log del database, oppure utilizzando log shipping, tipicamente coinvolto nel backup automatico
+    \item \emph{Invasive application side}: si basa su eventi, un'applicazione deve mandare 
+    informazioni sullo stato al cdc 
+    \item \emph{CPU database}: si confrontano i log del database, oppure utilizzando log shipping, 
+    tipicamente coinvolto nel backup automatico
 \end{itemize}
 
 \paragraph{Diff and Where}
 Si differenziano due tipi di tabelle, log e registry table.
-Nella prima esiste un chronoattribute, utilizzabile per ottenere i dati aggiornati 
+Nella prima esiste un \emph{chronoattribute}, utilizzabile per ottenere i dati aggiornati 
 tramite query, nella seconda si applica un approccio basato su hash per capire 
-se le tuple sono state modificate dall'ultima volta.
+se le tuple sono state modificate dall'ultima volta.\\
+Nello specifico, considerata una tupla di esempio $(x,y,...)$, possiamo definire una chiave
+e prendere il suo hash, $KHASH = hash(x)$, e calcolare l'hash del resto della tupla, 
+$HASH = hash((x,y,...) - x)$. Si salvano in un dizionario chiave e valore hashati, chiamato
+\emph{SYNC}.\\
+Nella ricerca di tuple nuove o modificate, si effettua il calcolo di chiave valore 
+per ogni tupla della tabella, si confrontano tali dizionari:
+\begin{itemize}
+    \item Una tupla è \emph{nuova} se $KHASH \notin SYNC$
+    \item Una tupla è \emph{modificata} se $KHASH \in SYNC \and HASH_{new} \neq HASH_{sync}$
+    \item Una tupla è \emph{invariata} se $KHASH \in SYNC \and HASH_{new} = HASH_{sync}$
+\end{itemize}
+
 
 \paragraph{Move and rename}
 L'approccio consiste nel garantire transazionalità di un CDC. 
-È necessario quindi rendere possibile un eventuale rollback, e non lasciare mai 
-il datalake in uno stato inconsistente.
-L'idea è scrivere i file in formato tmp e rinominarli al termine del job cdc.
-All'iterazione successiva si effettua rollback dei file tmp.
+È necessario quindi rendere possibile un eventuale rollback e non lasciare mai 
+il datalake in uno stato inconsistente.\\
+L'idea è scrivere su datalake i file in formato tmp e rinominarli al termine del job cdc.
+All'iterazione successiva si eliminano eventuali file tmp, lasciati da un eventuale 
+interruzione del CDC.
 
 \paragraph{Adapter pattern}
 Per evitare vendor lock-in, si utilizzando classi wrapper per evitare di dipendere
@@ -113,20 +128,23 @@ write, implementati a seconda del contesto.
 
 \subsection{Jobs e scheduler}
 \paragraph{Job}
-Un job è un elemento atomico che identifica una sequenza di passi o task da compiere. Può essere lanciato interattivamente o schedulato. Si identifica con 
+Un job è un elemento atomico che identifica una sequenza di passi o task da compiere. 
+Può essere lanciato interattivamente o schedulato. Si identifica con 
 un singolo processo.\\
-Un job è caratterizzato da un id, un nome e uno stato, può essere poi 
+Un job è caratterizzato da un \emph{id}, un \emph{nome} e uno \emph{stato}, può essere poi:
 \begin{enumerate}
-    \item Finito: possono completare, essere terminati o fallire
-    \item Online: possono essere solo interrotti quando terminano
+    \item \emph{Finito}: possono completare, essere terminati o fallire
+    \item \emph{Online}: possono essere solo interrotti quando terminano
 \end{enumerate}
 
 \paragraph{Scheduler}
 Governa l'esecuzione dei job, può essere basato sul tempo o su eventi.
-Può decidere a quale processore o server (sistema distribuito) mandare un certo job, scegliendo tra quelli liberi.
+Può decidere a quale processore o server (sistema distribuito) mandare un certo job, scegliendo 
+tra quelli liberi.
 
 \paragraph{Job queue}
-Coda dei job che sono da eseguire, esiste un concetto di priorità, riconducibile alle classiche priorità dei processi nei sistemi operativi.
+Coda dei job che sono da eseguire, esiste un concetto di priorità, riconducibile alle classiche 
+priorità dei processi nei sistemi operativi.
 
 \paragraph{Job impersonation}
 Un thread che esegue un job può impersonare un determinato client.
@@ -135,3 +153,4 @@ in modo che il server possa rispondere nel modo opportuno.
 
 \paragraph{Concurrency}
 Due job possono essere sequenziali o concorrenti.
+Nel primo caso il secondo attende la terminazione del primo, nel secondo caso no.

@@ -22,13 +22,13 @@ Le proprietà che sono necessarie per garantire transazionalità sono:
 \end{itemize}
 
 \subsection{Transaction log e shipping}
-Per garantire consistenza e replciazione si possono usare transaction log e applicare
-transaction shipping.
+Per garantire consistenza e replicazione si possono applicare \emph{transaction log} e
+\emph{transaction shipping}.
 
 \paragraph{Transaction log} 
 Storia delle operazioni eseguite da un database, possono essere utili per effettuare
 rollback in casi di errore di alcune transazioni che hanno lasciato
-il sistema in uno stato incosistente. Questi file possono diventare molto grandi
+il sistema in uno stato incosistente. Questi file possono diventare molto grandi.
 
 \paragraph{Transaction shipping}
 I log possono essere mandati a un server per replicare lo stato del database e avere
@@ -40,7 +40,7 @@ L'idea è quella di garantire le ACID properties su HDFS, quindi su
 storage distribuiti.
 
 \paragraph{Apache Parquet}
-Parquet è un formato con cui mantenere le tabelle. Consiste nel mantenerle 
+Parquet è un formato con cui mantenere le tabelle. Usa memorizzazione 
 per colonna piuttosto che per riga, per velocizzare le operazioni di select.\\
 Dividendo per colonna poi si può ottimizzare lo spazio richiesto per la codifica
 dei valori nella tabella. Infatti, i valori di una colonna sono più omogenei

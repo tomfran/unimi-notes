@@ -1,30 +1,30 @@
 \section{Spark}
+Apache Spark è un framework open source per il calcolo distribuito.
 
 \subsection{Elementi}
-
 \paragraph{Resilient Distributed Dataset}
-È un dataset distribuito in memoria su cui si possono effettuare operazioni in parallelo.
-Si può ottenere da un HDFS, oppure parallelizzando qualsiasi oggetto.
+È un \emph{dataset distribuito} in memoria su cui si possono effettuare operazioni in parallelo.\\
+Si può ottenere da un HDFS, oppure parallelizzando qualsiasi oggetto.\\
 L'idea è quella di distrubuire gli elementi tramite una funzione di hash tra i nodi 
-che offrono computazione, tale distribuzione può essere forzata con un \emph{repartition}.
+che offrono computazione, tale distribuzione può essere forzata con un \emph{repartition}.\\
 L'operazione è necessaria poichè ci si potrebbe trovare in casi dove un nodo ha molti più 
 elementi degli altri, oppure per raggruppare meglio le chiavi in seguito a una join.
 
 \paragraph{Driver}
 Processo responsabile dell'esecuzione di Spark, divide l'applicazione in task piccole
 computabili dai nodi worker, che eseguiranno.\\
-Racchiude lo SparkContext, che permette di utilizzare Spark, e i metadati per l'RDD.
+Racchiude lo \emph{Spark Context}, che permette di utilizzare Spark, e i metadati per l'RDD.
 
 \paragraph{Master}
-È un nodo che contiene il driver, si occupa di orchestrare il lavoro tra i nodi worker, 
+È un nodo che contiene il driver, si occupa di \emph{orchestrare} il lavoro tra i \emph{nodi worker}, 
 e ne monitora lo stato. Può avere un nodo di backup pronto in caso di fallimento.
 
 \paragraph{Spark Context}
 È il core di Spark, permette al driver di utilizzare il cluster. È singleton e manda segnali 
-di heartbit agli executor per monitorarne lo stato.
+di \emph{heartbit} agli \emph{executor} per monitorarne lo stato.
 
 \paragraph{Worker}
-Nodo che si occupa della computazione, contiene molti executors.
+Nodo che si occupa della \emph{computazione}, contiene molti executors.
 
 \paragraph{Executors}
 Sono quelli che effettuano le computazioni vere e proprie. Hanno un id, ed è 
@@ -44,9 +44,9 @@ commutative, poichè non è garantito l'ordine con cui si eseguono le operazioni
 
 \paragraph{DAG Scheduler}
 Ogni qualvolta che si effettua un'operazione su un RDD non si sta facendo altro che 
-aggiugnere una task al DAG Scheduler. Il suo compito è quello ti trasformare un 
-execution plan logico in uno fisico, in modo da effettuare la computazione vera e propria.
-Ogni passo del DAG Scheduler è chiamato Stage.
+aggiugnere una task al DAG Scheduler. Il suo compito è quello di trasformare un 
+\emph{execution plan} logico in uno fisico, in modo da effettuare la computazione vera e propria.
+Ogni passo del DAG Scheduler è chiamato \emph{Stage}.
 
 \paragraph{Task Scheduler}
 Uno stage su un sottoinsieme di righe è chiamata Task.
@@ -81,7 +81,7 @@ in questi passi:
     Cluster manager in base alla distribuzione dei dati
     \item L'application Master crea una Container configuration per il Node Manager
     \item È creato il primo RDD
-    \item Durante l'esecuzione il driver parla con l'Applicatin Master per monitorare
+    \item Durante l'esecuzione il driver parla con l'Application Master per monitorare
     lo stato, al termine si rilasciano le risorse
 \end{enumerate}
 
