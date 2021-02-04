@@ -1,0 +1,42 @@
+\section{ELK stack}
+\begin{center}
+    \emph{Why do we need search?}
+\end{center}
+In alcuni scenari è molto importante la ricerca, ad esempio in un Ecommerce oppure
+un search engine.\\
+È impossibile creare una ricerca tramite un database classico, molto probabilmente
+il risultato che si vuole ottenere non corrisponde a una query singola, probabilmente
+si sta facendo una ricerca fuzzy.
+
+\subsection{Elasticsearch}
+Elasticsearch è un engine distribuito di ricerca e analisi per dati di qualsiasi tipo, 
+strutturati o no.\\
+È basato su Apache Lucene, che offre analisi e ricerche testuali, lo estende e lo semplifica.
+Offre una REST API e costituisce la base dell'EKL stack.
+
+\paragraph{Processo}
+Per popolare Elasticsearch si seguono solitamente questi passi:
+\begin{enumerate}
+    \item I dati si raccolgono da uan sorgente
+    \item Parsing e normalizzazione dei dati e indicizzazione Elastic
+    \item Query sull'indice, anche molto complesse
+    \item Data visualization con Kibana
+\end{enumerate}
+
+\paragraph{Indice}
+Un indice Elasticsearch è una collezione di documenti che per qualche ragione sono raggruppati.
+Un indice ha varie caratteristiche:
+\begin{itemize}
+    \item Ogni documento è un JSON
+    \item Ogni indice ha un \emph{inverted index} che mantiene le parole presenti in ogni documento, 
+    questo garantisce ricerche full-text molto efficienti
+    \item Elastisearch promette di riuscire ad indicizzare ogni documento in meno di un secondo
+    \item Un indice è distribuito in shards, garantendo ridondanza e scalabilità
+\end{itemize}
+
+\paragraph{Bag of word}
+Dato un insieme di testi, si crea una lista di di parole univoche ed ordinate che compaiono in essi, 
+questo sarà l'Absolute dictionary.
+Ogni documento ha associato un vettore, che contiene per ogni parola dell'absolute vector
+il numero di occorrenze nel testo.
+
