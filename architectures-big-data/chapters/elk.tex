@@ -36,7 +36,7 @@ Un indice ha varie caratteristiche:
 
 \subsection{Text preprocessing}
 
-\paragraph{Bag of word}
+\paragraph{Bag of Words}
 Dato un insieme di testi, si crea una lista di di parole univoche ed ordinate che compaiono in essi, 
 questo sarà l'Absolute dictionary.
 Ogni documento ha associato un vettore, che contiene per ogni parola dell'absolute vector
@@ -109,3 +109,26 @@ Uno shard è un search engine funzionante, e può essere utilizzato a sè.
 \paragraph{Scalabilità}
 Distribuendo gli shard tra i nodi si possono garantire elevate performace
 e più scalabilità.
+
+\section{NPL and semantic}
+Per effettuare analisi testuali si ricorre inizialmente a un modello Bag of Words, 
+come discusso a sezione precedente.
+
+\subsection{Similarity}
+Computando la distanza tra due vettori, dove i vettori sono bag of words, si può 
+calcolare la distanza di due testi.
+
+\paragraph{Euclidean distance}
+La distanza tra due vettori è data da
+$$
+    dis(A, B) = \sqrt{\sum_{i=0}^{n} (A_i - B_i)^2}
+$$
+È infattibile computare la distanza euclidea per vettori molto sparsi molto lunghi.
+
+\paragraph{Cosine similarity}
+La similarità tra due vettori è data da
+$$
+    cos(\theta) = \frac{A \cdot B}{||A||  \cdot  ||B||} = 
+    \frac{\sum_{i=0}^{n} A_i \cdot B_i}{\sqrt{\sum_{i=0}^{n} A_i}  \cdot  \sqrt{\sum_{i=0}^{n} B_i}}
+$$
+La computazione della cosine similarity risulta meno intensa rispetto alla distanza euclidea.
