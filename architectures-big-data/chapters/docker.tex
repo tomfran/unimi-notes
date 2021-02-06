@@ -2,14 +2,14 @@
 Docker è un set di platform as a service che offre la possibilità di 
 racchiudere software in containers. 
 
+\subsection{Componenti}
+
+\paragraph{Container}
 I container sono isolati uno dall'altro in termini di librerie e configurazioni, 
 ma possono parlare attraverso alcuni metodi.
-
 L'idea è quella di utilizzare \emph{cgroups} del kernel Linux, che permette
 di limitare l'uso delle risorse da parte di un certo insieme di processi.
 In tal modo un container docker è meno impattante di una virtual machine.
-
-\subsection{Componenti}
 
 \paragraph{Docker file}
 Contiene tutti i comandi necessari per assemblare l'immagine.
@@ -23,27 +23,27 @@ Modificando una certa riga, solo le righe successive ad essa verranno eseguite.
 \subsection{Sintassi}
 I comandi possibili in un docker file sono
 \begin{itemize}
-    \item \emph{FROM}: inizio di ogni docker file, specifica la parent image dalla quale si sta effettuando 
+    \item \texttt{FROM}: inizio di ogni docker file, specifica la parent image dalla quale si sta effettuando 
     la build. Può essere preceduto da alcuni parametri.
-    \item \emph{RUN}: esegue qualsiasi comando bash-like come step.
-    \item \emph{COPY}: copia un file dalla stessa cartella del docker file in una qualsiasi locazione 
+    \item \texttt{RUN}: esegue qualsiasi comando bash-like come step.
+    \item \texttt{COPY}: copia un file dalla stessa cartella del docker file in una qualsiasi locazione 
     all'interno del container.
-    \item \emph{CMD}: esecuzione di un'operazione alla startup di un container.
-    \item \emph{ADD}: come COPY, ma supporta URL
-    \item \emph{EXPOSE}: usato per esporre un protocollo
-    \item \emph{ENV}: definizione di variabili locali 
-    \item \emph{USER}: user che sta eseguendo un certo comando
+    \item \texttt{CMD}: esecuzione di un'operazione alla startup di un container.
+    \item \texttt{ADD}: come \texttt{COPY}, ma supporta URL
+    \item \texttt{EXPOSE}: usato per esporre un protocollo
+    \item \texttt{ENV}: definizione di variabili locali 
+    \item \texttt{USER}: user che sta eseguendo un certo comando
 \end{itemize}
 
 \subsection{Processo}
 Il processo di creazione di un container docker è la seguente:
 \begin{enumerate}
     \item Creazione di un docker file con i comandi necessari
-    \item Esecuzione di docker build
-    \item Esecuzione di docker images per vedere tutte le immagini disponibili
-    \item Docker run -image- per eseguire il container
-    \item Docker ps per vedere i container attivi, -a per vederli tutti
-    \item Docker start/restart/stop/kill
+    \item Esecuzione di \texttt{docker build}
+    \item Esecuzione di \texttt{docker images} per vedere tutte le immagini disponibili
+    \item \texttt{docker run -image-} per eseguire il container
+    \item \texttt{docker ps} per vedere i container attivi, \texttt{-a} per vederli tutti
+    \item \texttt{docker start}/\texttt{restart}/\texttt{stop}/\texttt{kill}
 \end{enumerate}
 È possibile orchestrare più containers con docker compose, tramite file di configurazione
 yml.

@@ -11,7 +11,7 @@ impropriamente, il secondo si manifesta quanto un'architettura viene usata per s
 diversi da quelli originali.
 
 \paragraph{Elementi}
-Per quanto riguarda gli elementi di un architettura, essi si suddividono in:
+Per quanto riguarda gli elementi di un'architettura, essi si suddividono in:
 \begin{enumerate}
     \item \emph{Data elements}: contengono informazione
     \item \emph{Connecting elements}: connettono diverse parti dell'architettura
@@ -40,7 +40,7 @@ semplificando l'interpretazione del risultato.
 
 \subsection{Motivazioni}
 
-Esistono vari motivi per cui si architetta un architettura software.
+Esistono vari motivi per cui si architetta un'architettura software.
 \begin{enumerate}
     \item Framework per soddisfare richieste
     \item Base tecnica per il design, ovvero, è la base per la definizione di un
@@ -56,8 +56,8 @@ Esistono vari motivi per cui si architetta un architettura software.
 Condizione in cui un cliente dipende da un certo vendor.
 Tale dipendenza si manifesta se il costo di cambiare vendor è maggiore rispetto al 
 tenerlo. Per esempio, deciso un cloud o un servizio, un'azienda potrebbe avere 
-adattato il suo sviluppo a quel particolare ambiente di sviluppo. Un cambio di 
-cloud porterebbe a costi di adattamento troppo importanti.\\
+adattato il suo sviluppo a quel particolare ambiente. Un cambio di 
+cloud o tecnologia porterebbe a costi di adattamento troppo importanti.\\
 Esiste anche il \emph{knowledge lock-in}, ovvero quando il costo di spiegare o impartire 
 una conoscenza in qualcuno costa più di mantenere la persona attuale.
 Per proteggersi da vendor lock-in si può ricorrere ad \emph{Adapter Pattern}.
@@ -74,9 +74,10 @@ L'idea di un Datalake è quella di avere un luogo in cui salvare dati strutturat
 ottenuti da una certa sorgente in forma non strutturata. Su un datalake si salva 
 solamente, non si elimina nulla, alla modifica di un dato si inserisce la sua versione 
 modificata.\\
-Tale approccio cambia il patter \emph{ETL}, poichè, si effettua una Extract, e una 
-Load, per salvare su datalake, in un secondo momento si trasformano i dati in base 
-al contesto.
+Tale approccio cambia il patter \emph{ETL} poichè, invece che estrarre, trasformare e caricare, 
+si effettua una Extract e una 
+Load per salvare su datalake, mentre in un secondo momento si trasformano i dati in base 
+all'utilizzo.
 
 \paragraph{Change data capture}
 L'idea del CDC è quella di salvare solo i dati che sono nuovi o aggiornati dall'ultima
@@ -107,14 +108,14 @@ Nella ricerca di tuple nuove o modificate, si effettua il calcolo di chiave valo
 per ogni tupla della tabella, si confrontano tali dizionari:
 \begin{itemize}
     \item Una tupla è \emph{nuova} se $KHASH \notin SYNC$
-    \item Una tupla è \emph{modificata} se $KHASH \in SYNC \and HASH_{new} \neq HASH_{sync}$
-    \item Una tupla è \emph{invariata} se $KHASH \in SYNC \and HASH_{new} = HASH_{sync}$
+    \item Una tupla è \emph{modificata} se $KHASH \in SYNC \wedge  HASH_{new} \neq HASH_{sync}$
+    \item Una tupla è \emph{invariata} se $KHASH \in SYNC \wedge HASH_{new} = HASH_{sync}$
 \end{itemize}
 
 
 \paragraph{Move and rename}
-L'approccio consiste nel garantire transazionalità di un CDC. 
-È necessario quindi rendere possibile un eventuale rollback e non lasciare mai 
+L'approccio consiste nel garantire transazionalità di un CDC, 
+è necessario quindi rendere possibile un eventuale rollback e non lasciare mai 
 il datalake in uno stato inconsistente.\\
 L'idea è scrivere su datalake i file in formato tmp e rinominarli al termine del job cdc.
 All'iterazione successiva si eliminano eventuali file tmp, lasciati da un eventuale 

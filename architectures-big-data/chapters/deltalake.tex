@@ -36,7 +36,7 @@ una copia esatta del sistema. È un'operazione molto pesante poichè bisogna scr
 tutte le operazioni che sono effettuate sulle tabelle.
 
 \subsection{Delta Lake}
-L'idea è quella di garantire le ACID properties su HDFS, quindi su 
+Delta lake ha l'obiettivo di garantire le ACID properties su HDFS, quindi su 
 storage distribuiti.
 
 \paragraph{Apache Parquet}
@@ -60,7 +60,7 @@ Le funzionalità principali di un Delta Lake, che lo rendono propenso a un forte
     snapshot temporale.
     \item \emph{UPSERT, DELETE e MERGE}: riscrivono in modo efficiente gli oggetti per 
     applicare le operazioni richieste
-    \item \emph{Straming efficiente}: le informazioni sono scritte in modo veloce, poichè 
+    \item \emph{Streaming efficiente}: le informazioni sono scritte in modo veloce poichè 
     si suddividono in piccoli blocchi. I blocchi si uniscono dopo per velocizzare le letture
     \item \emph{Caching}: i nodi del cluster possono cachare informazioni
     \item \emph{Schema evolution}: si può cambiare lo schema delle tabelle continuando 

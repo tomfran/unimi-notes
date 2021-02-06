@@ -5,7 +5,7 @@ Apache Spark è un framework open source per il calcolo distribuito.
 \paragraph{Resilient Distributed Dataset}
 È un \emph{dataset distribuito} in memoria su cui si possono effettuare operazioni in parallelo.\\
 Si può ottenere da un HDFS, oppure parallelizzando qualsiasi oggetto.\\
-L'idea è quella di distrubuire gli elementi tramite una funzione di hash tra i nodi 
+L'idea è quella di distribuire gli elementi tramite una funzione di hash tra i nodi 
 che offrono computazione, tale distribuzione può essere forzata con un \emph{repartition}.\\
 L'operazione è necessaria poichè ci si potrebbe trovare in casi dove un nodo ha molti più 
 elementi degli altri, oppure per raggruppare meglio le chiavi in seguito a una join.
@@ -35,7 +35,7 @@ garantito il backup se falliscono.
 \paragraph{Pigrizia}
 Spark è pigro, non computa il risultato subito ma solo quando serve. 
 È possibile quindi che un errore si verifichi solo all'esecuzione di una particolare 
-riga dell'RDD. 
+riga dell'RDD.
 
 \paragraph{Map e reduce}
 Spark offre alcune funzioni di map e reduce. La prima permette di applicare una funzione
