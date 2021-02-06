@@ -112,13 +112,14 @@ e più scalabilità.
 
 \section{NPL and semantic}
 Per effettuare analisi testuali si ricorre inizialmente a un modello Bag of Words, 
-come discusso a sezione precedente.
+come discusso a sezione precedente. Bisogna poi però trovare un modo di confrontare due 
+testi sotto forma di vettore. Si introducono quindi misure di distanza e di similarità.
 
-\subsection{Similarity}
+\subsection{Distanza e similarità}
 Computando la distanza tra due vettori, dove i vettori sono bag of words, si può 
 calcolare la distanza di due testi.
 
-\paragraph{Euclidean distance}
+\paragraph{Distanza Euclidea}
 La distanza tra due vettori è data da
 $$
     dis(A, B) = \sqrt{\sum_{i=0}^{n} (A_i - B_i)^2}
@@ -132,3 +133,9 @@ $$
     \frac{\sum_{i=0}^{n} A_i \cdot B_i}{\sqrt{\sum_{i=0}^{n} A_i}  \cdot  \sqrt{\sum_{i=0}^{n} B_i}}
 $$
 La computazione della cosine similarity risulta meno intensa rispetto alla distanza euclidea.
+Infatti, considerando ad esempio una computazione fatta su Spark, utilizzando la 
+distanza euclidea bisognerebbe mantenere tutti gli 0 nel vettore per ogni documento, infatti 
+uno 0 può contribuire alla distanza nel caso in cui l'altro documento abbia valore 1. \\
+Nel secondo 
+caso uno 0 non contribuisce alla cosine similarity, quindi si possono mantenere, per ogni documento, 
+solo i termini in esso contenuti.
