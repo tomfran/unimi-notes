@@ -1,0 +1,39 @@
+\documentclass[a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\mathtoolsset{showonlyrefs}  
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,      
+    urlcolor=black,
+}
+
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{corollary}{Corollario}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{remark}{Osservazione}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\title{Algoritmi e complessità}
+\author{Francesco Tomaselli}
+\makeindex
+\begin{document}
+\maketitle
+\tableofcontents
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.8em}
+\newpage
+\input{chapters/apx.tex}
+% \input{chapters/prob.tex}
+% \input{chapters/teo.tex}
+% \input{chapters/str.tex}
+
+\end{document}
