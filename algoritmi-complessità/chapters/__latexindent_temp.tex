@@ -371,34 +371,8 @@ Mettendo tutto insieme:
         \leq c(\beta^{c+1}|\bar{I}| + m) + \beta^c |I|&& \text{per il punto 2 di oss. \ref{oss3dis}}\\
         \leq c(\beta^{c+1}|I| + m) + \beta^c |I|&& \text{I è sovrainsieme per I barra}\\
         |I^*| \leq c\beta|I| + c\beta^{-c}m + |I|&& \text{divido per beta elevato alla c}\\
-        |I^*| \leq c\beta|I| + c\beta^{-c }m|I| + |I|&& \text{moltiplico per la cardinalità quello in mezzo}\\
-        \frac{|I^*|}{|I|} \leq c\beta + c\beta^{-c}m + 1&& \text{divido per cardinalità di I}
-    \end{aligned}
-\end{equation}
-Poniamo ora $\beta = m^{\frac{1}{c+1}}$ si ottiene:
-\begin{equation}
-    \begin{aligned}
-        \frac{|I^*|}{|I|} \leq c(m^{\frac{1}{c+1}} + m^{\frac{-c+c+1}{c+1}}) + 1\\
-        \frac{|I^*|}{|I|} \leq 2cm^{\frac{1}{c+1}} +1
-    \end{aligned}
-\end{equation}
+        |I^*| \leq c\beta|I| + c\beta^{-c}m|I| + |I|&& \text{moltiplico per la cardinalità quello in mezzo}\\
+        |I^*| \leq c\beta|I| + c\beta^{-c}m|I| + |I|&& \text{divido per cardinalità di }\\
 
-Al variare di $C$ varia il grado di approssimazione dell'algoritmo.
-\begin{center}
-    \begin{tabular}{ c c  }
-     C & Bound approssimazione \\
-     \hline 
-     1 & $2\sqrt[2]{m} + 1$ \\  
-     2 & $4\sqrt[3]{m} + 1$ \\  
-     3 & $6\sqrt[4]{m} + 1$ \\  
-    \dots & \dots
-    \end{tabular}
-\end{center}
-\begin{theorem}
-    Greedy Disjoint Paths con  $\beta = m^{\frac{1}{c+1}}$ fornisce una $(2cm^{\frac{1}{c+1}} +1)$-approssimazione.
-\end{theorem}
-\begin{remark}
-    L'algoritmo non è buono, il fattore di approssimazione è pessimo, infatti, funziona decentemente solo 
-    se il numero di coppie da collegare $K >> 2\sqrt[2]{m}$.\\
-    Si fa notare infine che l'algoritmo funziona anche se una coppia è da collegare più volte.
-\end{remark}
+    \end{aligned}
+\end{equation}
