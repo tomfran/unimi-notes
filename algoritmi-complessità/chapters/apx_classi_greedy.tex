@@ -438,16 +438,17 @@ un punto in S nel centro che minimizza la distanza da esso\\
 \emph{Costo}: $\rho(C) = \max_{s \in S}d(s,C(s))$ \\
 \emph{Tipo}: $\min$
 
-\paragraph{Spazio metrico}
-Uno spazio si dice metrico se esiste il concetto di distanza in esso.
-Una funzione di distanza è: 
-$$d : \Omega \times \Omega \longrightarrow \mathbb{R} $$
-E rispetta le seguenti proprietà
-\begin{itemize}
-    \item $d(x,y) \geq 0 $, $d(x,y) = 0 \implies x = y$
-    \item $d(x,y) = d(y,x)$
-    \item $d(x,y) \leq d(x,z) + d(z,y)$
-\end{itemize}
+\begin{definition}
+    Uno spazio si dice metrico se esiste il concetto di distanza in esso.
+    Una funzione di distanza è: 
+    $$d : \Omega \times \Omega \longrightarrow \mathbb{R} $$
+    E rispetta le seguenti proprietà
+    \begin{itemize}
+        \item $d(x,y) \geq 0 $, $d(x,y) = 0 \implies x = y$
+        \item $d(x,y) = d(y,x)$
+        \item $d(x,y) \leq d(x,z) + d(z,y)$
+    \end{itemize}
+\end{definition}
 
 \paragraph{Center selection plus}
 L'algoritmo che segue ha un input aggiuntivo $r$, idealmente dovrebbe equivalere a 

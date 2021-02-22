@@ -133,9 +133,113 @@ dell'universo.
 
     Al secondo passo, si preferisce ai primi due l'insieme al punto 3, il calcolo è simile al punto precedente.\\
     \dots
-    
+
     Il costo che si ottiene è $w = \log n$
     La soluzione ottima sarebbe quella di prendere al passo 1 i primi due insiemi, in modo da coprire l'intero 
     universo, ovvero $w^* = 2 + 2\epsilon$.
-
 \end{proof}
+
+\subsubsection{Vertex Cover}
+Il problema di Vertex Cover consiste nel trovare una copertura di 
+vertici in un grafo tale per cui per ogni vertice, una delle due estremità è contenuta nella copertura.
+
+Formalmente: \\
+\emph{Input}: $G=(V,E), w_i \in \mathbb{Q}^{>0}, \forall i \in V$\\
+\emph{Output}: $X \subseteq V, \forall xy \in E, x \in X \vee y \in X$\\
+\emph{Costo}: $w = \sum_{i \in X} w_i$\\
+\emph{Tipo}: min\\
+
+Consideriamo la versione di decisione del problema, ovvero $\hat{\mathit{VertexCover}}$, cioè, 
+posso trovare una copertura che ha peso minore di $\theta$?\\
+
+Vale che $\hat{\mathit{VertexCover}} \leq_{p} \hat{\mathit{SetCover}}$
+Per effettuare il passaggio, bisogna passare dall'input del primo al secondo
+$$G=(V,E), w_i \in \mathbb{Q}^{>0}, \theta \longrightarrow f \longrightarrow S_1, \dots, S_m, \bar{W_1}, \dots, \bar{W_m},\bar{\theta}$$
+La funzione $f$ funziona così: 
+\begin{equation}
+    \begin{aligned}
+        S_i = \{ e \in E, i \in e \} && \text{Per ogni vertice considero i suoi vicini}\\
+        U = E, \bar{W_i} = W_i, \bar{\theta} = \theta
+    \end{aligned}
+\end{equation}
+\begin{remark}
+    La funzione $f$ può essere utilizzata per mappare anche VertexCover in SetCover di ottimizzazione, 
+    visto che non stravolge il problema.\\
+    La trasformazione appena discussa quindi può essere utilizzata per fornire una $\log n$-approssimazione
+    per VertexCover di ottimizzazione.
+\end{remark}
+\paragraph{Price Vertex Cover}
+Prima di definire l'algoritmo vero e proprio, sono necessari alcuni passaggi preliminari.
+L'idea si basa sul fatto che gli archi sono intenzionati a comprare uno dei due estremi,
+ad un certo prezzo.
+Un nodo si vende, se la somma delle offerte degli archi incidenti arriva al suo $W_i$.
+\begin{definition}
+    Un insieme di offerte si dice equo per un vertice sse:
+    $$\sum_{e\in E, i \in e}P_e \leq W_i$$
+    Ovvero se le offerte $P_e$ degli archi che incidono sul vertice $i$ 
+    non superano il suo costo, ovviamente devono raggiungerlo per comprare 
+    il vertice.    
+\end{definition}
+\begin{lemma}
+    \label{pscl1}
+    Se $P_e$ è equo, allora
+    $$\sum_{e \in E} P_e \leq w^*$$
+\end{lemma}
+\begin{proof}
+    La definizione di equità implica che
+    $$\forall i \in V \sum_{e\in E, i \in e}P_e \leq W_i$$
+    Consideriamo ora la somma delle disequazioni per la soluzione ottima
+\begin{equation}
+    \begin{aligned}
+        \sum_{i \in S^*} \sum_{e\in E, i \in e}P_e \leq \sum_{i \in S^*}W_i\\
+        \sum_{e \in E} P_e \leq \sum_{i \in S^*} \sum_{e\in E, i \in e}P_e \leq W^*
+    \end{aligned}
+\end{equation}
+Questo vale perchè la seconda parte della disequazione considera potenzialmente più volte alcuni lati.
+\end{proof}
+\begin{definition}
+    $P_e$ è stretto sul vertice $i$ sse
+    $$\sum_{e \in E, i \in e} P_e = W_i$$
+\end{definition}
+Ecco ora l'algoritmo.
+
+\begin{algorithm}[H]
+    \SetAlgoLined
+    \KwIn{$G=(V,E), W_i \forall i \in V$}
+    \KwResult{Cover per il grafo}
+     $P_e \gets 0, \forall e \in E$\\
+     \While{$\exists ij \in E, P_e$ non stretto su i o su j}{
+        $\bar{e} \gets \bar{i}\bar{j}$\\
+        $\Delta \gets \min(W_{\bar{i}}-\sum_{e \in E, \bar{i} \in e}P_e, W_{\bar{j}}-\sum_{e \in E, \bar{j} \in e}P_e,)$\\
+        $P_e \gets P_e + \Delta$
+     }
+     \Return{$\{ i| P_e$ stretto su $i\}$}
+     \caption{PriceVertexCover}
+\end{algorithm}
+L'idea su cui si basa l'algoritmo è quella che, se un arco non sta offrendo abbastanza per i vertici, allora 
+aumenta la sua offerta, del minimo per soddisfare uno dei due nodi.
+\begin{lemma}
+    \label{pscl2}
+    Price Set Cover crea un peso $$W \leq 2\sum_{e \in E}P_e$$
+\end{lemma}
+\begin{proof}
+    Il costo finale di PSC è $W = \sum_{i \in S}W_i$, ovvero il costo 
+    dei vertici in output. Vale che, per la definizione di strettezza:
+    $$W = \sum_{i \in S}W_i = \sum_{i \in S^*} \sum_{e\in E, i \in e}P_e$$
+    Nella seconda sommatoria un lato compare una o due volte, se rispettivamente 
+    una o due estremità appartengono ad $S$.
+\end{proof}
+\begin{theorem}
+    Price Set Cover è $2$-approssimante per Set Cover.
+\end{theorem}
+\begin{proof}
+    \begin{equation}
+        \begin{aligned}
+            \frac{w}{w^*} \leq \frac{2\sum_{e \in E}P_e}{w^*} && \text{Per il lemma \ref{pscl2}}\\
+            \frac{w}{w^*} \leq \frac{2\sum_{e \in E}P_e}{\sum_{e \in E} P_e } \leq 2 && \text{Per il lemma \ref{pscl1}}
+        \end{aligned}
+    \end{equation}
+\end{proof}
+\begin{remark}
+    Non esistono ad oggi algoritmi migliori per Price Set Cover.
+\end{remark}
