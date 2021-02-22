@@ -1,0 +1,141 @@
+\subsection{Tecniche di pricing}
+L'idea è quella di attribuire ad ogni elemento da inserire in 
+una soluzione un costo. I costi permettono di scegliere gli elementi 
+più vantaggiosi e di analizzare il tasso di approssimazione di questi algoritmi.
+
+\subsubsection{Minimum Set Cover}
+Nel problema di Set Cover l'obiettivo è quello di coprire l'universo $U$, 
+utilizzando seubset di esso che hanno un costo. Si vuole ottenere il costo
+minimo, dato come somma dei costi dei set che si sono scelti.
+
+Formalmente: \\
+\emph{Input}: $s_1, \dots, s_m$, $\bigcup_{i=1}^m s_i = U$, $|U| = n$\\
+\emph{Output}: $C = \{s_1, \dots, s_n\}$, tali che, $\bigcup_{s_i \in C} s_i = U$\\
+\emph{Costo}: $w = \sum_{s_i \in C} w_i$\\
+\emph{Tipo}: min\\
+
+\paragraph{Funzione armonica}
+La funzione armonica è definita come: 
+\begin{equation}
+    \begin{aligned}
+        H: \mathbb{N}^{>0} \rightarrow \mathbb{R}\\
+        H(n) = \sum_{i = 1}^{n} \frac{1}{i}  
+    \end{aligned}
+\end{equation}
+Vale la seguente proprietà: 
+% \begin{equation}
+%     \begin{aligned}
+%         H(n) \leq 1 + \int_{1}^{n} \frac{1}{x} \,dx \leq 1 +
+%         \big[ \ln n\big]_1^n = 1 + \ln n\\
+%         \ln (n+1) \leq H(n) \leq 1 +\ln n
+%     \end{aligned}
+% \end{equation}
+$$\ln (n+1) \leq H(n) \leq 1 +\ln n$$
+
+\paragraph{Greedy Set Cover}
+L'algoritmo effettua ad ogni iterazione una scelta greedy, 
+si sceglie l'insieme che minimizza il rapporto tra prezzo e copertura 
+dell'universo.
+
+\begin{algorithm}[H]
+    \SetAlgoLined
+    \KwIn{$s_1, \dots, s_m$, $w_0, \dots, w_n$}
+    \KwResult{Scleta di sottoinsiemi che copre l'universo}
+     $R \gets U$\\
+     $C \gets \emptyset$\\
+     \While{$R \neq \emptyset$}{
+         $S_i \gets \min(s_1, \dots, s_m, \frac{w_i}{|S\cap R|})$\\
+         $C.add(S_i)$\\
+         $R \gets R \setminus S_i$
+
+     }
+     \Return{$C$}
+     \caption{GreedySetCover}
+\end{algorithm}
+
+\begin{remark}
+    \label{oss1set}
+    Il costo della soluzione equivale a $$w = \sum_{s\in U}c_s$$ ovvero la somma dei costi 
+    degli insiemi scelti.
+\end{remark}
+\begin{remark}
+    \label{oss2set}
+    Per ogni $k$, il costo degli elementi in $s_k$, ottengo 
+    $$\sum_{s \in S_k}C_s \leq H(|S_k|) \cdot  W_k$$
+\end{remark}
+\begin{proof}
+    Sia $S_k = \{s_1, \dots, s_d\}$ un insieme tra quelli da scegliere, e siano 
+    i suoi elementi elencati in ordine di copertura\footnote{Per chiarezza, l'insieme $S_k$ non verrà scelto, 
+    ma i suoi elementi saranno coperti da altri insiemi che intersecano con esso.}.
+
+    Consideriamo ora l'istante in cui si copre $S_h$ tramite un quale insieme $S_h$.
+    Si può notare che, visto che gli elementi sono in ordine di copertura: 
+    $$R \supseteq \{S_j, \dots, S_d \}$$
+    Inoltre, visto che gli elementi di $S_k$ sono in ordine di copertura: 
+    $$|S_k \cap R| \geq d-j+1$$
+    Riguardo al costo dell'elemento $j$, e in geenerale per tutti i $j$, vale:
+    \begin{equation}
+        \begin{aligned}
+            C_{s_j} = \frac{W_h}{|S_h \cap R|} \leq \frac{W_k}{|S_k \cap R|} && \text{\emph{h} minimizza quel rapporto}\\
+            \leq \frac{W_k}{d-j+1} && \text{equazione precedente}\\
+        \end{aligned}
+    \end{equation}
+    Considerando ora tutti gli elementi di $S_k$: 
+    \begin{equation}
+        \begin{aligned}
+            \sum_{s\in S_k} C_s \leq \sum_{j=1}^{d}\frac{W_k}{d-j+1} = \frac{W_k}{d} + \frac{W_k}{d-1} \dots && \text{La relazione vale per tutti i j}\\
+            = W_k(1 + \frac{1}{2}, \dots, \frac{1}{d}) = H(d)W_k = H(|S_k|)W_k && \text{Sviluppo e raccolgo, ottengo l'oss.}
+        \end{aligned}
+    \end{equation}
+\end{proof}
+\begin{theorem}
+    Greedy Set Cover fornisce una $H(M)$-approssimazione per Set Cover, dove $M=\max_i|S_i|$
+\end{theorem}
+\begin{proof}
+    Sia il peso della soluzione ottima $$w^* = \sum_{S_i \in C^*} w_i$$
+    Per l'osservazione \ref{oss2set} vale che: 
+    $$w_i \geq \frac{\sum_{s \in S_i}C_s}{H(|S_i|)} \geq \frac{\sum_{s \in S_i}C_s}{H(M)}$$
+    Visto che gli $s_i \in C^*$ sono una copertura, per l'osservazione \ref{oss1set}:
+    $$\sum_{S_i \in C^*}\sum_{s \in S_i}C_s \geq \sum_{s \in U} C_s = w$$
+    Inoltre, vale che, sfruttando le due disequazioni appena scritte: 
+    \begin{equation}
+        \begin{aligned}
+            w^* = \sum_{S_i \in C^*} w_i \geq \sum_{S_i \in C^*}\frac{\sum_{s \in S_i}C_s}{H(M)} \geq \frac{w}{H(M)}\\
+            \implies \frac{w}{w^*} = H(M)
+        \end{aligned}
+    \end{equation}
+\end{proof}
+\begin{corollary}
+    Greedy Set Cover fornisce una $O(\log n)$-approssimazione, non quindi costante 
+    come gli algoritmi precedenti.
+\end{corollary}
+\begin{remark}
+    L'analisi è tight, non esiste un algoritmo migliore, quindi
+    Greedy Set Cover $\notin$ APX, bensì, $\in \log(n)$-APX, una classe in cui 
+    si accetta un'approssimazione che peggiora logaritmicamente nell'input.
+    Esistono varie $f$-APX.
+\end{remark}
+\begin{proof}
+    Per dimostrare la tightness, ecco un esempio in cui Greedy Set Cover va male.
+
+    Consideriamo l'insieme $S$ di set tra cui scegliere così formato:
+    \begin{enumerate}
+        \item Due insiemi grandi $\frac{n}{2}$ che uniti coprono tutti gli elementi, 
+        di costo $1+\epsilon$
+        \item Un insieme che copre $\frac{n}{4}$ elementi degli insiemi 1 e 2 al punto 1, di costo 1
+        \item Un insieme che copre $\frac{n}{8}$ elementi degli insiemi 1 e 2 al punto 1, di costo 1
+        \item Un insieme che copre $\frac{n}{16}$ elementi degli insiemi 1 e 2 al punto 1, di costo 1\\
+        \dots
+    \end{enumerate}
+    Al primo passo, si sceglie l'insieme del punto 2, visto che
+    il suo costo equivale a $\frac{1}{\frac{n}{2}} = \frac{2}{n}$, mentre il costo 
+    di entrambi gli insimemi al punto 1, $\frac{1+\epsilon}{\frac{n}{2}} = \frac{2+2\epsilon}{n}$
+
+    Al secondo passo, si preferisce ai primi due l'insieme al punto 3, il calcolo è simile al punto precedente.\\
+    \dots
+    
+    Il costo che si ottiene è $w = \log n$
+    La soluzione ottima sarebbe quella di prendere al passo 1 i primi due insiemi, in modo da coprire l'intero 
+    universo, ovvero $w^* = 2 + 2\epsilon$.
+
+\end{proof}

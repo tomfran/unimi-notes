@@ -6,6 +6,8 @@
 \usepackage{hyperref}
 \usepackage{mathtools}
 \usepackage{amsthm}
+\usepackage[ruled,vlined,noend]{algorithm2e}
+
 \mathtoolsset{showonlyrefs}  
 \hypersetup{
     colorlinks=true,
@@ -14,9 +16,11 @@
     urlcolor=black,
 }
 
-\newtheorem{theorem}{Teorema}[section]
-\newtheorem{corollary}{Corollario}[theorem]
-\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\pluseq}{\mathrel{{+}{=}}}
+
+\newtheorem{theorem}{Teorema}
+\newtheorem{corollary}{Corollario}
+\newtheorem{lemma}{Lemma}
 \newtheorem{remark}{Osservazione}
 
 \setcounter{secnumdepth}{3}
@@ -31,7 +35,9 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.8em}
 \newpage
-\input{chapters/apx.tex}
+\input{chapters/apx_classi_greedy.tex}
+\input{chapters/apx_pricing.tex}
+
 % \input{chapters/prob.tex}
 % \input{chapters/teo.tex}
 % \input{chapters/str.tex}
