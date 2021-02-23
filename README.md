@@ -7,3 +7,6 @@ Notes about [evolutionary algorithms](https://github.com/tomfran/unimi-notes/blo
 ### Architectures for big data
 [Notes](https://github.com/tomfran/unimi-notes/blob/main/architectures-big-data/architectures-for-big-data.pdf) about all the curse, in Italian.
 
+### Algoritmi e complessità
+Incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/algoritmi-complessità/algo_comp.pdf), in Italian.
+

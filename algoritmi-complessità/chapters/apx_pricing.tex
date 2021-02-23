@@ -404,6 +404,11 @@ Al variare di $C$ varia il grado di approssimazione dell'algoritmo.
 \end{remark}
 
 \subsection{Tecniche di arrotondamento}
+In questa sezione si presenta il problema di programmazione lineare e si 
+ricorre alla tecnica dell'arrotondamento di una soluzione reale per 
+individurarne una intera.
+
+Essa si rivela possibile soluzione per il problema di copertura dei vertici.
 
 \subsubsection{Linear programming}
 Un problema di programmazione lineare è formato da una funzione obiettivo e dei vincoli.
@@ -516,4 +521,189 @@ Si definisce ora la seguente trasformazione:
             \sum_{i\in V} w_ir_i \leq 2 \sum_{i\in V} w_ix_i^* = 2w^* \leq 2\tilde{w} &&\text{La soluzione arrotondata è al più il doppio}
         \end{aligned}
     \end{equation}
+\end{proof}
+\begin{remark}
+    La soluzione non migliora Price Vertex Cover, anch'esso 2-approssimante, è però interessante l'approccio utilizzato.
+\end{remark}
+
+\subsection{Altri esempi}
+In questa sezione si vedranno altri due problemi, per cui esistono 
+soluzioni approssimate, ma che non cadono nelle tecniche viste in precedenza.
+
+\subsubsection{Traveling Salesman Problem}
+Prima di introdurre il problema, si introducono alcuni concetti preliminari 
+tramite un secondo problema, quello dei ponti di Konisberg.
+\paragraph{Problema dei ponti di Konisberg}
+Il problema considera una città, costruita a cavallo di un fiume, 
+e risponde alla domanda, è possibile effettuare un cammino che passi 
+una e una sola volta su tutti i ponti della città?
+
+La specifica istanza del problema si modella su un multigrafo \footnote{Grafo in cui possono esistere piu archi per la stessa coppia
+sorgente destinazione} e la risposta è no.
+
+Il problema generale consiste nell'individuare un \emph{circuito Euleriano} nel grafo.
+
+\begin{theorem}
+    \label{teulerian}
+    Un multigrafo ammette un circuito Euleriano sse tutti i vertici 
+    hanno grado\footnote{Numero di archi incidenti} pari.
+\end{theorem}
+\begin{proof}
+    Si sta dimostrando l'implicazione da sinistra a destra, 
+    ovvero se i nodi hanno tutti grado pari esiste un circuito Euleriano.
+
+    Concettualmente in un cammino, non posso rimanere bloccato, 
+    visto che tutti i nodi hanno grado pari. Nello specifico, in un cammino può succedere:
+    \begin{enumerate}
+        \item Creo un ciclo con la partenza, in questo caso riparto
+        \item Incido su un nodo del cammino, posso continuare, visto che ha grado pari
+    \end{enumerate}
+    È facile intuire che è possibile continuare cosi finchè non si visitano tutti gli archi del multigrafo.
+\end{proof}
+\begin{lemma}
+    \label{lstrette}
+    In ogni grafo non orientato il numero di nodi con grado dispari è pari.
+\end{lemma}
+\begin{proof}
+    Consideriamo la somma dei gradi:
+    $$\sum_{x\in V} d(x) = 2m$$
+    Entrambi i membri sono pari.
+    Nella somma dei gradi, se considero un grado pari, la parità della somma non cambia, 
+    mentre, se aggiungo un grado dispari, la somma diventa dispari.
+
+    È facile intuire che serve necessariamente un numero pari di gradi dispari per ottenere un 
+    numero pari nel primo membro dell'equazione.
+\end{proof}
+
+Terminata la digressione sul problema dei ponti, si introduce ora formalmente 
+il problema del commesso viaggiatore.
+
+\emph{Input}: $G = (V,E)$ non orientato, $\delta_e \in \mathbb{Q}^{>0} \forall e\in E$\\
+\emph{Output}: ciclo che passa per tutti i vertici, ovvero un ciclo Hamiltoniano\\
+\emph{Funzione obiettivo}: $\delta(\Pi) = \sum_{e\in E}\delta_e$\\
+\emph{Tipo}: min\\
+
+\paragraph{TSP su cricche}
+Il problema del commesso viaggiatore spesso si considera su 
+una cricca\footnote{Grafo con tutti gli archi possibili $K_V = (N, \binom{n}{2} )$}.
+
+È possibile trasformare un grafo normale in una cricca aggiungendo 
+tutti gli archi che mancano con peso equivalente alla somma di tutti i vertici più uno.
+La soluzione ottima non varia.
+
+\paragraph{TSP metrico}
+Il problema in questa versione considera come input una cricca, 
+inoltre vale la distanza triangolare, ovvero: 
+$$\forall i, j, k \in V, \delta_{ij} \leq \delta_{ik}+\delta_{kj}$$
+
+\begin{theorem}
+    TSP metrico è NPO completo.
+\end{theorem}
+
+\paragraph{Algoritmo di Christofides}
+L'algoritmo procede trovando un albero di copertura minimo e successivamente lavorando attorno 
+a quello per individuare una soluzione.
+
+\begin{algorithm}[H]
+    \SetAlgoLined
+    \KwIn{$G=(V,\binom{V}{2}), \delta_e \in \mathbb{Q}^{>0} \forall e\in E$ che soddisfa la triangolare}
+    \KwResult{Soluzione per TSP metrico}
+     $T \gets \mathit{MinimumSpanningTree(G)}$\\
+     $D \gets \{v \in T, d(v)\; \mathit{dispari}\}$\\
+     $M \gets \mathit{MinimumPerfectMatching(D)}$\\ 
+     $H \gets T \cup M$\\
+     $\Pi \gets \mathit{EulerianCircuit(H)}$\\
+     $\Pi \gets \mathit{Hamiltonian(\Pi)}$\\
+     \Return{$\Pi$}
+     \caption{Christofides}
+\end{algorithm}
+\begin{remark}
+    Vale che:
+    \begin{enumerate}
+        \item D ha cardinalità pari per il lemma \ref{lstrette}
+        \item H è un multigrafo con tutti gradi pari, quindi esiste un circuito euleriano
+        \item Il circuito euleriano si costruisce come nella dimostrazione del teorema \ref{teulerian}
+        \item Per trovare un ciclo hamiltoniano da $\Pi$ basta procedere nel cammino saltando i nodi già visitati,
+        tanto è una cricca e ci sono tutti gli archi
+    \end{enumerate}
+\end{remark}
+\begin{lemma}
+    \label{tspl1}
+    Il peso dello spanning tree è al più uguale al peso della soluzione ottima. $$\delta(T) \leq \delta^*$$
+\end{lemma}
+\begin{proof}
+    Sia $\Pi^*$ la soluzione ottima.
+    Rimuovendo un qualunque lato, si ottiene un albero.
+    Vale che, visto che $T$ è il minimo albero di copertura:
+    $$\delta(T) \leq \delta(\Pi^* - e) \leq \delta(\Pi^*) = \delta^*$$
+\end{proof}
+\begin{lemma}
+    \label{tspl2}
+    Il costo del perfect matching è al massimo la metà della soluzione ottima:
+    $$\delta(M) \leq \frac{1}{2}\delta^*$$
+\end{lemma}
+\begin{proof}
+    Sia $\Pi^*$ la soluzione ottima.
+    Siano $D$ i vertici con grado dispari considerati nell'algoritmo, che ovviamente appartengono alla soluzione
+    ottima.
+
+    Si considera ora il ciclo costruito unendo i nodi di $D$ e siano $M_1$ e $M_2$ due gruppi di lati, 
+    che contengono in maniera alternata i lati del ciclo.
+    Sia $M_1$ che $M_2$ sono matching.\\
+    Vale che:
+    \begin{equation}
+        \begin{aligned}
+            \delta(M) \leq \delta(M_1)\\
+            \delta(M) \leq \delta(M_2)\\
+            2\delta(M) \leq \delta(M_1) + \delta(M_2) \leq \delta^*
+        \end{aligned}
+    \end{equation}
+    L'ultima disequazione segue dal fatto che, collegando i nodi che sono in $D$ si sta cortocircuitando il cammino, 
+    ovvero, due nodi $n_1$ e $n_2 \in D$ sono collegati direttamente nel matching ma potrebbero non esserlo 
+    nella soluzione ottima, segue quindi che per la triangolare, la distanza tra i due è al piu uguale a quella nel cammino 
+    ottimo.\\
+    Proseguendo con la disequazione si ottiene che
+    $$\delta(M) \leq \frac{1}{2}\delta^*$$
+\end{proof}
+\begin{theorem}
+    L'algoritmo di Christofides è $\frac{3}{2}$-approssimante per TSP metrico.
+\end{theorem}
+\begin{proof}
+    Sia $\tilde{\Pi}$ il cammino ottimo.
+    Vale che:
+    \begin{equation}
+        \begin{aligned}
+            \delta(\tilde{\Pi}) \leq \delta(\Pi) = \sum_{e \in M}\delta_e + \sum_{e \in T}\delta_e\\
+            \delta(\tilde{\Pi}) \leq \frac{1}{2}\delta^* + \delta^* \leq \frac{3}{2}\delta^* && \text{Per i lemmi \ref{tspl1} e \ref{tspl2}}\\
+        \end{aligned}
+    \end{equation}
+\end{proof}
+\begin{theorem}
+    L'analisi di Christofides è stretta.
+\end{theorem}
+\begin{proof}
+    Si considera un grafo con $n$ nodi disposti in linea.
+    I nodi sono collegati in sequenza con archi lunghi 1.
+    Poi, si collegano i nodi a distanza 2, partendo dal primo, 
+    andando verso destra con archi $1 + \epsilon$, stesso discorso partendo dall'ultimo tornando 
+    indietro.
+
+    Si aggiungono poi tutti gli archi per creare una cricca, tali archi hanno lunghezza
+    equivalente a quella del cammino minimo che unisce sorgente e destinazione. 
+
+    Il minimum spanning tree pesca solo gli archi lunghi 1.\\
+    Il perfect matching utilizza l' arco dal nodo più a sinistra a quello più a destra, 
+    lungo $$(1+\epsilon)(\frac{n}{2} -1 ) + 1 = \frac{n}{2} + \epsilon \frac{n}{2} - \epsilon$$
+
+    Il cammino individuato da Christofides è quindi:
+    $$(n-1) + \frac{n}{2} + \epsilon \frac{n}{2} - \epsilon = \frac{3}{2}n +\epsilon \frac{n}{2} - (\epsilon +1)$$
+
+    Esiste però la soluzione ottima che consiste nel muoversi da sinistra a destra seguendo gli archi che portano 
+    a distanza 2, seguire l'arco dal penultimo all'ultimo nodo lungo 1, e ripetere il procedimento 
+    tornando indietro.\\
+    Tale approccio ha costo: 
+    $$\delta(\Pi^*) = 2((1+\epsilon)(\frac{n}{2}-1) +1) = n + \epsilon n -2\epsilon$$
+    Calcoliamo il rapporto di approssimazione:
+    $$\frac{\delta(\Pi)}{\delta(\Pi^*)} = \frac{\frac{3}{2}n +\epsilon \frac{n}{2} - (\epsilon +1)}{n + \epsilon n -2\epsilon}$$
+    $$\lim_{n \rightarrow \infty, \epsilon \rightarrow 0}\frac{\delta(\Pi)}{\delta(\Pi^*)} = \frac{3}{2}$$
 \end{proof}
