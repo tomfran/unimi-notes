@@ -402,3 +402,118 @@ Al variare di $C$ varia il grado di approssimazione dell'algoritmo.
     se il numero di coppie da collegare $K >> 2\sqrt[2]{m}$.\\
     Si fa notare infine che l'algoritmo funziona anche se una coppia è da collegare più volte.
 \end{remark}
+
+\subsection{Tecniche di arrotondamento}
+
+\subsubsection{Linear programming}
+Un problema di programmazione lineare è formato da una funzione obiettivo e dei vincoli.
+\paragraph{Esempio}
+Funzione obiettivo: $$\mathit{min}\;\;3x_1 + |7x_2 - 4x_3|$$
+Vincoli:
+\[ 
+    \begin{cases}
+        x_1 + x_2 \leq 3\\
+        3x_3 - x1 \geq 7\\
+        x1 \geq 0\\
+        x2 \geq 0\\
+        x3 \geq 0\\
+    \end{cases}
+\]
+
+Più formalmente:\\
+\emph{Input}: $A \in \mathbb{Q}^{m\times n}, b \in \mathbb{Q}^m, c \in \mathbb{Q}^n$\\
+\emph{Output}: $x \in \mathbb{R}^n, Ax \geq b$\\
+\emph{Funzione obiettivo}: $C^T \cdot x$, valore della funzione obiettivo\\
+\emph{Tipo}: max, min\\
+
+\begin{remark}
+    Il problema di  LP $\in $ PO, spesso però si utilizzano
+    algoritmi worst case esponenziali.
+\end{remark}
+
+\paragraph{Integer linear programming}
+Cambiando il vincolo della soluzione ai soli interi, il problema diventa NPO completo.
+
+Ovvero:\\
+\emph{Input}: $A \in \mathbb{Q}^{m\times n}, b \in \mathbb{Q}^m, c \in \mathbb{Q}^n$\\
+\emph{Output}: $x \in \mathbb{Z}^n, Ax \geq b$\\
+\emph{Funzione obiettivo}: $C^T \cdot x$, valore della funzione obiettivo\\
+\emph{Tipo}: max, min\\
+
+\begin{theorem}
+    $\hat{\mathit{VertexCover}} \leq_p \hat{\mathit{ILP}}$ 
+\end{theorem}
+\begin{proof}
+    Consideriamo un input per il problema di $\hat{\mathit{VertexCover}}$, ovvero $$(G=(E,V), w_i \forall i \in V, \theta)$$
+    Ci si chiede se: $$\exists X \subseteq V | \forall xy \in E, x \in X \mathit{or} y \in X, \sum_{i\in X} w_i \leq \theta$$
+    Costruisco ora il problema di programmazione linerare in questo modo:
+    $$x_i \forall i \in V$$
+    Vincoli:
+    \[
+        2(n+m)\;\mathit{volte}
+        \begin{cases}
+            x_i \geq 0 \;\forall i \in V\\
+            x_i \leq 1 \;\forall i \in V\\
+            x_i + x_j \geq 1 \;\forall ij \in E\\
+        \end{cases}
+    \]
+    Obiettivo,:
+    $$\min \sum_{i\in V} w_ix_i$$
+
+    Assumiamo ora $\bar{x_i}$ soluzione ammissibile per ILP. Sia $X = \{ i | \bar{x_i} = 1\}$.
+    Visto che c'è il vincolo sugli archi, $X$ è soluzione per $\hat{\mathit{VertexCover}}$.
+
+    Quindi, risolvendo in tempo polinomiale ILP si risolverebbe VertexCover, ma 
+    visto che $\hat{\mathit{VertexCover}}$ è NP completo, anche ILP è NP completo.
+\end{proof}
+
+\subsubsection{Vertex Cover con arrotondamento}
+Consideriamo ora la trasformazione mostrata al teorema precedente, ma invece
+che un problema di programmazione lineare intera consideriamone uno reale, $\Pi^\prime$.
+
+Esiste il problema di fare il passo inverso. Con il problema intero infatti 
+bastava considerare le variabili con valore 1, ora sono reali, bisogna quindi trovare un 
+modo di capire se una variabile (nodo), fa o no parte del cover.
+
+Si sta di fatto rilassando il problema, chiamiamo $\Pi^\prime_{\mathit{INT}}$ il problema 
+intero, rispetto a quello reale si avrà che:\footnote{Si sta considerando un problema di minimo}
+\begin{equation}
+    \begin{aligned}
+        x_i^*, w^*, \tilde{x_i^*}, \tilde{w^*} && \text{Soluzioni rispettivamente reale e intera}\\
+        \tilde{w^*} \geq w^* && \text{Poichè il dominio di ricerca reale è maggiore}\\
+    \end{aligned}
+\end{equation}
+
+Si definisce ora la seguente trasformazione:
+\[
+    r_i = 
+    \begin{cases}
+        1\;\mathit{se}\;x_i^* \geq \frac{1}{2}\\
+        0\;\mathit{se}\;x_i^* < \frac{1}{2}
+    \end{cases}
+\]
+\begin{remark}
+    La trasformazione fornisce una soluzione ammissibile per $\Pi^\prime_{\mathit{INT}}$.
+\end{remark}
+\begin{proof}
+    Bisogna dimostrare che:
+    $$\forall ij \in E, r_i + r_j \geq 1$$
+    Sapendo che:
+    $$\forall ij \in E, x_i^* + x_j^* \geq 1$$
+    Supponiamo per assurdo che valgano entrambi 0, ma allora: 
+    $$x_i^* < \frac{1}{2}, x_j^* < \frac{1}{2}$$
+    che contraddice la seconda assunzione.
+\end{proof}
+\begin{theorem}
+    Arrotondando la soluzione reale con la trasformazione mostrata, 
+    si fornisce una 2-approssimazione per $\hat{\mathit{VertexCover}}$.
+\end{theorem}
+\begin{proof}
+    Valgono:
+    \begin{equation}
+        \begin{aligned}
+            r_i \leq 2x_i^* && \text{Per definizione della trasformazione}\\
+            \sum_{i\in V} w_ir_i \leq 2 \sum_{i\in V} w_ix_i^* = 2w^* \leq 2\tilde{w} &&\text{La soluzione arrotondata è al più il doppio}
+        \end{aligned}
+    \end{equation}
+\end{proof}
