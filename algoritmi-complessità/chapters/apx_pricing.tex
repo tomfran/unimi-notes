@@ -527,8 +527,7 @@ Si definisce ora la seguente trasformazione:
 \end{remark}
 
 \subsection{Altri esempi}
-In questa sezione si vedranno altri due problemi, per cui esistono 
-soluzioni approssimate, ma che non cadono nelle tecniche viste in precedenza.
+In questa sezione si considera un problema che non ricade nelle techine viste in precedenza.
 
 \subsubsection{Traveling Salesman Problem}
 Prima di introdurre il problema, si introducono alcuni concetti preliminari 
@@ -581,9 +580,9 @@ il problema del commesso viaggiatore.
 \emph{Input}: $G = (V,E)$ non orientato, $\delta_e \in \mathbb{Q}^{>0} \forall e\in E$\\
 \emph{Output}: ciclo che passa per tutti i vertici, ovvero un ciclo Hamiltoniano\\
 \emph{Funzione obiettivo}: $\delta(\Pi) = \sum_{e\in E}\delta_e$\\
-\emph{Tipo}: min\\
+\emph{Tipo}: min
 
-\paragraph{TSP su cricche}
+\subsubsection{Traveling Salesman Problem su cricche}
 Il problema del commesso viaggiatore spesso si considera su 
 una cricca\footnote{Grafo con tutti gli archi possibili $K_V = (N, \binom{n}{2} )$}.
 
@@ -591,7 +590,7 @@ una cricca\footnote{Grafo con tutti gli archi possibili $K_V = (N, \binom{n}{2} 
 tutti gli archi che mancano con peso equivalente alla somma di tutti i vertici più uno.
 La soluzione ottima non varia.
 
-\paragraph{TSP metrico}
+\subsubsection{Traveling Salesman Problem metrico}
 Il problema in questa versione considera come input una cricca, 
 inoltre vale la distanza triangolare, ovvero: 
 $$\forall i, j, k \in V, \delta_{ij} \leq \delta_{ik}+\delta_{kj}$$
@@ -707,3 +706,172 @@ a quello per individuare una soluzione.
     $$\frac{\delta(\Pi)}{\delta(\Pi^*)} = \frac{\frac{3}{2}n +\epsilon \frac{n}{2} - (\epsilon +1)}{n + \epsilon n -2\epsilon}$$
     $$\lim_{n \rightarrow \infty, \epsilon \rightarrow 0}\frac{\delta(\Pi)}{\delta(\Pi^*)} = \frac{3}{2}$$
 \end{proof}
+\begin{theorem}
+    Non esiste un $\alpha > 1$ tale che TSP sia $\alpha$-approssiamante in tempo polinomiale.
+\end{theorem}
+\begin{proof}
+    Dato un grafo supponiamo di dover decidere se ammette un ciclo Hamiltoniano (NP completo).
+
+    Sia il grafo $G^\prime = (V, \binom{V}{2})$ costruico come segue:
+    \[
+        d(x,y) =     
+        \begin{cases}
+            1\;\mathit{se}\;xy \in E\\ 
+            \lceil {\alpha n} \rceil + 1\;\mathit{se}\;xy \notin E        
+
+        \end{cases}
+    \]
+    
+    Applichiamo l'algoritmo ottimo su $G^\prime$, la soluzione equivale a:
+    \[
+        \delta^*(\Pi) =    
+        \begin{cases}
+            n\;\mathit{se\;esiste\;un\;ciclo\;hamiltoniano}\\ 
+            \lceil \alpha n \rceil+ 1 \;\mathit{altrimenti}
+        \end{cases}
+    \]
+
+    Usando l'algoritmo $\alpha$-approssimante che si assume esistere, 
+    si otterrebbe una soluzione:
+    \begin{equation}
+        \begin{aligned}
+            n \leq \delta(\Pi) \leq \alpha n && \text{con ciclo hamiltoniano}\\
+            \lceil\alpha n \rceil+ 1 \leq \delta(\Pi) \leq \alpha\lceil \alpha n \rceil+ 1 && \text{altrimenti}
+        \end{aligned}
+    \end{equation}
+    Significa che si può decidere se il grafo ammette un ciclo hamiltoniano in tempo polinomiale.\\
+    Deve perciò valere che:
+    $$\alpha n \geq \lceil \alpha n \rceil+ 1$$
+    \begin{equation}
+        \begin{aligned}
+            \alpha n \geq \lceil \alpha n \rceil+ 1\\
+            \alpha \geq \alpha + \frac{1}{n}
+        \end{aligned}
+    \end{equation}
+    Non esiste un $\alpha$ maggiore di uno che soddisfa l'equazione.
+\end{proof}
+
+\subsection{Problemi PTAS e FPTAS}
+I due problemi a seguire ammettono algoritmi che appartengono alla classe PTAS, sono 
+quidni approssimabili in maniera arbitraria.
+
+\subsubsection{Minimum partition}
+Il problema del minium partition equivale a suddividere un insieme in due sottoinsiemi 
+tali che il massimo delle somme degli elementi dei due insiemi è minimizzato.
+Si può vedere come \emph{2-load balancing}, visto a sezione \ref{lb}.
+
+Formalmente:\\
+\emph{Input}: $w_1, \dots, w_n \in \mathbb{Q}^{>0}$\\
+\emph{Output}: $y_1 \subseteq \{1,\dots , n \},  y_2 = \{1,\dots , n \} \setminus y_1$\\
+\emph{Funzione obiettivo}: $max(\sum_{i\in y_1}w_i, \sum_{j\in y_2}w_j)$\\
+\emph{Tipo}: min
+
+\paragraph{PTAS 2-loadbalance}
+L'algoritmo è simile a Sorted Balance, assegna in modo ottimale 
+alcuni task.
+
+\begin{algorithm}[H]
+    \SetAlgoLined
+    \KwIn{$w_1, \dots, w_n \in \mathbb{Q}^{>0}$, $\epsilon > 0$}
+    \KwResult{Soluzione per load balance}
+    \If{$\epsilon \geq 1$}{$\mathit{Assegno}\;\mathit{tutto}\;\mathit{alla}\;\mathit{prima}\;\mathit{macchina}$}
+     $T \gets \mathit{reverse(sorted}(w_1, \dots, w_n))$\\
+     $k \gets \lceil \frac{1}{\epsilon} - 1 \rceil$\\
+    $\mathit{Assegna\;}\mathit{i\;}\mathit{primi\;}\mathit{k\;}\mathit{task\;}\mathit{in\;}\mathit{modo\;}\mathit{ottimale\;}$\\
+    $\mathit{GreedyBalance}(w_{k+1}, \dots, w_n)$\\
+     \Return{$\max(W(y_1), W(y_2))$}
+     \caption{PTAS 2-loadbalance}
+\end{algorithm}
+
+\begin{theorem}
+    L'algoritmo proposto fornisce una $(1+\epsilon)$-approssimazone per 
+    2-loadbalance.
+\end{theorem}
+\begin{proof}    
+    Per ogni $X \subseteq \{1, \dots, n\}$, $w(X) = \sum_{i\in X}w_i$.
+
+    Sia $L = \frac{w(\{1, \dots, n\})}{2}$ il peso complessivo dei task, diviso 2.
+
+    Vale che: 
+    $$w^* \geq L $$
+    Se così non fosse, significa che sia la prima che la seconda macchina hanno
+    task per un peso inferiore alla metà del peso complessivo delle task.
+    Ma ciò è assurdo, visto che la somma dei carichi delle macchine è $2L$.
+
+    Procediamo ora per casi rispetto ad $\epsilon$:
+
+    Caso 1: $\epsilon \geq 1$\\
+    In questo caso:
+    $$w(y_1) = 2L \leq 2w^* \leq (1+\epsilon)w^*$$
+    Ovvero il peso della prima macchina rispetta l'approssimazione di $1+\epsilon$.
+
+    Caso 2: $\epsilon < 1$\\
+    Supponiamo che la prima macchina abbia peso maggiore: 
+    $$w(y_1) \geq w(y_2)$$
+    Sia $h$ l'indice dell'ultimo task assegnato alla prima macchina:
+    Caso 2A: $h \leq k$ \\
+    Ho trovato la soluzione ottima, visto che il peso della 
+    prima macchina è maggiore di quello della seconda.
+    
+    Caso 2B $h > k$\\
+    Sia il peso subito prima dell'ultimo task, vale che: 
+    \begin{equation}
+        \begin{aligned}
+            w(y_1) - w_h \leq w(y_2)^\prime \leq w(y_2) && \text{peso della macchina 2 in quel momento}\\
+            w(y_1) + w(y_1)- w_h \leq w(y_2) + w(y_1)&& \text{sommiamo il peso della macchina 1}\\
+            2w(y_1) - w_h \leq 2L\\
+            w(y_1) \leq \frac{w_h}{2} + L\\
+        \end{aligned}
+    \end{equation}
+    Inoltre:
+    \begin{equation}
+        \begin{aligned}
+            2L = \sum_{i = 1}^{n} w_i = w_1 + \dots + w_h + \dots + w_n\\
+            \geq w_1 + \dots + w_h \geq w_h(k+1)\\
+            \implies L \geq \frac{w_h}{2}(k+1)
+        \end{aligned}
+    \end{equation}
+    Calcoliamo ora il rapporto di approssimazione:
+    \begin{equation}
+        \begin{aligned}
+            \frac{w(y_1)}{w^*} \leq \frac{w(y_1)}{L}&& \text{per la proprietà vista all'inizio}\\
+            \leq \frac{\frac{w_h}{2} + L}{L} = 1 + \frac{w_h}{2L}&& \text{per la seconda proprietà}\\
+            \leq 1 + \frac{w_h}{2\frac{w_h}{2}(k+1)} = 1 + \frac{1}{k+1}&& \text{per la terza proprietà}\\
+            = \frac{1}{\lceil \frac{1}{\epsilon} -1 \rceil +1} \leq 
+            \frac{1}{\frac{1}{\epsilon} -1 +1} = 1+\epsilon&& \text{per la definizione di k}
+        \end{aligned}
+    \end{equation}
+\end{proof}
+\begin{theorem}
+    L'algoritmo impiega un tempo pari a 
+    $$O(2^{\frac{1}{\epsilon}} + n\log n)$$
+    Ovvero è polinoimiale in $n$, ma esponenziale in $\epsilon$
+\end{theorem}
+\begin{corollary}
+    Minimum Partition $\in$ PTAS
+\end{corollary}
+\subsubsection{Knapsack FPTAS}
+Il problmea dello zaino consiste nel selezionare un insieme 
+di elementi che massimizzino il valore, il cui ingombro non superi
+la capacità dello zaino.
+
+Formalmente:\\
+\emph{Input}: $(w_1, v_1), \dots, (w_n, v_n)\;w_i, v_i, W \in \mathbb{N}$ dove $W$ è la capacità dello zaino\\
+\emph{Output}: $X \subseteq \{1, \dots, n\}, \sum_{i \in X} w_i \leq W$\\
+\emph{Funzione obiettivo}: $\sum_{i \in X} v_i$\\
+\emph{Tipo}: max
+
+La versione di decisione del problema è NP completa.
+
+\paragraph{Knapsack in programmazione dinamica}
+È possibile risolvere il problema dello zaino in programmazione dinamica, 
+si puo considerare la seguenze equazione di ricorrenza.
+
+\dots
+
+L'algoritmo di facile implementazione segue l'equazione appena introdotta.
+
+\begin{theorem}
+    Knapsack in programmazione dinamica ha complessità in tempo e spazio equivalente a 
+    $O(nW)$, dove $n$ è il numero di oggetti e $W$ la capacità dello zaino.
+\end{theorem}
