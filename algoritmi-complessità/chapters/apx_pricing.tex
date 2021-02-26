@@ -867,11 +867,140 @@ La versione di decisione del problema è NP completa.
 È possibile risolvere il problema dello zaino in programmazione dinamica, 
 si puo considerare la seguenze equazione di ricorrenza.
 
-\dots
+\[
+    DP[i,w] = 
+    \begin{cases}
+        0\; \mathit{se}\; i = 0\;\mathit{or}\;w = 0\\
+        DP[i-1,w]\;\mathit{se}\;w_i > w\\
+        \max(DP[i-1,w], DP[i-1,w-w_i] + v_i)\;\mathit{altrimenti}
 
-L'algoritmo di facile implementazione segue l'equazione appena introdotta.
+    \end{cases}\]
+
+L'algoritmo di facile implementazione segue l'equazione appena introdotta, 
+riempendo una matrice iterativamente o ricorsivamente.
+\begin{remark}
+    Iterativamente si possono mantenere solo le ultime due righe, 
+    lo spazio si abbatte.
+\end{remark}
 
 \begin{theorem}
-    Knapsack in programmazione dinamica ha complessità in tempo e spazio equivalente a 
+    Knapsack in programmazione dinamica ha complessità in tempo e spazio (a meno di ottimizzazioni) equivalente a 
     $O(nW)$, dove $n$ è il numero di oggetti e $W$ la capacità dello zaino.
 \end{theorem}
+\begin{proof}
+    Per mantenere il parametro $W$ in memoria sono necessari $O(\log W)$ bit, quindi
+    $W = 2 ^{|W|}$. 
+
+    L'algoritmo si dice essere pseudopolinomiale.
+\end{proof}
+
+\paragraph{Knapsack programmazione dinamica rivisitato}
+Questa volta cambia il contenuto della matrice.
+In particolare, in $DP[i][v]$ è contenuto il minimo peso, che 
+consente di portare a casa $\geq v$ usando i primi i oggetti.
+
+I casi base sono:
+\begin{enumerate}
+    \item $v = 0$, in quel caso il valore della cella è nullo
+    \item $i = 0$, in quel caso si considera $+\infty$
+\end{enumerate}
+
+L'equazione di ricorrenza diventa: 
+\[
+    DP[i,v] = 
+    \begin{cases}
+        0\; \mathit{se}\; v = 0\\
+        +\infty\; \mathit{se}\; i = 0\\
+        \min(DP[i-1,v], DP[i-1,v-v_i] + w_i)\;\mathit{altrimenti}
+    \end{cases}\]
+
+\begin{theorem}
+    Il problema riformulato ha complessità in tempo e spazio (a meno di ottimizzazioni) equivalente a 
+    $O(n\sum_i v_i) = O(n^2v_{max})$. L'algoritmo rimane pseudopolinomiale, per il secondo termine.
+\end{theorem}
+
+\begin{remark}
+    La matrice si può restringere in larghezza, arrotondando i valori, in modo da introdurre approssimazione
+    nel valore della soluzione ma non nella validità di essa.
+\end{remark}
+
+\paragraph{Knapsack rescaling}
+Preso un input per Knapsack, si considera il valore:
+$$\theta = \frac{\epsilon v_max}{2n}, 0 < \epsilon \leq 1$$
+L'input del problema originale diventa:
+$$\bar{\Pi} = ((w_i, \bar{v_i}), W), \bar{v_i} = \lceil\frac{v_i}{\theta}\rceil\theta$$
+Si considera poi una terza versione:
+$$\hat{\Pi} = ((w_i, \hat{v_i}), W), \hat{v_i} = \lceil\frac{v_i}{\theta}\rceil$$
+
+La formulazione $\bar{\Pi}$ è utile nello studio del problema, quella versione non 
+si può risolvere in programmazione dinamica, visto che i valori non sono interi.
+
+\begin{remark}
+    Le soluzioni ammissibili dei problemi sono equivalenti.
+\end{remark}
+
+\begin{lemma}
+    Le soluzioni ottime $\hat{S^*}, \bar{S^*}$ di $\hat{\Pi^*}, \bar{\Pi^*}$ sono equivalenti, 
+    sono semplicemente scalati per il parametro $\theta$.
+\end{lemma}
+
+\begin{lemma}
+    \label{knl2}
+    Sia S una soluione ammissibile di $\Pi$, allora:
+    $$\sum_{i \in S} v_i \leq (1 + \epsilon) \sum_{i \in \hat{S^*}} v_i$$
+\end{lemma}
+\begin{proof}
+    \begin{equation}
+        \begin{aligned}
+            \sum_{i \in S} v_i \leq \sum_{i \in S} \bar{v_i} && \text{Per l'operazione di ceil}\\
+            \leq \sum_{i \in \bar{S^*}} \bar{v_i} && \text{S ammissibile, S barra ottima}\\
+            = \sum_{i \in \hat{S^*}} \bar{v_i} && \text{per la prima osservazione}\\
+            \leq \sum_{i \in \hat{S^*}} (v_i + \theta) = \sum_{i \in \hat{S^*}} v_i + |\hat{S^*}|\theta\\
+            \leq \sum_{i \in \hat{S^*}} v_i + n \theta = \sum_{i \in \hat{S^*}} v_i + n\frac{\epsilon v_{max}}{2n}\\
+            = \sum_{i \in \hat{S^*}} v_i + \frac{\epsilon v_{max}}{2} 
+        \end{aligned}
+    \end{equation}
+    Siccome questo vale per ogni soluzione ammissibile, è vera anche per $S = \{i_{max}\}$, ovvero l'indice
+    che dà valore massimo. Continuando con l'equazione precedente:
+    \begin{equation}
+        \begin{aligned}
+            v_{max} \leq \sum_{i \in \hat{S^*}} v_i + \frac{\epsilon v_{max}}{2} \leq \sum_{i \in \hat{S^*}} v_i + \frac{ v_{max}}{2} &&\text{epsilon minore uguale a 1}\\
+            \sum_{i \in \hat{S^*}} v_i \geq \frac{\epsilon v_{max}}{2}
+        \end{aligned}
+    \end{equation}
+
+    Applicando ora l'equazione appena ottenuta alla prima equazione della dimostrazione:
+    \begin{equation}
+        \begin{aligned}
+            \sum_{i \in S} v_i \leq \sum_{i \in \hat{S^*}} v_i + \frac{\epsilon v_{max}}{2}\\
+            \sum_{i \in S} v_i \leq \sum_{i \in \hat{S^*}} v_i + \epsilon \sum_{i \in \hat{S^*}} v_i = (\sum_{i \in \hat{S^*}} v_i)(1+\epsilon)
+        \end{aligned}
+    \end{equation}
+\end{proof}
+\begin{remark}
+    Vale che:
+    $$\hat{v_{max}} = \lceil\frac{v_{max}}{\frac{\epsilon v_{max}}{2n}}\rceil = \lceil\frac{2n}{\epsilon}\rceil
+    \leq \frac{2n}{\epsilon} + 1$$
+\end{remark}
+\begin{corollary}
+    L'algoritmo in programmazione dinamica rivisitato, applicato a $\hat{\Pi}$, fornisce una
+    $(1=\epsilon)$-approssimazione di Knapsack in tempo e spazio $O(\frac{n^3}{\epsilon})$.
+\end{corollary}
+\begin{proof}
+    L'algoritmo individua $\hat{S^*}$, vale che:
+    \begin{equation}
+        \begin{aligned}
+            (1-\epsilon)\sum_{i\in \hat{S^*}}v_i \geq \sum_{i \in S} v_i \geq v^* &&\text{Per il lemma \ref{knl2}}\\
+            1 \leq \frac{v^*}{\sum_{i\in \hat{S^*}}v_i} \leq (1+\epsilon)
+        \end{aligned}
+    \end{equation}
+    L'algoritmo ha complessità 
+    $$O(n^2 \hat{v_{max}}) = O(n^2(\frac{2n}{\epsilon} + 1)) = O(\frac{n^3}{\epsilon})$$
+\end{proof}
+\begin{remark}
+    Al variare di $\epsilon$ si aumenta o abbassa il tempo necessario al completamento dell'algoritmo, 
+    in particolare.
+\end{remark}
+\begin{corollary}
+    Knapsack risolto in questo modo appartiene alla classe FPTAS.
+\end{corollary}
