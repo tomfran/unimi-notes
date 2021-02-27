@@ -80,6 +80,7 @@ Durante l'esecuzione dell'algoritmo si può pensare al grafo come: $G = G_0, G_1
         \item Ogni taglio di $G_i$ corrisponde a un taglio di $G$
         \item Il grado minimo di un vertice in $G_i$ è sempre $\geq k^*$, se così non fosse, 
         $G_i$ avrebbe un taglio $< k^*$, quindi anche $G$, per il punto 2
+        \item Il punto 1 e 3 fanno in modo che il numero di lati sia $\geq \frac{(n-i+1)k^*}{2}$
     \end{enumerate}    
 \end{remark}
 
@@ -109,8 +110,8 @@ di $E_s^*$.
     \begin{equation}
         \begin{aligned}
             P(E_i | E_1, \dots, E_{i-1}) = 1- P(\bar{E_i} | E_1, \dots, E_{i-1})\\
-            = 1 - \frac{k^*}{\mathit{\#\;lati\;G_i}} \geq 1 - \frac{k^*}{m-i+1} && \text{Vale per oss. \ref{osskarg}}\\
-            \geq 1 - \frac{2k^*}{k^*(n-i+1)} && \text{Per il lemma \ref{lkarg}}\\
+            = 1 - \frac{k^*}{\mathit{\#\;lati\;G_i}} \geq 1 - \frac{2k^*}{(n-i+1)k^*} && \text{Vale per oss. \ref{osskarg} punto 4}\\
+            \geq 1 - \frac{2k^*}{k^*(n-i+1)} \\
             = \frac{n-i+1-2}{n-i+1} = \frac{n-i-1}{n-i+1}
         \end{aligned}
     \end{equation}
