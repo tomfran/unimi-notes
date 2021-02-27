@@ -1,6 +1,9 @@
 \section{Algoritmi probabilistici}
-
-
+In questa sezione si vedono approcci probabilistici a problemi di ottimizzazione, 
+in particolare si vedranno tre scenari, il primo in cui si individua la soluzione ottima
+con una certa probabilità, un secondo caso in cui con probabilità stimabile si individua una 
+soluzione che non si discosta troppo da quella ottima e infine un'ultimo scenario in cui 
+si sfruttano concetti probabilistici per comporre un algoritmo completamente deterministico.
 
 \subsection{Problemi di decisione}
 Per quanto riguarda i problemi di decisione, esistono sostanzialmente due categorie
@@ -26,10 +29,9 @@ probabilistico.
 \end{remark}
 
 \subsection{Problemi di ottimizzazione}
-Approcciare in maniera probabilistica un problema di ottimizzazione, 
-significa individuare la soluzione ottima con probabilità inferiore a 1, non si 
-cercano piu quindi soluzioni approssimate.
-
+Approcciare in maniera probabilistica un problema di ottimizzazione, può significare 
+individuare con una certa probabilità la soluzione ottima, 
+oppure individuare probabilisticamente una soluzione che è abbastanza buona.
 \subsubsection{Min cut globale}
 Il problema di min cut globale cerca di individuare un taglio in un grafo, 
 in modo da minimizzare il numero di archi che incidono sulle due partizioni create.
@@ -174,24 +176,28 @@ tale che $$\hat{v}\leq v^*$$.
 
 Si formula ora un algoritmo per Set Cover, dove si trova una soluzione 
 per la riformulazione in programmazione lineare reale e poi si considera il valore della
-variabile $\hat{x_i}$ come probabilità di scelta.
+variabile $\hat{x_i}$ come probabilità di scelta. 
+Si immagina di iterare il processo $\lceil k + \ln n \rceil$ volte.
 
 \begin{algorithm}[H]
     \SetAlgoLined
     \KwIn{$S_i, w_i, i \in \{1,\dots, m \}$}
-    \KwResult{Copertura di insiemi}
-    $\hat{I} \gets \mathit{solve} \; \Pi_{LP}$\\
+    \KwResult{Indici degli insiemi da coprire}
+    $\hat{I} \gets \mathit{solve} \; \Pi_{LP}$ \\
     $I \gets \emptyset$\\
-    \For{$t = 1,\dots, \lceil k + \ln n \rceil$}{
-        \For{$i = 1, \dots, m$}{
-            \If{$\mathit{random()} < \hat{x_i}$}{
-                $I \gets I \cup i$
-            }
+    \For{$i = 1, \dots, m$}{
+        $P_i \gets 1 - (1-\hat{x_1})^{\lceil k + \ln n \rceil}$\\
+        \If{$\mathit{random()} < P_i$}{
+            $I \gets I \cup i$
         }
     }
     \Return{$I$}
      \caption{SetCoverProbabilistico}
 \end{algorithm}
+Nel codice $P_i$ è la probabilità di inserire un elemento, ovvero 1 meno la 
+probabilità di non inserirlo $\lceil k + \ln n \rceil$ volte.
+
+
 
 Per l'analisi dell'algoritmo servono alcuni concetti preliminari.
 
@@ -243,6 +249,7 @@ $$P[X > \alpha] \leq \frac{E[X]}{\alpha}$$
 \end{proof}
 
 \begin{theorem}
+    \label{setth}
     L'algoritmo proposto produce una soluzione ammissibile con probabilità $\geq 1 - e^{-k}$.
 \end{theorem}
 \begin{proof}
@@ -261,4 +268,56 @@ $$P[X > \alpha] \leq \frac{E[X]}{\alpha}$$
         \end{aligned}
     \end{equation}
 \end{proof}
-% \subsubsection{MaxEkSat}
+\begin{theorem}
+    \label{setth2}
+    Per ogni $\alpha > 0$, sia $R$ il fattore di approssimazione dell'algoritmo.
+    $$P[R \geq \alpha(k + \ln n)] \leq \frac{1}{\alpha}$$
+    Ovvero è poco probabile avere un fattore di approssimazione brutto.
+\end{theorem}
+\begin{proof}
+    La probabilità che $S_i$ venga scelto è $\leq (k + \ln n)\hat{x_i}$, per lo union bound, 
+    
+    Il valore atteso del costo equivale a:
+    \begin{equation}
+        \begin{aligned}
+            E[v] = \sum_i w_i P[S_i\;\mathit{sia \;scelto}] \leq \sum_i w_i(k + \ln n)\hat{x_i}\\
+            = \hat{v}(k + \ln n) \leq v^*(k + \ln n)
+        \end{aligned}
+    \end{equation}
+    Ragionando sul rapporto di approssimazione
+    \begin{equation}
+        \begin{aligned}
+            P[\frac{v}{v^*}\geq \alpha(k +\ln n)]\leq \frac{E[\frac{v}{v^*}]}{\alpha(k + \ln n)} && \text{Per disuguaglianza di Markov}\\
+            = \frac{E[v]}{\alpha v^* (k + \ln n)} \leq \frac{v^* (k + \ln n)}{\alpha v^* (k + \ln n)} = \frac{1}{\alpha}
+        \end{aligned}
+    \end{equation}
+\end{proof}
+\begin{corollary}
+    \label{setcr}
+    Fissando il parametro $k = 3$:
+    \begin{enumerate}
+        \item il teorema \ref{setth} dice che la probabilità di ottenere una soluzione ammissibile
+        $\geq 1-e^{-k} = 95\%$
+        \item il teorema \ref{setth2} invece, dice che, fissando ad esempio $\alpha=2$, con R fattore di 
+        approssimazione,  $P[R \geq 2(3 + \ln n)] \leq \frac{1}{2}$, quindi la probabilità di ottenere un fattore
+        di approssimazione peggiore di $2(3 + \ln n)$ è inferiore a $\frac{1}{2}$
+    \end{enumerate}
+\end{corollary}
+
+\begin{corollary}
+    Con $k = 3$ c'è almeno il $45\%$ di probabilità che l'algoritmo emetta una 
+    soluzione ammissibile con fattore di approssimazione al più $2(3+\ln n)$
+\end{corollary}
+\begin{proof}
+    Considerando i due punti del corollario \ref{setcr} appena scritto come eventi indipendenti, 
+    si calcola ora la probabilità che si verifichino insieme, che sarebbe quello che si vuole 
+    ottenere dall'algoritmo.
+    \begin{equation}
+        \begin{aligned}
+            P[E_1 \wedge E_2] = 1 - P[\bar{E_1} \lor \bar{E_2}]\\
+            \leq 1 - (P[\bar{E_1}] + P[\bar{E_2}]) && \text{Per union bound}\\
+            \leq 1 - (0.05 + 0.5) && \text{Per il corollario \ref{setcr}}\\
+            = 1 - 0.55 = 0.45
+        \end{aligned}
+    \end{equation}    
+\end{proof}
