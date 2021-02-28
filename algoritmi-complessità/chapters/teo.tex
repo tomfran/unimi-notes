@@ -4,6 +4,10 @@ In questa sezione si affrontano alcune tematiche, in particolare il teorema PCP,
 con il quale di riuscirà a dimostrare l'inapprossimabilità di MaxEkSat e Indipendent set.
 
 \subsection{Verificatori}
+Il concetto di verificatore assume diverse sfaccettature nel corso 
+delle sezioni che seguono, ma sostanzialmente è una macchina che si occupa di verificare 
+la decisione di un certo problema per un certo input.
+
 \subsubsection{NP attravero testimoni}
 Una Macchina di Turing verificatore per un problema di decisione $L \subseteq 2^*$, riceve due input, $x$ e $w$, testimone, 
 e si comporta come segue:
@@ -57,9 +61,43 @@ in cui lo interroga e l'oracolo risponderà, facendole cambiare stato di consegu
         \end{enumerate}
     \end{enumerate}
 \end{theorem}
-% \subsubsection{Verificatore probabilistico}
 
-% \subsubsection{Teorema PCP}
+\subsubsection{Verificatore probabilistico}
+In questo caso si estende il concetto di verificatore con 
+oracolo aggiungendo un nastro di numero casuali che la Macchina può leggere.
+
+Date due funzioni 
+$$q,r : \mathbb{N} \longrightarrow \mathbb{N}$$
+$PCP[r,q]$ è la classe di linguaggi $L \subseteq 2^*$ per i quali esiste un verificatore probabilistico
+con le seguenti proprietà: 
+\begin{enumerate}
+    \item $V(x)$ lavora in tempo polinomiale
+    \item $V(x)$ fa al massimo $q(|x|)$ query all'oracolo
+    \item $V(x)$ usa al più $r(|x|)$ bit casuali
+    \item $\forall x \in 2^*$:
+    \begin{enumerate}
+        \item Se $x \notin L$, $V(x) = no$ con probabilità $\geq \frac{1}{2}$
+        \item Se $x \in L$, $V(x) = yes$ con probabilità $1$ per almeno
+        un $w \in 2^*$
+    \end{enumerate}
+\end{enumerate}
+
+\begin{remark}
+    Vale che:
+    \begin{itemize}
+        \item $NP = PCP[0,\mathit{Poly}] = \cup_{p : \mathit{polinomio}}PCP[0, p]$ 
+        \item $P = PCP[0,0]$
+    \end{itemize}
+\end{remark}
+
+\subsubsection{Teorema PCP}
+Definiti i verificatori probabilistici, si passa ora al teorema PCP, 
+che in un certo senso dice che il non determinismo può essere portato ad una costante, 
+a patto che si facciano una quantità logaritmica di scelte casuali.
+
+\begin{theorem}
+    $PCP[O(\log n), O(1)] = NP$
+\end{theorem}
 
 % \subsubsection{Verificatore NP in forma canonica}
 

@@ -1,378 +1,92 @@
-\subsection{Tecniche di pricing}
-L'idea è quella di attribuire ad ogni elemento da inserire in 
-una soluzione un costo. I costi permettono di scegliere gli elementi 
-più vantaggiosi e di analizzare il tasso di approssimazione di questi algoritmi.
+\section{Teoria della complessità di approssimazione}
 
-\subsubsection{Minimum Set Cover}
-Nel problema di Set Cover l'obiettivo è quello di coprire l'universo $U$, 
-utilizzando seubset di esso che hanno un costo. Si vuole ottenere il costo
-minimo, dato come somma dei costi dei set che si sono scelti.
+In questa sezione si affrontano alcune tematiche, in particolare il teorema PCP, 
+con il quale di riuscirà a dimostrare l'inapprossimabilità di MaxEkSat e Indipendent set.
 
-Formalmente: \\
-\emph{Input}: $s_1, \dots, s_m$, $\bigcup_{i=1}^m s_i = U$, $|U| = n$\\
-\emph{Output}: $C = \{s_1, \dots, s_n\}$, tali che, $\bigcup_{s_i \in C} s_i = U$\\
-\emph{Costo}: $w = \sum_{s_i \in C} w_i$\\
-\emph{Tipo}: min\\
+\subsection{Verificatori}
+Il concetto di verificatore assume diverse sfaccettature nel corso 
+delle sezioni che seguono, ma sostanzialmente è una macchina che si occupa di verificare 
+la decisione di un certo problema per un certo input.
 
-\paragraph{Funzione armonica}
-La funzione armonica è definita come: 
-\begin{equation}
-    \begin{aligned}
-        H: \mathbb{N}^{>0} \rightarrow \mathbb{R}\\
-        H(n) = \sum_{i = 1}^{n} \frac{1}{i}  
-    \end{aligned}
-\end{equation}
-Vale la seguente proprietà: 
-% \begin{equation}
-%     \begin{aligned}
-%         H(n) \leq 1 + \int_{1}^{n} \frac{1}{x} \,dx \leq 1 +
-%         \big[ \ln n\big]_1^n = 1 + \ln n\\
-%         \ln (n+1) \leq H(n) \leq 1 +\ln n
-%     \end{aligned}
-% \end{equation}
-$$\ln (n+1) \leq H(n) \leq 1 +\ln n$$
-
-\paragraph{Greedy Set Cover}
-L'algoritmo effettua ad ogni iterazione una scelta greedy, 
-si sceglie l'insieme che minimizza il rapporto tra prezzo e copertura 
-dell'universo.
-
-\begin{algorithm}[H]
-    \SetAlgoLined
-    \KwIn{$s_1, \dots, s_m$, $w_0, \dots, w_n$}
-    \KwResult{Scleta di sottoinsiemi che copre l'universo}
-     $R \gets U$\\
-     $C \gets \emptyset$\\
-     \While{$R \neq \emptyset$}{
-         $S_i \gets \min(s_1, \dots, s_m, \frac{w_i}{|S\cap R|})$\\
-         $C.add(S_i)$\\
-         $R \gets R \setminus S_i$
-
-     }
-     \Return{$C$}
-     \caption{GreedySetCover}
-\end{algorithm}
+\subsubsection{NP attravero testimoni}
+Una Macchina di Turing verificatore per un problema di decisione $L \subseteq 2^*$, riceve due input, $x$ e $w$, testimone, 
+e si comporta come segue:
+\begin{enumerate}
+    \item se $x \notin L$ risponde no qualunque sia $w$
+    \item se $x \in L$, allora $\exists w\in 2^*$ tale che la macchina risponde sì
+\end{enumerate}
+Devono valere però:
+\begin{enumerate}
+    \item $|w| \leq P(|x|)$ ovvero la lunghezza di $w$ è polinomiale nell'input
+    \item la macchina lavora in tempo polinomiale
+\end{enumerate}
 
 \begin{remark}
-    \label{oss1set}
-    Il costo della soluzione equivale a $$w = \sum_{s\in U}c_s$$ ovvero la somma dei costi 
-    degli insiemi scelti.
+    Si può pensare alla classe NP come una classe di problemi facilmente verificabili, ma difficilmente 
+    risolvibili.
 \end{remark}
 \begin{remark}
-    \label{oss2set}
-    Per ogni $k$, il costo degli elementi in $s_k$, ottengo 
-    $$\sum_{s \in S_k}C_s \leq H(|S_k|) \cdot  W_k$$
+    Esistono problemi nè risolvibili nè  verificabili facilmente.
 \end{remark}
-\begin{proof}
-    Sia $S_k = \{s_1, \dots, s_d\}$ un insieme tra quelli da scegliere, e siano 
-    i suoi elementi elencati in ordine di copertura\footnote{Per chiarezza, l'insieme $S_k$ non verrà scelto, 
-    ma i suoi elementi saranno coperti da altri insiemi che intersecano con esso.}.
-
-    Consideriamo ora l'istante in cui si copre $S_h$ tramite un quale insieme $S_h$.
-    Si può notare che, visto che gli elementi sono in ordine di copertura: 
-    $$R \supseteq \{S_j, \dots, S_d \}$$
-    Inoltre, visto che gli elementi di $S_k$ sono in ordine di copertura: 
-    $$|S_k \cap R| \geq d-j+1$$
-    Riguardo al costo dell'elemento $j$, e in geenerale per tutti i $j$, vale:
-    \begin{equation}
-        \begin{aligned}
-            C_{s_j} = \frac{W_h}{|S_h \cap R|} \leq \frac{W_k}{|S_k \cap R|} && \text{\emph{h} minimizza quel rapporto}\\
-            \leq \frac{W_k}{d-j+1} && \text{equazione precedente}\\
-        \end{aligned}
-    \end{equation}
-    Considerando ora tutti gli elementi di $S_k$: 
-    \begin{equation}
-        \begin{aligned}
-            \sum_{s\in S_k} C_s \leq \sum_{j=1}^{d}\frac{W_k}{d-j+1} = \frac{W_k}{d} + \frac{W_k}{d-1} \dots && \text{La relazione vale per tutti i j}\\
-            = W_k(1 + \frac{1}{2}, \dots, \frac{1}{d}) = H(d)W_k = H(|S_k|)W_k && \text{Sviluppo e raccolgo, ottengo l'oss.}
-        \end{aligned}
-    \end{equation}
-\end{proof}
 \begin{theorem}
-    Greedy Set Cover fornisce una $H(M)$-approssimazione per Set Cover, dove $M=\max_i|S_i|$
-\end{theorem}
-\begin{proof}
-    Sia il peso della soluzione ottima $$w^* = \sum_{S_i \in C^*} w_i$$
-    Per l'osservazione \ref{oss2set} vale che: 
-    $$w_i \geq \frac{\sum_{s \in S_i}C_s}{H(|S_i|)} \geq \frac{\sum_{s \in S_i}C_s}{H(M)}$$
-    Visto che gli $s_i \in C^*$ sono una copertura, per l'osservazione \ref{oss1set}:
-    $$\sum_{S_i \in C^*}\sum_{s \in S_i}C_s \geq \sum_{s \in U} C_s = w$$
-    Inoltre, vale che, sfruttando le due disequazioni appena scritte: 
-    \begin{equation}
-        \begin{aligned}
-            w^* = \sum_{S_i \in C^*} w_i \geq \sum_{S_i \in C^*}\frac{\sum_{s \in S_i}C_s}{H(M)} \geq \frac{w}{H(M)}\\
-            \implies \frac{w}{w^*} = H(M)
-        \end{aligned}
-    \end{equation}
-\end{proof}
-\begin{corollary}
-    Greedy Set Cover fornisce una $O(\log n)$-approssimazione, non quindi costante 
-    come gli algoritmi precedenti.
-\end{corollary}
-\begin{remark}
-    L'analisi è tight, non esiste un algoritmo migliore, quindi
-    Greedy Set Cover $\notin$ APX, bensì, $\in \log(n)$-APX, una classe in cui 
-    si accetta un'approssimazione che peggiora logaritmicamente nell'input.
-    Esistono varie $f$-APX.
-\end{remark}
-\begin{proof}
-    Per dimostrare la tightness, ecco un esempio in cui Greedy Set Cover va male.
-
-    Consideriamo l'insieme $S$ di set tra cui scegliere così formato:
+    Un problema $L \subseteq 2^* \in $NP se e solo se esiste una Macchina di Turing deterministica $V$, verificatore,
+    e un polinomio $P()$, tali che:
     \begin{enumerate}
-        \item Due insiemi grandi $\frac{n}{2}$ che uniti coprono tutti gli elementi, 
-        di costo $1+\epsilon$
-        \item Un insieme che copre $\frac{n}{4}$ elementi degli insiemi 1 e 2 al punto 1, di costo 1
-        \item Un insieme che copre $\frac{n}{8}$ elementi degli insiemi 1 e 2 al punto 1, di costo 1
-        \item Un insieme che copre $\frac{n}{16}$ elementi degli insiemi 1 e 2 al punto 1, di costo 1\\
-        \dots
+        \item $V(x,w)$ lavora in tempo polinomiale in $|x|$
+        \item $\forall x \in 2^*$:
+        \begin{enumerate}
+            \item se $x \in L$, $\exists w \in 2^*$ tale che $|w| \leq P(|x|)$ e $V(x,w) = \mathit{yes}$
+            \item se $x \notin L$, $\forall w \in 2^*$ $|w| \leq P(|x|)$, $V(x,w) = \mathit{no}$
+        \end{enumerate}
     \end{enumerate}
-    Al primo passo, si sceglie l'insieme del punto 2, visto che
-    il suo costo equivale a $\frac{1}{\frac{n}{2}} = \frac{2}{n}$, mentre il costo 
-    di entrambi gli insimemi al punto 1, $\frac{1+\epsilon}{\frac{n}{2}} = \frac{2+2\epsilon}{n}$
-
-    Al secondo passo, si preferisce ai primi due l'insieme al punto 3, il calcolo è simile al punto precedente.\\
-    \dots
-
-    Il costo che si ottiene è $w = \log n$
-    La soluzione ottima sarebbe quella di prendere al passo 1 i primi due insiemi, in modo da coprire l'intero 
-    universo, ovvero $w^* = 2 + 2\epsilon$.
-\end{proof}
-
-\subsubsection{Vertex Cover}
-Il problema di Vertex Cover consiste nel trovare una copertura di 
-vertici in un grafo tale per cui per ogni vertice, una delle due estremità è contenuta nella copertura.
-
-Formalmente: \\
-\emph{Input}: $G=(V,E), w_i \in \mathbb{Q}^{>0}, \forall i \in V$\\
-\emph{Output}: $X \subseteq V, \forall xy \in E, x \in X \vee y \in X$\\
-\emph{Costo}: $w = \sum_{i \in X} w_i$\\
-\emph{Tipo}: min\\
-
-Consideriamo la versione di decisione del problema, ovvero $\hat{\mathit{VertexCover}}$, cioè, 
-posso trovare una copertura che ha peso minore di $\theta$?\\
-
-Vale che $\hat{\mathit{VertexCover}} \leq_{p} \hat{\mathit{SetCover}}$
-Per effettuare il passaggio, bisogna passare dall'input del primo al secondo
-$$G=(V,E), w_i \in \mathbb{Q}^{>0}, \theta \longrightarrow f \longrightarrow S_1, \dots, S_m, \bar{W_1}, \dots, \bar{W_m},\bar{\theta}$$
-La funzione $f$ funziona così: 
-\begin{equation}
-    \begin{aligned}
-        S_i = \{ e \in E, i \in e \} && \text{Per ogni vertice considero i suoi vicini}\\
-        U = E, \bar{W_i} = W_i, \bar{\theta} = \theta
-    \end{aligned}
-\end{equation}
-\begin{remark}
-    La funzione $f$ può essere utilizzata per mappare anche VertexCover in SetCover di ottimizzazione, 
-    visto che non stravolge il problema.\\
-    La trasformazione appena discussa quindi può essere utilizzata per fornire una $\log n$-approssimazione
-    per VertexCover di ottimizzazione.
-\end{remark}
-\paragraph{Price Vertex Cover}
-Prima di definire l'algoritmo vero e proprio, sono necessari alcuni passaggi preliminari.
-L'idea si basa sul fatto che gli archi sono intenzionati a comprare uno dei due estremi,
-ad un certo prezzo.
-Un nodo si vende, se la somma delle offerte degli archi incidenti arriva al suo $W_i$.
-\begin{definition}
-    Un insieme di offerte si dice equo per un vertice sse:
-    $$\sum_{e\in E, i \in e}P_e \leq W_i$$
-    Ovvero se le offerte $P_e$ degli archi che incidono sul vertice $i$ 
-    non superano il suo costo, ovviamente devono raggiungerlo per comprare 
-    il vertice.    
-\end{definition}
-\begin{lemma}
-    \label{pscl1}
-    Se $P_e$ è equo, allora
-    $$\sum_{e \in E} P_e \leq w^*$$
-\end{lemma}
-\begin{proof}
-    La definizione di equità implica che
-    $$\forall i \in V \sum_{e\in E, i \in e}P_e \leq W_i$$
-    Consideriamo ora la somma delle disequazioni per la soluzione ottima
-\begin{equation}
-    \begin{aligned}
-        \sum_{i \in S^*} \sum_{e\in E, i \in e}P_e \leq \sum_{i \in S^*}W_i\\
-        \sum_{e \in E} P_e \leq \sum_{i \in S^*} \sum_{e\in E, i \in e}P_e \leq W^*
-    \end{aligned}
-\end{equation}
-Questo vale perchè la seconda parte della disequazione considera potenzialmente più volte alcuni lati.
-\end{proof}
-\begin{definition}
-    $P_e$ è stretto sul vertice $i$ sse
-    $$\sum_{e \in E, i \in e} P_e = W_i$$
-\end{definition}
-Ecco ora l'algoritmo.
-
-\begin{algorithm}[H]
-    \SetAlgoLined
-    \KwIn{$G=(V,E), W_i \forall i \in V$}
-    \KwResult{Cover per il grafo}
-     $P_e \gets 0, \forall e \in E$\\
-     \While{$\exists ij \in E, P_e$ non stretto su i o su j}{
-        $\bar{e} \gets \bar{i}\bar{j}$\\
-        $\Delta \gets \min(W_{\bar{i}}-\sum_{e \in E, \bar{i} \in e}P_e, W_{\bar{j}}-\sum_{e \in E, \bar{j} \in e}P_e,)$\\
-        $P_e \gets P_e + \Delta$
-     }
-     \Return{$\{ i| P_e$ stretto su $i\}$}
-     \caption{PriceVertexCover}
-\end{algorithm}
-L'idea su cui si basa l'algoritmo è quella che, se un arco non sta offrendo abbastanza per i vertici, allora 
-aumenta la sua offerta, del minimo per soddisfare uno dei due nodi.
-\begin{lemma}
-    \label{pscl2}
-    Price Set Cover crea un peso $$W \leq 2\sum_{e \in E}P_e$$
-\end{lemma}
-\begin{proof}
-    Il costo finale di PSC è $W = \sum_{i \in S}W_i$, ovvero il costo 
-    dei vertici in output. Vale che, per la definizione di strettezza:
-    $$W = \sum_{i \in S}W_i = \sum_{i \in S^*} \sum_{e\in E, i \in e}P_e$$
-    Nella seconda sommatoria un lato compare una o due volte, se rispettivamente 
-    una o due estremità appartengono ad $S$.
-\end{proof}
-\begin{theorem}
-    Price Set Cover è $2$-approssimante per Set Cover.
 \end{theorem}
-\begin{proof}
-    \begin{equation}
-        \begin{aligned}
-            \frac{w}{w^*} \leq \frac{2\sum_{e \in E}P_e}{w^*} && \text{Per il lemma \ref{pscl2}}\\
-            \frac{w}{w^*} \leq \frac{2\sum_{e \in E}P_e}{\sum_{e \in E} P_e } \leq 2 && \text{Per il lemma \ref{pscl1}}
-        \end{aligned}
-    \end{equation}
-\end{proof}
-\begin{remark}
-    Non esistono ad oggi algoritmi migliori per Price Set Cover.
-\end{remark}
 
-\subsubsection{Disjoint Paths}
-Dato un grafo orientato, esistono $K$ sorgenti e target, l'obiettivo è trovare $K$ cammini per le 
-coppie di sorgenti e destinazioni. Ogni arco può essere usato al più $C$ volte.
+\subsubsection{NP con oracolo}
+L'idea di una Macchina di Turing con oracolo presuppone l'esistenza, oltre 
+al nastro classico, di un nastro dell'oracolo.
 
-Formalmente: \\
-\emph{Input}: $G=(V,E)$ orientato, $s_1, \dots, s_k$ sorgenti, $t_1, \dots, t_k$ destinazioni $\in V$
-$C \in \mathbb{N}^{>0}$\\
-\emph{Output}: $I = \{1, \dots, K\}, \forall i \in I,$ cammino $\Pi_i$, tale che nessun arco è utilizzato più di $C$ volte\\
-\emph{Funzione obiettivo}: $|I|$\\
-\emph{Tipo}: max\\
+La Macchina può entrare in uno stato di query all'oracolo, 
+in cui lo interroga e l'oracolo risponderà, facendole cambiare stato di conseguenza.
 
-L'idea su cui si basa l'algoritmo è quella di allungare un arco tanto quanto è utilizzato, 
-in modo da scoraggiare il suo utilizzo.\\
-È quindi definita una funzione di lunghezza: 
-$$l : E \longrightarrow \mathbb{R}^{>0}$$
-Dato un cammino come sequenza di nodi, la lunghezza del cammino sarà data dalla lunghezza su ogni coppia di consecutivi.
+\begin{theorem}
+    Un problmema $L \subseteq 2^* \in $ NP se esiste una Macchina di Turing con oracolo $V$ e
+    un polinomip $P()$, tale che:
+    \begin{enumerate}
+        \item $V(x)$ lavora in tempo polinomiale in $|x|$
+        \item $V(x)$ effettua al più $P(|x|)$ query all'oracolo
+        \item $\forall x \in 2^*$:
+        \begin{enumerate}
+            \item se $x \notin L$, $V(x) = no$ qualunque sia l'oracolo
+            \item se $x \in L$, $V(x) = yes$ per una qualche stringa dell'oracolo
+        \end{enumerate}
+    \end{enumerate}
+\end{theorem}
 
-\paragraph{Greedy Paths with capacity}
-L'algoritmo considera come input, oltre a quello per Disjoint Paths, un parametro
-$\beta > 0$, che indica il fattore di allungamento degli archi.
+\subsubsection{Verificatore probabilistico}
+In questo caso si estende il concetto di verificatore con 
+oracolo aggiungendo un nastro di numero casuali che la Macchina può leggere.
 
-\begin{algorithm}[H]
-    \SetAlgoLined
-    \KwIn{$G=(V,E),s_1, \dots, s_k, t_1, \dots, t_k, \beta > 0$}
-    \KwResult{Cammini da sorgenti a destinazioni}
-     $I \gets \emptyset$\\
-     $P \gets 0$\\
-     $l(xy) \gets 1, \forall xy \in E$\\
-     \While{$\Pi \gets$ shortest path from $s_i$ to $t_i$, $i \notin I$}{
-         $I \gets I \cup i$\\
-         $P \gets P \cup \Pi$\\
-         \For{$e\in \Pi$}{
-            $l(e) \gets l(e)*\beta$
-            \If{$e$ used by C paths}{
-                $\mathit{remove}(e)$
-            }
-         }
-     }
-     \Return{$I,P$}
-     \caption{GreedyDisjointPaths}
-\end{algorithm}
+Date due funzioni 
+$$q,r : \mathbb{N} \longrightarrow \mathbb{N}$$
+$PCP[r,q]$ è la classe di linguaggi $L \subseteq 2^*$ per i quali esiste un verificatore probabilistico
+con le seguenti proprietà: 
+\begin{enumerate}
+    \item $V(x)$ lavora in tempo polinomiale
+    \item $V(x)$ fa al massimo $q(|x|)$ query all'oracolo
+    \item $V(x)$ usa al più $r(|x|)$ bit casuali
+    \item $\forall x \in 2^*$:
+    \begin{enumerate}
+        \item Se $x \notin L$, $V(x) = no$ con probabilità $\geq \frac{1}{2}$
+        \item Se $x \in L$, $V(x) = yes$ con probabilità $1$ per almeno
+        un $w \in 2^*$
+    \end{enumerate}
+\end{enumerate}
+% \subsubsection{Teorema PCP}
 
-Consideriamo ora l'evolversi dei cammini nell'algoritmo, in particolare un cammino
-può essere:
-\begin{itemize}
-    \item Inutile, se unisce una sorgente e destinazione già collegate
-    \item Utile ma ostruito, ovvero collega una sorgente e destinazione sconnesse, 
-    ma passa per un arco utlizzato da più di $C$ cammini
-\end{itemize}
+% \subsubsection{Verificatore NP in forma canonica}
 
-\begin{definition}
-    Un cammino $\Pi$ è corto rispetto a una certa lunghezza $l$ sse
-    $l(\Pi) < \beta^c$, lungo altrimenti.
-\end{definition}
-\begin{remark}
-    \label{ossdisjoint}
-    Se sono presenti cammini utili non ostruiti e corti, l'algoritmo sceglie un cammino
-    di questa natura, inoltre, nelle prime fasi dell'algoritmo, ovvero quando sono presenti cammini
-    di questo tipo, si può evitare di eliminare archi.
-\end{remark}
-\begin{proof}
-    Se esite un cammino corto, la sua lunghezza è per forza minore di $\beta^c$ quindi nessun arco 
-    è stato utilizzato $C$ volte.
-\end{proof}
+% \subsection{Problemi inapprossimabili}
 
-Tenendo presente quanto detto nell'osservazione \ref{ossdisjoint}, teniamo ora in considerazione 
-la funzione di lunghezza $\bar{l}$ nell'esatto istante in cui finiscono i cammini corti.
-Inoltre, $\bar{I}, \bar{P}$ saranno le sorgenti, destinazioni collegate e i rispettivi cammini 
-in quell'istante.
+% \subsubsection{Inapprossimabilità MaxEkSat}
 
-\begin{lemma}
-    \label{ldis1}
-    Se $i \in I^* \setminus I$, allora $\bar{l}(\Pi_i^*) \geq \beta^c$
-\end{lemma}
-\begin{proof}
-    Se valesse $\bar{l}(\Pi_i^*) < \beta^c$, il cammino $\Pi_i^*$ sarebbe corto e
-    utile, in quanto collega una coppia ancora non collegata, dato che non appartiene a $I$.
-    Quindi, non esisterebbe motivo per non selezionarlo.
-\end{proof}
-
-\begin{lemma}
-    \label{ldis2}
-    Vale che $\sum_{e \in E}\bar{l}(e) \leq \beta^{c+1}|\bar{I}| + m$.
-\end{lemma}
-\begin{proof}
-    All'inizio dell'algoritmo, $\sum_{e \in E} l(e) = m$.
-    Consideriamo ora le due funzioni di lunghezza dopo la selezione di un cammino
-    $$l_1 \longrightarrow \Pi \longrightarrow l_2$$
-    \[ 
-        l_2(e) = 
-        \begin{cases}
-        \beta l_1(e) & \mathit{se}\;e \in \Pi\\
-        l_1(e) & \mathit{se}\;e \notin \Pi
-     \end{cases}
-    \]
-    Consideriamo ora la differenza delle lunghezze
-    \begin{equation}
-        \begin{aligned}
-            \sum_{e \in E} l_1(e) - \sum_{e \in E} l_2(e) = \sum_{e \in E} (l_1(e) - l_2(e))\\
-            = \sum_{e \in E} (l_1(e) - l_2(e)) = \sum_{e \in \Pi} (\beta l_1(e) - l_2(e))\\
-            = \sum_{e \in \Pi} (\beta -1)l_1(e) = (\beta -1) \sum_{e \in \Pi} l_1(e)\\
-            = (\beta -1)l(\Pi) \leq (\beta -1)\beta^c \leq \beta^{c+1}
-        \end{aligned}
-    \end{equation}
-    Considerando l'inizio della dimostrazione, visto che ad ogni passo la lunghezza aumenta di al 
-    massimo $\beta^{c+1}$, il lemma vale.
-\end{proof}
-\begin{remark}
-    \label{oss3dis}
-    Valgono:
-    \begin{equation}
-        \begin{aligned}
-            \sum_{i \in I^* \setminus I} \bar{l}(\Pi_i^*) \geq \beta^c|I^* \setminus I| && \text{dal lemma \ref{ldis1}}\\
-            \sum_{i \in I^* \setminus I} \bar{l}(\Pi_i^*) \leq c\sum_{e \in E} \bar{l}(e) \leq c(\beta ^{c+1}|\bar{I} + m|)
-            && \text{per il lemma \ref{ldis2}}
-        \end{aligned}
-    \end{equation}
-\end{remark}
-
-Mettendo tutto insieme: 
-\begin{equation}
-    \begin{aligned}
-        \beta^c|I^*| = \beta^c|I^* \setminus I| + \beta^c|I^* \cap I|\\
-        \leq \sum_{i \in I^* \setminus I} \bar{\Pi_i^*} + \beta^c && \text{per il punto 1 di oss. \ref{oss3dis}, e maggioro}\\
-        \leq c(\beta^{c+1}|\bar{I}| + m) + \beta^c |I|&& \text{per il punto 2 di oss. \ref{oss3dis}}\\
-        \leq c(\beta^{c+1}|I| + m) + \beta^c |I|&& \text{I è sovrainsieme per I barra}\\
-        |I^*| \leq c\beta|I| + c\beta^{-c}m + |I|&& \text{divido per beta elevato alla c}\\
-        |I^*| \leq c\beta|I| + c\beta^{-c}m|I| + |I|&& \text{moltiplico per la cardinalità quello in mezzo}\\
-        |I^*| \leq c\beta|I| + c\beta^{-c}m|I| + |I|&& \text{divido per cardinalità di }\\
-
-    \end{aligned}
-\end{equation}
+% \subsubsection{Inapprossimabilità Max Indipendent Set}
