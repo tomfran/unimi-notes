@@ -4,13 +4,59 @@ In questa sezione si affrontano alcune tematiche, in particolare il teorema PCP,
 con il quale di riuscirà a dimostrare l'inapprossimabilità di MaxEkSat e Indipendent set.
 
 \subsection{Verificatori}
-\dots
+\subsubsection{NP attravero testimoni}
+Una Macchina di Turing verificatore per un problema di decisione $L \subseteq 2^*$, riceve due input, $x$ e $w$, testimone, 
+e si comporta come segue:
+\begin{enumerate}
+    \item se $x \notin L$ risponde no qualunque sia $w$
+    \item se $x \in L$, allora $\exists w\in 2^*$ tale che la macchina risponde sì
+\end{enumerate}
+Devono valere però:
+\begin{enumerate}
+    \item $|w| \leq P(|x|)$ ovvero la lunghezza di $w$ è polinomiale nell'input
+    \item la macchina lavora in tempo polinomiale
+\end{enumerate}
 
+\begin{remark}
+    Si può pensare alla classe NP come una classe di problemi facilmente verificabili, ma difficilmente 
+    risolvibili.
+\end{remark}
+\begin{remark}
+    Esistono problemi nè risolvibili nè  verificabili facilmente.
+\end{remark}
+\begin{theorem}
+    Un problema $L \subseteq 2^* \in $NP se e solo se esiste una Macchina di Turing deterministica $V$, verificatore,
+    e un polinomio $P()$, tali che:
+    \begin{enumerate}
+        \item $V(x,w)$ lavora in tempo polinomiale in $|x|$
+        \item $\forall x \in 2^*$:
+        \begin{enumerate}
+            \item se $x \in L$, $\exists w \in 2^*$ tale che $|w| \leq P(|x|)$ e $V(x,w) = \mathit{yes}$
+            \item se $x \notin L$, $\forall w \in 2^*$ $|w| \leq P(|x|)$, $V(x,w) = \mathit{no}$
+        \end{enumerate}
+    \end{enumerate}
+\end{theorem}
 
-% \subsubsection{NP attravero testimoni}
+\subsubsection{NP con oracolo}
+L'idea di una Macchina di Turing con oracolo presuppone l'esistenza, oltre 
+al nastro classico, di un nastro dell'oracolo.
 
-% \subsubsection{Verificatore con oracolo}
+La Macchina può entrare in uno stato di query all'oracolo, 
+in cui lo interroga e l'oracolo risponderà, facendole cambiare stato di conseguenza.
 
+\begin{theorem}
+    Un problmema $L \subseteq 2^* \in $ NP se esiste una Macchina di Turing con oracolo $V$ e
+    un polinomip $P()$, tale che:
+    \begin{enumerate}
+        \item $V(x)$ lavora in tempo polinomiale in $|x|$
+        \item $V(x)$ effettua al più $P(|x|)$ query all'oracolo
+        \item $\forall x \in 2^*$:
+        \begin{enumerate}
+            \item se $x \notin L$, $V(x) = no$ qualunque sia l'oracolo
+            \item se $x \in L$, $V(x) = yes$ per una qualche stringa dell'oracolo
+        \end{enumerate}
+    \end{enumerate}
+\end{theorem}
 % \subsubsection{Verificatore probabilistico}
 
 % \subsubsection{Teorema PCP}
