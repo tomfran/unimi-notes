@@ -172,7 +172,7 @@ Sia ora $x^*$ soluzione ottima della versione intera $\Pi_{LP}$, con valore
 $v^*$.
 
 Se si considera il dominio reale, esisterà una soluzione $\hat{x}, \hat{v}$, 
-tale che $$\hat{v}\leq v^*$$.
+tale che $$\hat{v}\leq v^*$$
 
 Si formula ora un algoritmo per Set Cover, dove si trova una soluzione 
 per la riformulazione in programmazione lineare reale e poi si considera il valore della
@@ -321,3 +321,205 @@ $$P[X > \alpha] \leq \frac{E[X]}{\alpha}$$
         \end{aligned}
     \end{equation}    
 \end{proof}
+
+\subsubsection{MaxEkSat}
+Questa riformulazione del problema aggiunge un costraint per quanto riguarda il numero di 
+variabili per ogni condizione di sat.
+
+Formalmente:
+\emph{Input}: Formula CNF con $t$ clausole, ognuna di $k$ letterali, ogni variabile al massimo una volta
+per clausola\\
+\emph{Output}: Assegnamento che rende vera la CNF\\
+\emph{Funzione obiettivo}: Numero di clausole risolte\\
+\emph{Tipo}: max
+
+\begin{remark}
+    Il problema è NP completo per ogni $k \geq 3$
+\end{remark}
+\begin{theorem}
+    Un assegnamento casuale delle variabili, porta ad una soluzione che 
+    soddisfa in valore atteso $\geq \frac{2^k-1}{2^k}t$ clausole, ovvero, 
+    sia $T$ la variabile aleatoria che rappresenta il numero di clausole soddisfatte: 
+    $$E[T] =\frac{2^k-1}{2^k}t$$
+\end{theorem}
+\begin{proof}
+    Siano $x_1, \dots, x_m$ le variabili che compaiono nella formula e 
+    $c_1, \dots ,c_t$ le clausole.
+
+    Si definiscono poi delle variabili aleatorie:
+    \begin{enumerate}
+        \item $X_1, \dots, X_m\thicksim\mathit{Unif}(\{0,1\}) $,dove $X_i$ è il valore assegnato a $x_i$
+        \item $C_1, \dots, C_t$ ognuna delle quali vale 1 sse la clausola $c_i$ è soddisfatta
+        \item $T$ numero di clausole soffisfatte, $T = \sum_{i = 1}^{t} C_i$
+    \end{enumerate} 
+    Si calcola ora il valore atteso di $T$.
+    
+    Vale che:
+    \begin{equation}
+        \begin{aligned}
+            E[T] = \sum_E E[T|E]\cdot P[E] \\
+            = \sum_{b_1 \in 2 } \dots \sum_{b_n \in 2 } P[X_1 = b_1, \dots, X_n = b_n]\\
+            E[T|X_1 = b_1, \dots, X_n = b_n]\\
+            = \sum_{b_1 \in 2 } \dots \sum_{b_n \in 2 } P[X_1 = b_1] \dots P[X_n = b_n]&& \text{var indipendenti}\\
+            E[C_1 + \dots + C_t | X_1 = b_1, \dots, X_n = b_n] && \text{definizione di T}\\
+            = \frac{1}{2^n}\sum_{b_1 \in 2 } \dots \sum_{b_n \in 2 } \sum_{i=1}^{t} E[C_i | X_1 = b_1, \dots, X_n = b_n]&& \text{valore di X, linearità v.a.}\\
+        \end{aligned}
+    \end{equation}
+    Ora si nota che quel valore atteso finale, vale 0 oppure 1, in base al soddisfacimento o meno della clausola $C_i$.
+    Ogni clausola è composta da $k$ variabili in disgiunzione, quindi, esiste un solo assegnamento delle $k$ che la rende falsa.
+
+    Visto che si hanno $n$ variabili totali, esistono esattamente $2^{n-k}$ assegnamenti che rendono falsa la clausola, ovvero, 
+    si individua un assegnamento delle $k$ variabili che rendono falsa la clausola $C_i$ e si considerano tutti i possibili assegnamenti 
+    delle restanti $(n-k)$ variabili.
+    
+    Vale quindi che gli assegnamenti che rendono vera la clausola $C_i$ sono $2^n - 2^{n-k}$, ovvero il totale delle combinazioni 
+    meno quelle che la rendono falsa.
+
+    Proseguendo con l'equazione quindi, sostituendo quella sommatoria con quanto appena discusso:
+    \begin{equation}
+        \begin{aligned}
+            = \frac{1}{2^n}\sum_{b_1 \in 2 } \dots \sum_{b_n \in 2 } \sum_{i=1}^{t} E[C_i | X_1 = b_1, \dots, X_n = b_n] \\
+            = \frac{1}{2^n}t(2^n - 2^{n-k}) = \frac{t(2^n - 2^{n-k})}{2^n}\\
+            =  \frac{t(2^n - 2^{n-k})}{2^n} * \frac{2^{k-n}}{2^{k-n}} = t\frac{2^k -1}{2^k}
+        \end{aligned}
+    \end{equation}
+\end{proof}
+\begin{theorem}
+    \label{maxth}
+    Dato un input per MaxEkSat con $n$ variabili, e $t$ clausole.
+    \begin{equation}
+        \begin{aligned}
+            \forall j = 0, \dots, n,\;\exists b_1, \dots, b_j \in 2, t.c\\
+            E[T|X_1 = b_1, \dots, X_j = b_j] \geq  t\frac{2^k -1}{2^k}
+        \end{aligned}
+    \end{equation}
+\end{theorem}
+\begin{proof}
+    Si dimostra per induzione per $j$.\\
+    $j = 0$, dimostrato dal teorema precendente.
+    
+    Passo induttivo:
+    \begin{equation}
+        \begin{aligned}
+            E[T|X_1 = b_1, \dots, X_j = b_j] = \\
+            E[T|X_1 = b_1, \dots, X_j = b_j, X_{j+1} = 0]\cdot P[x_{j+1} = 0]\\
+            +\;E[T|X_1 = b_1, \dots, X_j = b_j, X_{j+1} = 1]\cdot P[x_{j+1} = 1] &&\text{Eventi disgiunti}\\
+            = \frac{1}{2}\cdot E[T|X_1 = b_1, \dots, X_j = b_j, X_{j+1} = 0]\\
+            + \; \frac{1}{2}\cdot E[T|X_1 = b_1, \dots, X_j = b_j, X_{j+1} = 1]
+        \end{aligned}
+    \end{equation}
+    Per ipotesi induttiva, la media dei due valori attesi è almeno $t\frac{2^k -1}{2^k}$, 
+    questo implica che uno dei due valori attesi è maggiore di quella quantitità, ovvero, 
+    per qualche $b \in 2$:
+    $$E[T|X_1 = b_1, \dots, X_j = b_j, X_{j+1} = b] \geq t\frac{2^k -1}{2^k}$$
+\end{proof}
+\begin{remark}
+    La dimostrazione appena scritta suggerisce un approccio da seguire per l'algoritmo finale, 
+    si deciderà iterativamente quale valore assegnare alla variabile $j$ in base al valore atteso di 
+    $T$.
+\end{remark}
+
+\paragraph{MaxEkSat derandomizzato}
+si volta
+
+\begin{algorithm}[H]
+    \SetAlgoLined
+    \KwIn{$C_1 \wedge \dots \wedge C_t$, ognuna con $k$ letterali $\in x_1, \dots, x_n$}
+    \KwResult{Assegnamento di variabili}
+    $D \gets \emptyset$\\
+    \For{$i = 1,\dots, n$}{
+        $\Delta_0 \gets 0$\\
+        $\Delta_1 \gets 0$\\
+        $\Delta D_0 \gets \emptyset$\\
+        $\Delta D_1 \gets \emptyset$\\
+        \For{$j = 1, \dots, t$}{
+            \If{$j \in D \lor x_i \notin C_j$}{
+                $\mathit{continue}$
+            }
+            $h \gets |x_k \in C_j, k > i|$\\
+            \If{$x_i$ positiva in $C_j$}{
+                $\Delta_0 \gets \Delta_0 - \frac{1}{2^h}$\\
+                $\Delta_1 \gets \Delta_1 + \frac{1}{2^h}$\\
+                $\Delta D_1 \gets \Delta D_1 \cup \{j\} $\\
+            }
+            \Else{
+                $\Delta_0 \gets \Delta_0 + \frac{1}{2^h}$\\
+                $\Delta_1 \gets \Delta_1 - \frac{1}{2^h}$\\
+                $\Delta D_0 \gets \Delta D_0 \cup \{j\} $\\    
+            }
+        }
+        $b = (\Delta_0 \leq \Delta_1)$\\
+        $X_i = b$\\
+        $D \gets D \cup \Delta D_b$
+    }
+    \Return{$\mathit{Assegnamento}$}
+    \caption{MaxEkSat Derandomizzato}
+\end{algorithm}
+
+L'algoritmo implementa quanto osservato nel teorema precedente.
+In particolare si cerca di mantenere al passo $i$ vera questa proprietà
+$$E[T|X_1 = b_1, \dots, X_{i-1} = b_{i-1}] \geq t\frac{2^k -1}{2^k}$$
+Il valore atteso si può scomporre
+\begin{equation}
+    \begin{aligned}
+        E[T|X_1 = b_1, \dots, X_{i-1} = b_{i-1}] = \\
+        E[C_1|X_1 = b_1, \dots, X_{i-1} = b_{i-1}]\;+\\
+        E[C_2|X_1 = b_1, \dots, X_{i-1} = b_{i-1}]\;+\\
+        \dots\\
+        + \; E[C_t|X_1 = b_1, \dots, X_{i-1} = b_{i-1}]  
+    \end{aligned}
+\end{equation}
+Quello che si fa ora è confrontare i singoli valori attesi con gli stessi 
+ottenuti dopo l'assegnamento della iesima variabile.
+
+Si fa notare che, se una clausola $C_j$ appartiene a $D$, il valore atteso dopo 
+l'assegnamento della iesima variabile non cambia, ovvero quella clausola è già decisa.
+
+Il valore può cambiare per quelle che contengono la variabile $X_i$, consideriamone una
+che contiene quella variabile, per esempio:
+$$x_1 \lor \bar{x_4} \lor \dots \lor x_i \lor x_{i+1} \dots \lor x_n$$
+Consideriamo $h$ variabili da $i$ a $n$ comprese, ci sono $\frac{2^h -1}{2^h}$ assegnamenti delle $h$ variabili che rendono vera 
+la clausola.
+
+Il valore atteso della clausola vale, prima dell'assegnamento di $x_i$
+$$E[C_j] = \frac{2^{h} -1}{2^{h}}$$
+dopo l'assegnamento varia in questo modo
+\[
+    E[C_j] = 
+    \begin{cases}
+        1\;\mathit{se}\; x_i = 1\\
+        \frac{2^{h-1} -1}{2^{h-1}} \;\mathit{se}\; x_i = 0
+    \end{cases}
+\]
+il cambiamento di valore atteso vale 
+\[
+    \Delta\;\mathit{valore}\;\mathit{atteso} = 
+    \begin{cases}
+        1 - \frac{2^h -1}{2^h} = \frac{2^h - 2^h + 1}{2^h} = +\frac{1}{2^h}\;\mathit{se}\; x_i = 1\\
+        \frac{2^{h-1} -1}{2^{h-1}} - \frac{2^h -1}{2^h} = \frac{2^h -2 - 2^h + 1}{2^h} = -\frac{1}{2^h}\;\mathit{se}\; x_i = 0\\
+    \end{cases}
+\]
+Nell'algoritmo non si sta facendo altro che calcolare il delta di valore atteso di $T$ in base al 
+valore assegnato alla variabile $x_i$.\\
+Per la dimostrazione del teorema \ref{maxth} uno degli assegnamenti di $x_i$ produrrà un valore atteso 
+maggiore, quindi si sceglierà quello.
+
+Si sta quindi procedendo nell'algoritmo accertandosi di mantenere vera la proprietà enunciata dal teorema \ref{maxth}.
+\begin{theorem}
+    Al termine dell'algoritmo almeno $\frac{2^k -1}{2^k}t$ clausole saranno vere.
+\end{theorem}
+\begin{corollary}
+    L'algoritmo fornisce una $\frac{2^k -1}{2^k}$'approssimazione per MaxEkSat.
+\end{corollary}
+\begin{proof}
+    Sia $t^*$ la soluzione ottima e sia $\bar{t}$ la soluzione prodotta dall'algoritmo.
+    \begin{equation}
+        \begin{aligned}
+            \bar{t} \geq \frac{2^k -1}{2^k}t \implies t \leq \bar{t}\frac{2^k}{2^k -1} &&\text{Per il teorema \ref{maxth}}\\
+            \frac{t^*}{\bar{t}} \leq \frac{t}{\bar{t}} \leq \frac{\bar{t}\frac{2^k}{2^k -1}}{\bar{t}} \leq \frac{2^k}{2^k -1}
+        \end{aligned}
+    \end{equation}
+\end{proof}
+\begin{corollary}
+    MaxE3Sat è $\frac{7}{8}$-approssimante.
+\end{corollary}

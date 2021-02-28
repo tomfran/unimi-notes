@@ -1,5 +1,11 @@
 # UniMI Notes
-These are notes from my university courses, keep in mind they may contain errors, drop me a line if you've found any!
+
+This is a collection of my university courses notes, keep in mind some of them might not
+be complete. 
+
+Also, feel free to contact me if you've found any errors.
+
+## Courses
 
 ### Artificial intelligence
 Notes about [evolutionary algorithms](https://github.com/tomfran/unimi-notes/blob/main/artificial-intelligence/evolutionary.pdf), in Italian.
