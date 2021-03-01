@@ -1,0 +1,52 @@
+\section{What is simulation?}
+
+\paragraph{Simulation}
+The production of a model of something, with the purpose 
+of study. The main goal of simulation is to replicate the behavior of a certain 
+entity or system to understand something about it.
+
+Simulation is usually limited and closed in the engineering field, while 
+in computer science the represented system can be really complex and
+not deterministically defined.
+
+\paragraph{Descriptive model}
+A descriptive model can be defined as some form of formalism that represent 
+the behavior of a system.
+It could be an equation, a system of equations, a probability distribution 
+and so on.\\
+A descriptive model can be then used by a computer, to study what would happen 
+in the real system or to replicate its behavior.
+
+\begin{remark}
+    Parameters are part of a model, but the values represent a particular 
+    instance of it.
+\end{remark}
+
+\paragraph{Reasons to simulate}
+The main reasons to do simulations are:
+\begin{enumerate}
+    \item cheaper then real worlds simulations
+    \item they can test particular or even extreme \emph{what if} scenarios
+    \item visualization of results
+\end{enumerate}
+
+\paragraph{When to skip simulation}
+When a problem has closed forms solutions, they 
+are better than simulations.
+Also, when \emph{what if} scenarios are too complex, it's better to use prescriptive models.
+
+\paragraph{Simulation paradigms}
+There are three main simulation paradigms:
+\begin{enumerate}
+    \item \emph{discrete event}: the focus is not on individuals but on the process, there is 
+    the idea of events that can trigger other ones  
+    \item \emph{agent-based}: each entity is an agent with its own logic that can 
+    interact with others via messages
+    \item \emph{system dynamics}: basically a system is represented by states and 
+    individuals can change states according to some probabilistic transitions
+\end{enumerate}
+These three paradigms are used for different contexts and choosing the right one 
+is a crucial part of simulation. 
+
+For instance, the first two approaches model fine grain details, 
+while the in the third we can only define coarse grain specifications.
