@@ -19,4 +19,4 @@ Incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/algoritmi-co
 ## Current courses
 Those are a collection of courses I am currently following. 
 ### Simulation
-Incomplete [Notes](https://github.com/tomfran/unimi-notes/blob/main/simulation/simulation.pdf), in english
+Incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/simulation/simulation.pdf), in english
