@@ -1,7 +1,6 @@
 # UniMI Notes
 
-This is a collection of my university courses notes, keep in mind some of them might not
-be complete.
+This is a collection of my university courses notes, keep in mind some of them might not be complete.
 
 Also, feel free to contact me if you've found any errors.
 
@@ -18,5 +17,9 @@ Incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/algoritmi-co
 
 ## Current courses
 Those are a collection of courses I am currently following. 
+
 ### Simulation
 Incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/simulation/simulation.pdf), in english
+
+### Statistical methods for machine learning
+Incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/statistical-methods/statistical-methods.pdf), in english
