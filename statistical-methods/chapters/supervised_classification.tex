@@ -1,0 +1,222 @@
+\section{Supervised classification}
+
+The main goal of this learning task is to learn a rule that maps data points
+to a certain label.
+The algorithm needs annotated data to infer such a mapping.
+\subsection{Elements}
+A supervised task is made of many elements, for instance, we need a label definition, 
+actual data points to observe and a measure of the performance and the error to guide the 
+algorithm.
+
+\subsubsection{Labels}
+Along with the definition of a learning problem, there is a label set $Y$ that collects
+possible labels of data.\\
+For instance, when considering classification of documents, a label set could be defined 
+as follows: 
+$$Y = \{\mathit{sport}, \mathit{politics}, \mathit{business}, \dots\}$$
+Or in the case of stock predictions:
+$$Y \subseteq \mathbb{R}$$
+
+\paragraph{Labels definition}
+The definition of labels changes the flavour of the task, in fact:
+\begin{itemize}
+    \item if $Y$ contains a finite number of symbols the task 
+    is called \emph{classification}/\emph{categorization}
+    \item if $Y$ is formed by real numbers, the task is called \emph{regression}
+\end{itemize}
+
+\paragraph{Error measures}
+The computation of prediction error differs between classification and regression:
+in the first we can consider an error if the prediction differs from the label, 
+in the latter we can compute the difference between the prediction and the label.
+
+\subsubsection{Loss functions}
+When learning a map from data to labels, we need a way to tell the machine how good
+the mapping is, so a loss function is defined on the pair of true label and assigned label.
+
+\paragraph{Classification loss examples}
+In case of classification, we can define:
+\[
+    l(y, \hat{y}) = \begin{cases}
+        0\; \mathit{if}\; y = \hat{y}\\
+        1\; \mathit{if}\; y \neq \hat{y}\\
+\end{cases}\]
+
+It is possible to be a little more precise in the definition of a loss function, for instance:
+$$Y = \{\mathit{spam}, \mathit{notspam}\}$$
+\[
+    l(y, \hat{y}) = \begin{cases}
+        2\; \mathit{if}\; y = \mathit{notspam} \wedge \hat{y} = \mathit{spam}\\
+        1\; \mathit{if}\; y = \mathit{spam} \wedge \hat{y} = \mathit{notspam}\\
+        0\; \mathit{otherwise}
+\end{cases}\]
+The idea is to penalize false positive mistakes, giving them a $2$ contribution, 
+and to count false negative mistakes. 
+
+\paragraph{Regression loss examples}
+An example of a loss function in the case of regression are the \emph{absolute loss}:
+$$l(y, \hat{y}) = |y - \hat{y}|$$
+ot the \emph{square loss} that has some better properties:
+$$l(y, \hat{y}) = (y - \hat{y})^2$$
+Another example, in the case of whether forecast prediction:
+$$Y = \{\mathit{rain}, \mathit{sun}\}, Z = [0,1]$$
+We want to define a regression task that outputs the probability of a whether condition.
+By using the absolute error loss function, we assume a linearity in the error, 
+whereas we can assume that predicting sun while it rains can be a shame.\\
+This means it is preferred to use something like a square loss, to keep track of such a 
+wanted behavior, indeed the error would raise quicker and exponentially.
+
+Another example would be the \emph{logarithmic loss}:
+\[
+    l(y, \hat{y}) = \begin{cases}
+        \ln \frac{1}{\hat{y}}\; \mathit{if}\; y = 1\\
+        \ln \frac{1}{1-\hat{y}}\; \mathit{if}\; y = 0
+\end{cases}\]
+$$\lim_{\hat{y} \rightarrow 0^+} l(1, \hat{y}) = \lim_{\hat{y} \rightarrow 1^-} l(0, \hat{y}) = \infty$$
+
+This means the algorithm will pay an infinite punishment when making wrong predictions.
+
+\subsubsection{Data points}
+The data points encode individual data, such as individual documents, medical records, 
+measurements, and so on. They are digitally stored somewhere.\\
+We define with $X$ the data domain.
+
+\paragraph{Encoding}
+To not loose generality, we would data to \emph{look the same} to a learning algorithm, 
+so it is preferred to have some sort of encoding. Such encoding usually maps $X$ to a 
+vector of numbers.\\
+For instance images can be represented as vectors of pixels, and texts can use 
+something like a frequency vector given a dictionary.
+
+The power of encoding is that after a mapping data points become points in a space, 
+so we can use geometry to face the machine learning task.\\
+Let's consider classification, with a good encoding, usually points related to each 
+other, so points of the same class, are close together.
+
+Data points can be
+\[
+    X = \begin{cases}
+        \mathbb{R}^d\;\mathit{numerical\;attributes}\\
+        X_1, \dots, X_d\; \mathit{categorical\;attributes}
+    \end{cases}\]
+
+\paragraph{Problems with numerical attributes}
+A geometric interpretation for such problems is straight forward, as we can use data
+points as coordinates.
+
+\paragraph{Problems with categorical attributes}
+If a certain attribute does not have a geometrical interpretation, for instance there is 
+no order on the domain of the attribute, it is helpful to use \emph{One-hot encoding}.
+For instance, to use the sex of a person as a dimension, we must define an order and a mapping
+to numbers.
+
+\begin{remark}
+    When using encoding, the created order over categorical attributes can be 
+    a problem.
+    There is no golden rule to approach an encoding task, it is a trial and error process, 
+    a bad encoding can destroy data meaning.
+\end{remark}
+
+\subsubsection{Learning predictors}
+A predictor is a function that maps data points to labels, or predictions 
+if they differ from labels
+$$f : X \longrightarrow Y, f: X \longrightarrow Z, Z \neq Y$$
+So given a data point $x$, the prediction is made as follows
+$$\hat{y} = f(x)$$
+The prediction function must be learned, and the general goal is 
+to have a small loss $l(y, \hat{y})$ over \emph{most} of the data points.
+
+\paragraph{Data points annotation}
+As we are in a supervised task, we can construct a predictor using labeled data.
+A single data point is a tuple
+$$(x, y) \longrightarrow (\mathit{data\;point}, \mathit{label})$$
+When talking about labels, they can be:
+\begin{enumerate}
+    \item \emph{Subjective}: human annotation
+    \item \emph{Objective}: objective measurements
+\end{enumerate}
+In the first case, labels may not be consistent and contain noise.
+
+\paragraph{Training set}
+A training set is a set of training examples.
+The main idea is to pass the training set to a learning algorithm, 
+that considers a certain loss function to finally produce 
+a predictor.
+$$\mathit{training\;set} \longrightarrow \mathit{learning\;algorithm}
+\longrightarrow \mathit{predictor}$$
+
+\paragraph{Test set}
+A test set is a set of unseen examples, used to evaluate the predictor 
+performance. Typically a whole dataset is splitted into the training and test sets.
+$$\mathit{dataset} \longrightarrow (\mathit{training\;set}, \mathit{test\;set})$$
+
+\paragraph{Test error}
+Let's now consider a predictor $f$ learned by a certain learning algorithm $A$ 
+using a loss function $l$.
+We can compute the test error as follows
+$$\mathit{test\;set} = (x^\prime_1, y^\prime_1), \dots,(x^\prime_n, y^\prime_n)$$
+$$\mathit{error} = \frac{1}{n}\sum_{t=1}^n l(y^\prime_t, f(x^\prime_t))$$
+Test error is a proxy for the behavior of the predictor \emph{in the field}.
+
+\begin{remark}
+    Our goal is to develop a theory to guide us into the design of learning algorithms 
+    that generates predictors with small test error with respect to some loss function.\\
+    Having more data should be convenient to reduce the test error.
+\end{remark}
+
+\paragraph{Training error}
+Given a training set
+$$S = (x_1, y_1), \dots,(x_m, y_m)$$
+The algorithm knows a loss function $l$, the training error can be computed as follows
+$$\hat{l}_s(f) = \frac{1}{m}\sum_{t=1}^m l(y_t, f(x_t))$$
+The idea is that the learning algorithm can infer the test error from the training error.
+
+\subsection{Empirical risk minimizer}
+The main idea of the Empirical risk minimizer is to find the best predictor given 
+a training set and a loss function.
+
+\subsubsection{Process}
+Formally, we define $F$ as a set of predictors, and $l$ a loss function.\\
+The ERM works like this:
+$$\mathit{training\;set} \longrightarrow \mathit{ERM} \longrightarrow 
+\hat{f} \in \min_{f \in F} \hat{l}_S(f)$$
+
+Things can go wrong, for instance if the minimum error
+$$\min_{f \in F} \frac{1}{n}\sum_{t = 1}^n l(y_t^\prime, f(x_t^\prime))$$
+is large, we can't find a good predictor. The solution could be increasing the $F$ domain, 
+but that's not always the case.
+
+\paragraph{Example}
+Let's consider the example below, where we want to predict these labels.
+$$X = \{x_1, \dots, x_5\}, Y = \{-1,1\}, l = \mathit{zero\;one\;loss}$$
+$F$ contains all the binary classifiers like
+$f : \{x_1, \dots, x_5\} \longrightarrow \{-1,1\}$
+so we have that $|F| = 2^5 = 32$. 
+
+Let's now consider 4 predictors for the 5 data points
+\begin{center}
+    \begin{tabular}{l c c c c c}
+     & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$ \\
+     Labels & -1 & 1 & 1 & 1 & 1\\
+     \hline
+    $f_1$ & -1 & 1 & 1 & 1 & 1 \\
+    $f_2$ & -1 & 1 & 1 & -1 & 1 \\
+    $f_3$ & -1 & 1 & 1 & 1 & -1 \\
+    $f_4$ & -1 & 1 & 1 & -1 & -1 \\
+    \end{tabular}
+\end{center}
+If the training set is made of the first 3 data points, namely 
+$$S = \{(x_i, y_i)\}, i \in \{1,2,3\}$$
+All the 4 predictors would have the same, null, training error.
+In such a case we can't decide what predictor to use, as training error do not give 
+us any relevant information.
+
+As a rule of thumb, given $m$ the size of the training set $S$, if $F$ is bound, 
+the following should hold
+$$m \geq \log_2 F$$
+
+\paragraph{Underfitting and overfitting} 
+Underfitting means having too few predictors to predict well, 
+so the error on the test set is too large.\\
+In the seconds there are too many predictors, and training error do 
+not gives us any information, as happened in the example below. 
