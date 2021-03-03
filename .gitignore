@@ -2,6 +2,7 @@
 /books
 /algorithms-massive-datasets
 /information-retrival
+*slides*
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
