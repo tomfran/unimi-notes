@@ -11,6 +11,6 @@ Also, feel free to contact me if you've found any errors.
 
 ## Current notes
 Those are a collection of courses I am currently following. 
-* ***Sistemi distribuiti e pervasivi***: incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/sistemi-distribuiti/sistemi-distribuiti.pdf), :it:
+* ***Sistemi distribuiti e pervasivi***: incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/sistemi-distribuiti/sistemi-distribuiti.pdf) :it:
 * ***Simulation***: incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/simulation/simulation.pdf) :gb:
 * ***Statistical methods for machine learning***: incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/statistical-methods/statistical-methods.pdf) :gb:
