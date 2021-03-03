@@ -93,16 +93,68 @@ con le seguenti proprietà:
 \subsubsection{Teorema PCP}
 Definiti i verificatori probabilistici, si passa ora al teorema PCP, 
 che in un certo senso dice che il non determinismo può essere portato ad una costante, 
+che fa quindi un numero costante di interrogazioni all'oracolo, 
 a patto che si facciano una quantità logaritmica di scelte casuali.
 
 \begin{theorem}
     $PCP[O(\log n), O(1)] = NP$
 \end{theorem}
 
-% \subsubsection{Verificatore NP in forma canonica}
+\subsubsection{Verificatore NP in forma canonica}
+Si considera ora la classe 
+$$PCP[r(n), q], r(n) = O(\log n), q \in \mathbb{N}$$
+Un verificatore facente parte di questa classe, può leggere 
+fino a $r(|x|)$ bit random, e $q$ query all'oracolo.
 
-% \subsection{Problemi inapprossimabili}
+Il processo seguito da un verificatore del genere è quello 
+di interrogare l'oracolo e agire di conseguenza.
+In particolare, si può pensare a un albero contenente le varie strade che può prendere 
+il verificatore in base alla risposta dell'oracolo. Ha quindi un comportamento 
+adattivo.
 
-% \subsubsection{Inapprossimabilità MaxEkSat}
+Quello che può fare però il verificatore, invece che chiedere di volta in volta 
+all'oracolo, è simulare tutti i rami di decisione, e segnarsi quando dovrebbe 
+interrogarlo, in modo da poi richiedere in una volta sola tutto quello di 
+cui ha bisogno.
+
+Un verificatore in forma canonica è proprio questo, ovvero un verificatore che prima
+simula tutti i rami di computazione possibili, che variano in base all'interrogazione
+all'oracolo, per poi interrogarlo su tutte le posizioni di cui ha bisogno.\\
+Il verificatore così ottenuto può essere considerato come una semplice Macchina di Turing, 
+infatti non deve più interrogare l'oracolo.
+
+\subsection{Problemi inapprossimabili}
+In questa sezione si affrontano due dimostrazioni di inapprossimabilità, 
+esse sfruttano i concetti introdotti a sezione precedente.
+
+\subsubsection{Inapprossimabilità MaxEeSat}
+Il problema è stato introdotto a sezione \ref{eksat}, e si era individuato un algoritmo 
+deterministico che sfruttava concetti probabilistici.
+
+\begin{theorem}
+    Esiste un algoritmo deterministico che approssima MaxE3Set con tasso
+    $\frac{8}{7}$
+\end{theorem}
+
+\begin{theorem}
+    \label{th1ek}
+    Esiste un $\bar{\epsilon} > 0$ tale che MaxE3Sat non è $(\frac{8}{7}-\bar{\epsilon})$-approssimabile. 
+\end{theorem}
+
+Un versione rilassata del teorema appena introdotto è la seguente.
+\begin{theorem}
+    Esiste un $\bar{\epsilon} > 0$ tale che MaxE3Sat non è $(1+\bar{\epsilon})$-approssimabile. 
+\end{theorem}
+
+\begin{remark}
+    Il teorema \ref{th1ek} dimostra che l'algoritmo individuato a sezione \ref{eksat} è ottimo, 
+    mentre quello successivo che MaxE3Sat non fa parte di PTAS. La dimostrazione di quest'ultimo è
+    molto più semplice e usa lo stesso principio.
+\end{remark}
+
+Considerando quanto detto su PCP a sezione precedente: 
+$$L \in NP \implies \exists r(n) \in O(\log n), \exists w \in \mathbb{N}, L \in PCP[r(n), q]$$
+
+
 
 % \subsubsection{Inapprossimabilità Max Indipendent Set}

@@ -1,0 +1,144 @@
+\section{Introduzione ai sistemi distribuiti}
+
+\begin{quote}
+    \emph{You know you have one when the crash of a computer you've
+    never heard of stops you from getting any work done - Leslie Lamport} 
+\end{quote}
+
+\subsection{Definizioni}
+
+\paragraph{Definizione classica}
+Un sistema distribuito è una collezione di computer indipendenti
+che appaiono all'utente finale come un singolo sistema.
+Le macchine non hanno memoria condivisa e possono in qualche modo 
+comunicare tra loro.
+
+
+\paragraph{Interpretazione come middleware}
+Da un punto di vista architetturale un sistema distribuito può essere
+ visto come un middleware che si estende tra molte macchine, offrendo 
+ad ognuna una qualche interfaccia.
+
+\paragraph{Esempi}
+Alcuni esempi di sistemi distribuiti possono essere:
+\begin{itemize}
+    \item Un set di PC che comunicano tra loro con un 
+    processo che è assegnato dinamicamente
+    \item Online multiplayer
+    \item World Wide Web 
+\end{itemize}
+
+\subsection{Obiettivi}
+Gli obiettivi di un sistema distruibuito si possono ricondurre a garantire
+accesso delle risorse, trasparenza, apertura e scalabilità.
+
+\paragraph{Trasparenza}
+Esistono vari tipi di trasparenza da garantire in un contesto distribuito:
+\begin{itemize}
+    \item \emph{Accesso}: nasconde la rappresentazione dei dati 
+    e come gli utenti vi accedono
+    \item \emph{Locazione}: si nasconde dove una risorse è mantenuta
+    \item \emph{Migrazione}: non si mostra il fatto che una risorsa ha cambiato 
+    locazione
+    \item \emph{Rilocazione}: come il precedente ma quando la risorsa è in uso
+    \item \emph{Replicazione}: nasconde la replicazione delle risorse
+    \item \emph{Concorrenza}: nasconde il fatto che una risorsa è condivisa
+    da più utenti
+    \item \emph{Fallimento}: non mostra fallimenti e relativi recovery del sistema
+\end{itemize}
+Solitamente non è possibile garantire tutti questi punti.
+
+\paragraph{Apertura}
+Un sistema distribuito aperto dovrebbe riuscire a fornire
+\begin{itemize}
+    \item Interoperabilità
+    \item Portabilità
+    \item Possibilità di estensione
+\end{itemize}
+Può essere ottenuta tramite l'uso di protocolli standard, API, \dots
+
+\paragraph{Scalabilità}
+La scalabilità è fondamentale in un constesto distribuito, 
+la desiderata è che le prestazioni non peggiorino alll'estensione
+del sistema, bisogna perciò evitare la centralizzazione, 
+in particolare di servizi, dati e algoritmi.\\
+In algoritmo decentralizzato ad esempio:
+\begin{itemize}
+    \item Nessuna macchina ha complete informazioni sul sistema
+    \item Le decisioni sono prese guardando conoscenze locali
+    \item Il fallimento di una singola macchina non pregiudica lo stato
+    del sistema
+    \item Non ci sono implicazioni implicite sull'esistenza di un clock globale
+\end{itemize}
+L'opposto di un sistema centralizzato.\\
+Un esempio di scalabilità si trova nella divisione del DNS in zone, 
+evitando quindi di avere un singolo name server centrale.
+
+\subsection{Tipologie}
+Esistono varie tipologie di sistemi distribuiti che variano a seconda degli 
+scopi.
+\subsubsection{Computing systems}
+\paragraph{Clusters} collezione di workstations uguali o molto simili, 
+collegate tra solo da una rete locale ad alta velocità, fanno girare lo 
+stesso sistema operativo.
+Esistono due tipologie:
+\begin{enumerate}
+    \item \emph{Asimmetrico}: esiste un nodo master che coordina 
+    e controlla gli altri nodi, un esempio è Google Borg
+    \item \emph{Simmetrico}: tutti i nodi hanno lo stesso software
+\end{enumerate}
+
+\paragraph{Cloud computing}
+Il cloud computing è un modello per fornire accesso a una rete di 
+computer in modo conveniente e on demand, caratterizzato dalla 
+facilità di riconfigurazione delle macchine.
+Alcune caratteristiche sono che:
+\begin{itemize}
+    \item I nodi sono eterogenei
+    \item Le connessioni sono eterogenee, in termini di capacità e di affidabilità
+    \item On-demand self-service, ovvero la facile configurazione che si è discussa sopra
+    \item La capacità di calcolo è accessibile tramite la rete, tramite meccanismi 
+    standard
+    \item Le risorse sono condivise tra molti utenti, in modo da ottimizzare il loro utilizzo
+    \item Elasticità rapida, ovvero le risorse sono facilmente assegnabili
+    \item Esistono sistemi di misura, ovvero metriche che indicano l'utilizzo 
+    del sistema cloud
+\end{itemize}
+Esistono poi alcune categorie: 
+\begin{itemize}
+    \item Software as a Service: utilizzo di un software che gira in cloud
+    \item Platform as a Service: deploy che utilizza tool del cloud provider
+    \item Infrastructure as a Service: software che gira sfruttando l'infrastruttura cloud
+\end{itemize}
+
+\paragraph{Edge computing}
+Nel corso degli anni alcuni nodi dei sistemi distruibuiti non sono più 
+semplici computer ma possono essere sensori dispositivi che 
+producono molti dati.
+
+C'è bisogno di connetterli in tempo reale, ad esempio tramite una rete 5G, ed effettuare 
+preprocessing prima di comunicare con il cloud.
+Si può pensare ad un solo strato intermedio tra sensori e cloud.
+
+\paragraph{Fog computing}
+Simile all'edge computing, ma potrebbero essre presenti più livelli tra i sensori 
+e il cloud vero e proprio.
+
+\subsubsection{Information systems}
+Rappresentano un'altra tipologia di sistemi distruibuiti.
+\paragraph{Database distribuiti}
+Database distribuiti in cloud, oppure blockchain.
+
+\paragraph{Transaction porocessing systems}
+Lo scopo è quello di garantire le proprietà ACID in un contesto distribuito.
+
+\subsubsection{Pervasive computing}
+
+Un sistema distribuito pervasivo ha alcune caratteristiche che 
+lo discostano da un sistema classico, in particolare si possono trovare 
+nodi inconvenzionali, ad esempio smart objects vari e il principio 
+di adattività, ovvero la capacità di adattarte il comportamento del sistema
+in base all'obiettivo del sistema.
+
+Alcuni esempi possono essere l'uso di dispositivi smart in casa, oppure 
+la guida autonoma.
