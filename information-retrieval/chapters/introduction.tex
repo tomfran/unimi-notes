@@ -1,0 +1,126 @@
+\section{Vector space model}
+
+\paragraph{Text transformation}
+The first step to process queries on text is to transform 
+it into a model that can be computed by a machine.
+
+Such a model should be suitable for any kind of text, should be able 
+to capture the semantic of words and then should support the notion of
+\emph{text similarity}.
+
+The main idea of a vector space model is to map documents in a vector, 
+so they appear as points in a certain space.
+
+For instance, we can collect some words and index them, then build a vector 
+for each document $$[x_0, \dots, x_n]$$
+Where the value $x_i$ stores the occurrences of the word indexed with $i$ 
+in that document.
+
+\paragraph{Similarity} 
+This model somehow implements the notion of text similarity, represented 
+by some sort of distance function between two documents in space, perhaps 
+the \emph{Euclidean distance} or the difference between the angle of the two 
+vectors.
+There are a lot of distance measures, and they vary in applications.
+Some of them assume normalization in the document vectors.
+
+
+\paragraph{Document-Term matrix}
+If we arrange document vectors in a vector we obtain the 
+\emph{document-term matrix}, or the \emph{term-document matrix} if 
+we take the opposite.
+The number of dimensions in the space is equal to the 
+number of words in the vocabulary. \\
+That can be a problem without some sort of lemmatisation and stemming, 
+as sparsity and dimension of the matrix increases.
+
+\paragraph{Vector length problem}
+By considering the length of the vector in a similarity measure, 
+we are introducing some problems, let's just consider a text and its 
+abstract, the Euclidean distance would be huge, as most of the words do not 
+appear that often. \\
+To solve the problem we can consider the \emph{Cosine similarity} or 
+normalize vector lengths.
+
+The main phases in the generation of a vector space models are:
+tokenization, normalization, weight, and indexing.
+
+\subsection{Tokenization}
+The goal is to split the text in words, for instance we could split the
+document at the spaces.
+
+In practice this can be obtained with:
+\begin{itemize}
+    \item \emph{Regex}
+    \item \emph{Corpus} based
+    \item \emph{Machine} Learning based
+\end{itemize}
+
+\subsection{Normalization}
+The idea is to normalize each token, that could mean writing verbs in the normal 
+form, or plurals at the singular.
+
+\paragraph{Stemming}
+One form of normalization is stemming, that simply truncate words 
+to obtain singular or infinite forms.
+The problems here could be creation of meaningless words and also 
+close words in meaning could be completely different. An example
+is the \emph{Porter} stemming algorithm.
+
+\paragraph{Lemmatisation}
+Another way to normalize is to lemmatise, 
+It's similar to stemming, but the words are replaced with the dictionary 
+root, this also has a problem, indeed sometime mapping of same words to 
+different lemmas can happen. A way to lemmatise is to use a 
+\emph{Dictionary based} lemmatisation, or something more complicated 
+such as \emph{Wordnet}.
+
+\paragraph{Wordnet}
+Wordnet is a large lexical database, verbs, nouns, adjectives and adverbs are
+grouped into cognitive synonyms, called synsets, each expressing
+a different concept.
+Synsets are connected to each other by conceptual relations and they are also 
+connected to a lemma.
+
+\subsection{Term Weighting}
+Weighting the words is a crucial point in text processing, 
+an easy way could be counting the frequency of the terms in the document.
+
+\paragraph{Term frequency}
+An example of weighing is the term frequency, 
+which counts the frequency of a term given a document:
+\begin{itemize}
+    \item \emph{Boolean}: so a 0 or 1 if the word is present or not
+    \item \emph{Natural}: $\mathit{tf}_{t,d} = $  count of a specific word
+    \item \emph{Log}: $1 + \log(\mathit{tf}_{t,d})$
+    \item \emph{Augmented}: $0.5 + \frac{0.5\mathit{tf}_{t,d}}{\max_{t^\prime} \mathit{tf}_{t^\prime,d}}$
+    \item \emph{Log average}:  $0.5 + \frac{0.5 \log(\mathit{tf}_{t,d})}{1 + \log(\mathit{avg}_{t^\prime} \mathit{tf}_{t^\prime,d})}$
+    \item \emph{Max tf norm}: $k + (1-k)\frac{\mathit{tf}_{t,d}}{\mathit{tf}_{\max}(d)}$
+\end{itemize}
+
+\paragraph{Stop words problem}
+A problem in this model is the excessive presence of stop words and punctuations.
+To compensate, we can remove them in the normalization phase. \\
+But sometimes the stop words can be important, for instance with phrasal verbs.
+A solution can be to count the number of documents that contains that given word.
+
+\paragraph{Inverse document frequency}
+The idea is to count the number of documents that contains a 
+given words, and to prefer less frequent words: $$\mathit{idf} = \log\frac{N}{\mathit{df}_t}$$
+There are many variants: 
+\begin{itemize}
+    \item \emph{Smooth}: $\log(\frac{N}{1 + \mathit{df}_t}) + 1$
+    \item \emph{Max}: $\log(\frac{\max_{t^\prime \in d} \mathit{df}_t}{1 + \mathit{df}_t}) + 1$
+    \item \emph{Probabilistic}: $\log \frac{N - \mathit{df}_t}{\mathit{df}_t}$
+\end{itemize}
+
+\paragraph{TfIdf}
+By multyplying term frequency and inverse term frequency we obtain this metric.
+$$TfIdf(t, d) = \mathit{tf}_{t,d} \cdot \mathit{idf}_t$$
+Regarding the value of terms:
+\begin{itemize}
+    \item the terms with a high \emph{TfIdf} appears in a small number of documents or 
+    a lot in a high number of documents
+    \item the metric is low when a term appears a few times in a document or when it appears in 
+    many documents
+\end{itemize}
