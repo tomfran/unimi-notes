@@ -1,5 +1,4 @@
 \section{What is simulation?}
-
 \paragraph{Simulation}
 The production of a model of something, with the purpose 
 of study. The main goal of simulation is to replicate the behavior of a certain 
@@ -51,3 +50,55 @@ is a crucial part of simulation.
 
 For instance, the first two approaches model fine grain details, 
 while the in the third we can only define coarse grain specifications.
+
+\subsection{Game of Life example}
+Let's now consider an example, \emph{Game of Life by Conway}, the games 
+maps a certain region with individuals, and there are some rules:
+\begin{enumerate}
+    \item any individual with less than two neighbors dies
+    \item any individual with more than three neighbors dies
+    \item an individual lives if it has two or three neighbors
+    \item if an empty space have exactly three individuals, 
+    a new one comes to live there
+\end{enumerate}
+
+\begin{remark}
+    The exact definition of empty space can be fuzzy, indeed, descriptive 
+    modeling models the exact definition. If we see the region as 
+    a boolean matrix, a cell could be empty if its value is false. 
+\end{remark}
+
+\paragraph{Individuals}
+Each individual can be an agent, they interact with each others with
+messages.
+
+\paragraph{Region}
+For the sake of simplicity, our region can be a two dimensional matrix, 
+each cell contains at most one agents, the concept of neighbors is 
+in this case trivial.
+
+\paragraph{Implementation}
+The model can be implemented using anything that models a matrix, 
+for each cell, we need to recalculate its value according
+to the rules, and by iterating we obtained the simulation.
+
+\subsection{Pharmacist example}
+Another example can be a situation where a pharmacist wants to
+simulate the pharmacy behavior.
+
+\paragraph{Parameters}
+The problem needs some parameters to create an instance on the 
+situation:
+\begin{itemize}
+    \item the opening time is set from 9 a.m. to 5 p.m.
+    \item on average there are 32 prescriptions per day
+    \item the time to fill a prescription is between 4 and 10 minutes
+    \item he will remain in the shop after 5 p.m. if a prescription is 
+    in the making
+\end{itemize}
+\paragraph{Events}
+We can simulate the scenario by considering a queue of events 
+where each one of them is picked from a normal distribution, and 
+then starting the prescription process by keeping the pharmacist busy for 
+a random interval of time.
+

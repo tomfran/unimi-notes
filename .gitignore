@@ -1,7 +1,8 @@
 ##ignore folders
 /books
 /algorithms-massive-datasets
-/videos
+/material
+/informatica-teorica
 *slides*
 ## Core latex/pdflatex auxiliary files:
 *.aux

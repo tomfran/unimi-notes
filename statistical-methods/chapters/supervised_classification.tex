@@ -1,8 +1,3 @@
-\section{Supervised classification}
-
-The main goal of this learning task is to learn a rule that maps data points
-to a certain label.
-The algorithm needs annotated data to infer such a mapping.
 \subsection{Elements}
 A supervised task is made of many elements, for instance, we need a label definition, 
 actual data points to observe and a measure of the performance and the error to guide the 
@@ -171,11 +166,10 @@ The algorithm knows a loss function $l$, the training error can be computed as f
 $$\hat{l}_s(f) = \frac{1}{m}\sum_{t=1}^m l(y_t, f(x_t))$$
 The idea is that the learning algorithm can infer the test error from the training error.
 
-\subsection{Empirical risk minimizer}
+\section{Empirical risk minimizer}
 The main idea of the Empirical risk minimizer is to find the best predictor given 
 a training set and a loss function.
 
-\subsubsection{Process}
 Formally, we define $F$ as a set of predictors, and $l$ a loss function.\\
 The ERM works like this:
 $$\mathit{training\;set} \longrightarrow \mathit{ERM} \longrightarrow 
@@ -216,7 +210,81 @@ the following should hold
 $$m \geq \log_2 F$$
 
 \paragraph{Underfitting and overfitting} 
-Underfitting means having too few predictors to predict well, 
+The first means having too few predictors to predict well, 
 so the error on the test set is too large.\\
-In the seconds there are too many predictors, and training error do 
-not gives us any information, as happened in the example below. 
+In the second case there are too many predictors, and training error do 
+not gives us any information, as happened in the previous example. 
+
+\paragraph{Noisy labels}
+In practice there is no $f^* : X \rightarrow Y$ such that $f^*(x) = y$, 
+for all examples $(x,y)$. This means $y$ is noisy given $x$, for instance, 
+the same data point may be observed with different labels.
+
+This can happen in two scenarios:
+\begin{enumerate}
+    \item when there are \emph{humans in the loop}, as human decision 
+    can be ambiguous
+    \item lack of information, if we base our predictions on vectors and 
+    they do not contain sufficient information, a prediction can't be made 
+    precisely, as multiple labels could be linked to the same vector
+\end{enumerate}
+
+\section{NN classifiers}
+Let's consider the case where data is made of coordinates and labels are integers:
+$$x = (x_1, x_2) \in \mathbb{R},\;S = (x_1, y_1), \dots,(x_m, y_m),\;y_t \in \{-1, +1\}$$
+A really simple approach to classification is to consider the \emph{nearest neighbor rule}.
+
+\subsection{Nearest neighbor predictor}
+A new data point is classified looking at the class of the nearest training point.
+This approach induces a partition of the space in Voronoi cells. A distance 
+function is needed, for instance the Euclidean distance.\\
+If there's a tie we can specify a rule to break it.
+
+The nearest neighbor rule generates a predictor with zero training error, 
+on the other end, a predictor is made of the entire training set, as all the data points
+are needed to compute a prediction.
+
+\subsection{K-nearest neighbor}
+A generalization of the nearest neighbor rule can be using the majority of the labels 
+of the closest $K$ training points.
+$K$ is odd to avoid ties.
+
+Varying the $K$ parameter induces different classification boundaries, 
+for instance, if $K$ equals to the number of training points, the prediction 
+is always the major label. The number of \emph{switches} in the classification 
+decreases by increasing $K$.
+
+Usually, with a small parameter the predictor is overfitting the data, while 
+with a large parameter underfitting occurs.
+
+\paragraph{Extensions}
+K-NN can be extended to multi-class classification and regression, 
+in the second we can compute the average of the closest points.
+
+\section{Tree predictors}
+K-nn works only for numerical attributes, we want now to generalize
+to heterogeneous data.
+The main idea is to divide the points with orthogonal lines in the space, 
+for instance, people that are younger than 30 and smokes, etc.
+
+\subsection{Structure}
+A tree predictor is a ordered rooted tree where each node has many children.
+Each children represent a decision made considering the value
+of on a certain categorical parameter or a function over a numerical value.
+
+Each node has at least two children or is a leaf, i.e. a node where a prediction is 
+made.
+
+\paragraph{Split function}
+Each internal node is associated with a test, so, given an attribute 
+$i$ and a node $u$ with $k$ children, there is a function
+$$f : X_i \rightarrow \{1, \dots, k\}$$
+that partitions the values of the attribute among the children.
+
+\begin{remark}
+    The function typically considers only one attribute to avoid 
+    comparing attributes of different domains.
+\end{remark}
+
+\subsection{Training}
+\dots

@@ -1,6 +1,180 @@
-\section{Strutture succinte, quasi-succinte e compatte}
-\subsection{Strutture succinte per rango e selezione; il "Four-Russians Trick"}
-\subsection{Strutture succinte per alberi binari}
-\subsection{Codifica quasi-succinta di Elias-Fano per sequenze monotone}
-\subsection{Struttura compatta per le parentesi bilanciate}
-\subsection{Funzioni quasi-succinte: la tecnica MWHC}
+\section{Strutture dati}
+L'attenzione passa ora alle strutture dati, in particolare
+a quelle \emph{space-conscious}, si studiano quindi strutture che 
+implementano le primitive in maniera efficiente ma che occupano 
+poco spazio.
+
+\subsection{Information theoretical lower bound}
+L'information theoretical lower bound indica il numero di bit minimi necessari 
+a una struttura dati che assume particolari tipi di valori.
+
+\begin{theorem}
+    Una struttura dati con $v$ valori possibili, che usi 
+    $x_1, \dots, x_v$ bit per rappresentare tali valori, 
+    soddisfa:
+    $$\frac{\sum_{i=1}^v x_i}{v} \geq \log_2 v$$
+\end{theorem}
+\begin{proof}
+    Se la struttura usasse meno bit, due dei suoi valori possibili 
+    avrebbero la stessa rappresentazione binaria, assurdo.
+\end{proof}
+
+\paragraph{Strutture dati space-consious}
+Dato un abstract data type zdove $Z_n$ è l'information theoretical lower bound
+per strutture di taglia $n$, sia $D_n$ lo spazio medio occupato da tale struttura,
+ovviamente vale $D_n \geq Z_n$, tale struttura si dice:
+\begin{itemize}
+    \item \emph{Implicita} se $D_n = Z_n + O(1)$
+    \item \emph{Succinta} se $D_n = Z_n + o(Z_n)$
+    \item \emph{Compatta} se $D_n = O(Z_n)$
+\end{itemize} 
+a patto che le primitive abbiano la stessa complessità di quelle su una struttura 
+dati non compressa.
+
+\subsection{Rango e selezione}
+Dato un $b \in 2^n$, si definiscono due funzioni, di rango e selezione, 
+$$\mathit{rank}_b, \mathit{select}_b : \mathbb{N} \longrightarrow \mathbb{N}$$
+Dove: 
+$$\mathit{rank}_b(p) = |\{i\;|\; i < p, b_i = 1\}|$$
+$$\mathit{select}_b(k) = \max \{p\;|\; \mathit{rank}_b(p) \leq k\}$$
+
+\paragraph{Implementazione naïve}
+Una prima implementazione potrebbe essere quella che risponde con costo lineare 
+alle richieste, mantenendo solo il vettore $b$, tale struttura è troppo inefficiente, 
+ma sarebbe ottima per quanto riguarda la memoria, infatti equivale al theoretical 
+lower bound.
+
+\paragraph{Implementazione non space-consious}
+Per migliorare il primo approccio, si può mantenere in memoria la funzione di rank e select associata
+ad ogni posizione.
+Tale soluzione offre primitive costanti, ma occupa troppa memoria, 
+ovvero $O(2n\log n)$ bit.
+
+\paragraph{Desiderata}
+L'implementazione ideale consiste nell'avere una struttura succinta, ovvero
+che occupi $n + o(n)$ e che risponda alle query in $O(1)$.
+
+\subsubsection{Struttura di Jacobson per il rango}
+L'idea di base è quella di suddividere il vettore $b$ superblocchi, 
+lunghi rispettivamente $(\log n )^2$.\\
+Tali superblocchi si suddividono in blocchi, lunghi $\frac{1}{2}\log n$.
+
+\paragraph{Four Russian Trick}
+Soffermandosi ora sul numero di tipi di blocchi, ne esistono rispettivamente 
+$2^{\frac{1}{2}\log n}$.
+
+Consideriamo ora un certo blocco, memorizzare la sua tabella di rank
+significherebbe avere $\frac{1}{2}\log n$ righe, ognuna con un valore 
+che occupa $\log(\frac{1}{2}\log n)$.
+
+Se volessimo mantenere la tabella di rank per ogni tipo di blocco, si avrebbe
+\begin{equation}
+    \begin{aligned}
+        2^{\frac{1}{2}\log n} \cdot \frac{1}{2}\log n \cdot \log(\frac{1}{2}\log n)\\
+        \leq \sqrt{n}\frac{1}{2}\log n \log \log n = o(n)
+    \end{aligned}
+\end{equation}
+L'idea di mantenere in memoria tutte queste informazioni è chiamata Four Russian Trick, 
+sostanzialmente si spezza un problema in sottoproblemi talmente piccoli, da poterli mantenere 
+esplicitamente in memoria.
+
+\paragraph{Costruzione}
+Per costruire la struttura, memorizzo:
+\begin{enumerate}
+    \item per ogni superblocco, il numero di uni prima del superblocco,
+    indicato con $S[i]$
+    \item per ogni blocco, il numero di uni tra l'inizio del superblocco che lo contiene, 
+    e l'inizio del blocco, indicato con $B[i]$
+    \item la tabella discussa nel paragrafo precedente, indicata con \emph{TAB}
+\end{enumerate}
+
+\paragraph{Calcolo del rango}
+Il calcolo del rank per una certa posizione, equivale a
+$$\mathit{rank}_b(p) = S\bigg[\frac{p}{(\log n)^2}\bigg] + 
+B\bigg[\frac{p}{\frac{1}{2}\log n}\bigg] + \mathit{TAB}_t\bigg[p \mathit{\;mod\;} 
+\frac{1}{2}\log n\bigg]$$
+dove $t$ equivale al tipo del blocco in cui si trova $p$.
+Non è nulla di sofisticato, visto che i blocchi sono talmente piccoli che si
+possono usare come indici della tabella \emph{TAB}.\\
+La primitiva così ottenuta ha tempo costante.
+
+\paragraph{Spazio occupato}
+Lo spazio utilizzato dalla struttura, equivale allo spazio occupato dalle
+strutture ausiliarie e il vettore $b$, le strutture occupano:
+\begin{enumerate}
+    \item $S$: $\frac{n}{(\log n)^2} \cdot \log n = o(n)$
+    \item $B$: $\frac{n}{\frac{1}{2}\log n} \log ((\log n)^2) = o(n)$, visto che si stanno 
+    memorizzando
+    al massimo $(\log n)^2$ uni, ovvero la dimensione del superblocco.
+    \item \emph{TAB}: $o(n)$ per i calcoli fatti in precedenza.
+\end{enumerate}
+Lo spazio totale è $O(n) + o(n)$, il tempo della primitiva di rango è $O(1)$. La truttura è 
+quindi succinta.
+
+\subsubsection{Struttura di Clarke per la selezione}
+La creazione di una struttura efficacie per la selezione è complessa.
+La struttura di Clarke è divisa in livelli.
+
+\paragraph{Primo livello}
+Al primo livello, memorizzato in $P$ si mantengono le posizioni degli uni in posizioni 
+multiple di $\log n \log \log n$, quindi $$P[i] = \mathit{select}_b(i \cdot \log n \log \log n)$$
+Il vettore così creato occupa 
+$$\frac{n}{\log n \log \log n}\cdot \log n = o(n)$$
+
+\paragraph{Secondo livello}
+Si crea ora un secondo livello, $S$.
+Definiamo la quantità:
+$$\forall i, r_i = P[i+1] - P[i] \geq \log n \log \log n$$
+Si distinguono ora due livelli, in base alla densità di uni:
+\begin{itemize}
+    \item Caso sparso: $r_i \leq (\log n\log \log n )^2$, in questo 
+    caso $S[i]$ contiene la lista esplicita delle posizioni intermedie, 
+    ovvero le posizioni degli uni compresi tra $P[i]$ e $P[i+1]$, memorizzate
+    in modo relativo da $P[i]$. In questo caso la memoria occupata è 
+    \begin{equation}
+        \begin{aligned}
+            \log n \log \log n \cdot \log r_i 
+            \leq \frac{(\log n \log \log n)^2}{\log n \log \log n} \cdot \log r_i \\
+            \leq \frac{r_i}{\log n \log \log n} \cdot \log r_i
+            \leq \frac{r_i}{\log n \log \log n} \cdot \log n
+            \leq \frac{r_i}{\log \log n}
+        \end{aligned}
+    \end{equation}
+    \item Caso denso: $\log n\log \log n \leq r_i \leq (\log n\log \log n )^2$
+    in questo caso memorizzo le posizioni degli uni multiple di 
+    $\log r_i \log \log n$, ottengo che 
+    $$S[i][j] = \mathit{select}_b (i \log n \log \log n + j \log r_i \log \log n)$$
+    In questo caso la memoria occupata sarà:
+    \begin{equation}
+        \begin{aligned}
+            \frac{\log n \log \log n}{\log r_i \log \log n} \cdot \log r_i 
+            \leq \frac{r_i}{\log r_i \log \log n} \cdot \log r_i\\
+            \leq \frac{r_i}{\log r_i \log \log n} \cdot \log r_i = \frac{r_i}{\log \log n}
+        \end{aligned}
+    \end{equation}  
+\end{itemize}
+Valutando ora lo spazio occupato da $S$, si ottiene che per la memoria occupata 
+vale: 
+\begin{equation}
+    \begin{aligned}
+        \leq \sum_i \frac{r_i}{\log \log n} = \sum_i \frac{P[i+1] - P[i]}{\log \log n}\\
+        = \frac{P[n] - P[0]}{\log \log n} = \frac{n}{\log \log n} = o(n)
+    \end{aligned}
+\end{equation}
+
+\paragraph{Terzo livello}
+Per gli uni del caso denso del secondo livello si crea un terzo livello.
+$S[i]$ contiene le posizioni multiple di $\log r_i \log \log n$.
+Definiamo ora
+$$\forall j, \bar{r}_j^i = S[i][j+1] - S[i][j]$$
+Vale che:
+$$ (\log n \log \log n)^2 > \bar{r}_j^i \geq \log r_i \log \log n$$
+Esistono ora due casi, come in precendenza:
+\begin{itemize}
+    \item Caso sparso: $\bar{r}_j^i \geq \log \bar{r}_j^i \log r_i (\log \log n)^2$.\\
+    Memorizzo in $T[i][j]$ la lista delle posizioni degli uni, come differenza da $S[i][j]$.
+    La memoria occupata è 
+    $$(\log r_i \log \log n)\cdot \log \bar{r}_j^i $$
+    \item \dots
+\end{itemize}
+\dots
