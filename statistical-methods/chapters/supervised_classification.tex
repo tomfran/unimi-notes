@@ -280,11 +280,150 @@ Each internal node is associated with a test, so, given an attribute
 $i$ and a node $u$ with $k$ children, there is a function
 $$f : X_i \rightarrow \{1, \dots, k\}$$
 that partitions the values of the attribute among the children.
+For instance:
+\[ 
+    f(x_1) = \begin{cases}
+        1 \mathit{\;if\;} x_1 = c\\
+        2 \mathit{\;if\;} x_1 = d\\
+        3 \mathit{\;otherwise}
+    \end{cases}\]
 
 \begin{remark}
     The function typically considers only one attribute to avoid 
     comparing attributes of different domains.
 \end{remark}
 
+\paragraph{Leaves labels}
+Leaves nodes are tagged by labels $y \in Y$, so when the visit reaches a leaf 
+a prediction is made.
+
+\subsubsection{Prediction}
+We take a specific data point. This point is passed to the root, that will 
+returns a specific child index, based on the split function evaluation 
+performed on the data point.
+
+This continue recursively, until a leaf node is reached, at this point 
+a prediction in made, according to the label stored in the reached leaf 
+node.
+
+The prediction $h_T(x)$ is always a label stored in some leaf, in particular, the one 
+reached by the path followed by the data point.
+
 \subsection{Training}
-\dots
+Given a training set $S$, how can we build a tree classifier?
+
+Let's simplify the task by considering binary classification, 
+$Y = \{+1, -1\}$ 
+and complete binary trees, so each node has either zero or 
+two children.
+
+The training set is of the form $S = (x_1,y1), \dots , (x_m, y_m)$, 
+where each $x_i$ is made of multiple categorical and numerical attributes.
+The loss taken into consideration is the zero-one loss.
+
+\paragraph{Single starting node}
+We start as a single node, the root, and the label associated with it is the 
+majority of labels in $S$. We made a constant classifier.
+
+\paragraph{Splitting the node}
+We now consider a certain split function $f_i$, that split the dataset into 
+two leaves, $l$ and $l^\prime$. We obtain:
+\begin{enumerate}
+    \item $S_l = \{(x_t, y_t), f_i(x_t) \mathit{\;routed\;to\;} l\}$
+    \item $S_{l^\prime} = \{(x_t, y_t), f_i(x_t) \mathit{\;routed\;to\;} l^\prime\}$
+\end{enumerate}
+There's a need to decide which label to associate to the two leaves. We can 
+pick the majority of labels contained in each one of them. 
+this minimize the training error.
+
+\paragraph{Training error}
+Let $T$ be a certain tree classifier, $S_l$ is the training points routed to the leaf $l$,
+$N_l = |S_l|$, $y_l$ the majority of labels in $S_l$.
+$$S_l^+ = \{ (x_t, y_t) \in S_l, y_t = +1\},\;\;S_l^- = \{ (x_t, y_t) \in S_l, y_t = -1\}$$
+\[
+    y_l = \begin{cases}
+        +1 \mathit{\;if\;} N_l^+ \geq N_l^-\\
+        -1 \mathit{\;otherwise}
+    \end{cases}\]
+Let's compute the error, where $I$ is one if the condition is true
+\begin{equation}
+    \begin{aligned}
+        \hat{l}_j(h_t) = \frac{1}{m}\sum_{t=1}^m I(h_t(x_t) \neq y_t)\\
+        = \frac{1}{m}\min\{N_l^+, N_l^-\}
+    \end{aligned}
+\end{equation}
+If we take the sum of the positive and negative sets over all leaves, we 
+obtain the cardinality of $|S|$ 
+$$\sum_l(N_l^+ + N_l^-) = m = |S|$$
+We can keep on going with the previous equation:
+\begin{equation}
+    \begin{aligned}
+        \hat{l}_j(h_t) = \frac{1}{m}\min\{N_l^+, N_l^-\}\\
+        \hat{l}_j(h_t) = \frac{1}{m}\min\bigg\{\frac{N_l^+}{N_l}, \frac{N_l^-}{N_l}\bigg\}N_l\\
+        \hat{l}_j(h_t) = \Psi\bigg(\frac{N_l^+}{N_l}\bigg)N_l && \text{Where\;} \Psi(a) = \min\{a, 1-a\}
+    \end{aligned}
+\end{equation}
+Given a certain tree, 
+we can consider the training error 
+\begin{equation}
+    \Psi\bigg(\frac{N_l^+}{N_l}\bigg)N_l = 
+    \Psi\bigg(\frac{N_{l^\prime}^+}{N_{l^\prime}}
+    \frac{N_{l^\prime}}{N_l}+\frac{N_{l^{\prime\prime}}^+}{N_{l^{\prime\prime}}}
+    \frac{N_{l^{\prime\prime}}}{N_l}
+    \bigg)N_l
+\end{equation}
+
+If we plot $\Psi$ we can see it is concave, so we can apply the \emph{Jenses inequiality}:
+$$\forall a,b \in [0,1], \forall \alpha \in [0,1], 
+\Psi(\alpha a + (1-\alpha)b) \geq \alpha \Psi(a) + (1-\alpha)\Psi(b)$$
+
+So we keep going with the previous equation
+\begin{equation}
+    \begin{aligned}
+        \Psi\bigg(\frac{N_{l^\prime}^+}{N_{l^\prime}}
+    \frac{N_{l^\prime}}{N_l}+\frac{N_{l^{\prime\prime}}^+}{N_{l^{\prime\prime}}}
+    \frac{N_{l^{\prime\prime}}}{N_l}
+    \bigg)N_l \geq 
+    \bigg(\frac{N_{l^\prime}}{N_l}\Psi\bigg(\frac{N_{l^\prime}^+}{N_{l^\prime}}
+    \bigg) + \frac{N_{l^{\prime\prime}}}{N_l}\Psi\bigg(\frac{N_{l^{\prime\prime}}^+}{N_{l^{\prime\prime}}}\bigg)\bigg)N_l\\
+    = N_{l^\prime}\Psi\bigg(\frac{N_{l^\prime}^+}{N_{l^\prime}}
+    \bigg) + N_{l^{\prime\prime}}\Psi\bigg(\frac{N_{l^{\prime\prime}}^+}{N_{l^{\prime\prime}}}\bigg)
+    \end{aligned}
+\end{equation}
+
+So the error before splitting is bigger or equal 
+to the error after splitting, so by splitting recursively we 
+obtain a reduction of the training error.
+$$\Psi\bigg(\frac{N_l^+}{N_l}\bigg)N_l \geq 
+\Psi\bigg(\frac{N_{l^\prime}^+}{N_{l^\prime}}
+    \bigg)N_{l^\prime} + \Psi\bigg(\frac{N_{l^{\prime\prime}}^+}{N_{l^{\prime\prime}}}\bigg)N_{l^{\prime\prime}}$$
+
+This means replacing the leaf node $S_l$ obtained by the previous split 
+with two new leaves $S_{l^\prime}$, $S_{l^{\prime\prime}}$.
+If $\frac{N_l^+}{N_l} \approx \frac{1}{2}$, then the split is good whenever 
+$\frac{N_{l^\prime}^+}{N_{l^\prime}}$ and 
+$\frac{N_{l^{\prime\prime}}^+}{N_{l^{\prime\prime}}}$ are close to either 0 or 1.
+
+\paragraph{Stopping criterion}
+If the tree keeps splitting, the training error will go to 0, as 
+all leaves will be pure, i.e. all labels are uniform inside a leaf.
+This means overfitting.\footnote{Its the same principle of small K in K-NN}
+
+So the objective is to grow the tree minimizing the training error, by 
+using the minimum number of nodes. Every time we split we would like 
+to fix as many mistakes as possible. For the sake of computation efficiency, 
+we perform greedy cuts.
+
+\paragraph{Other error functions}
+In practice we do not use $\Psi(a) = \min(a, 1-a)$, but some other ones:
+\begin{itemize}
+    \item \emph{Gini function} $\Psi_2(p) = 2p(1-p)$
+    \item \emph{Scaled entropy} $\Psi_3(p) = -\frac{p}{2}\log_2 p - \frac{1-p}{2}\log_2(1-p)$
+\end{itemize}
+
+Those are upper-bounds of the training error, this means considering 
+splits that would be excluded by the original $\Psi$ function.
+This surrogate functions are better because they can move things around and 
+create possible new splits, they help to not get stuck in local minima where 
+growing two nodes seems to not help the situation, thus they help 
+grow the tree more efficiently.
