@@ -377,7 +377,8 @@ If we plot $\Psi$ we can see it is concave, so we can apply the \emph{Jenses ine
 $$\forall a,b \in [0,1], \forall \alpha \in [0,1], 
 \Psi(\alpha a + (1-\alpha)b) \geq \alpha \Psi(a) + (1-\alpha)\Psi(b)$$
 
-So we keep going with the previous equation
+So we keep going with the previous equation\footnote{Here we apply the jensen inequality
+to the previous}
 \begin{equation}
     \begin{aligned}
         \Psi\bigg(\frac{N_{l^\prime}^+}{N_{l^\prime}}
@@ -414,11 +415,11 @@ using the minimum number of nodes. Every time we split we would like
 to fix as many mistakes as possible. For the sake of computation efficiency, 
 we perform greedy cuts.
 
-\paragraph{Other error functions}
+\paragraph{Other error (split) functions}
 In practice we do not use $\Psi(a) = \min(a, 1-a)$, but some other ones:
 \begin{itemize}
-    \item \emph{Gini function} $\Psi_2(p) = 2p(1-p)$
-    \item \emph{Scaled entropy} $\Psi_3(p) = -\frac{p}{2}\log_2 p - \frac{1-p}{2}\log_2(1-p)$
+    \item \emph{Gini function}: $\Psi_2(p) = 2p(1-p)$
+    \item \emph{Scaled entropy}: $\Psi_3(p) = -\frac{p}{2}\log_2 p - \frac{1-p}{2}\log_2(1-p)$
 \end{itemize}
 
 Those are upper-bounds of the training error, this means considering 
@@ -427,3 +428,7 @@ This surrogate functions are better because they can move things around and
 create possible new splits, they help to not get stuck in local minima where 
 growing two nodes seems to not help the situation, thus they help 
 grow the tree more efficiently.
+
+\paragraph{Usage}
+Tree classifiers can also be extended to multi-class classification and regression.
+In the first case, the major class is chosen, while in the second we take the mean of the value.
