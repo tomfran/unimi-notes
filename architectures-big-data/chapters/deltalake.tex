@@ -6,13 +6,13 @@ i processi che stanno svolgendo particolari operazioni.
 \subsection{Transazionalità}
 Per garantire transazionalità è necessario un controllo sulla concorrenza.
 
-\paragraph{Transazione}
+\subsubsection{Transazione}
 Sequenza di operazioni che soddifano le proprietà ACID.
 
-\paragraph{Rollback}
+\subsubsection{Rollback}
 Riportare il sistema allo stato precendete all'operazione eseguita.
 
-\paragraph{Proprietà ACID}
+\subsubsection{Proprietà ACID}
 Le proprietà che sono necessarie per garantire transazionalità sono:
 \begin{itemize}
     \item \emph{Atomicity}: ogni operazione di una transazione è atomica
@@ -25,12 +25,12 @@ Le proprietà che sono necessarie per garantire transazionalità sono:
 Per garantire consistenza e replicazione si possono applicare \emph{transaction log} e
 \emph{transaction shipping}.
 
-\paragraph{Transaction log} 
+\subsubsection{Transaction log} 
 Storia delle operazioni eseguite da un database, possono essere utili per effettuare
 rollback in casi di errore di alcune transazioni che hanno lasciato
 il sistema in uno stato incosistente. Questi file possono diventare molto grandi.
 
-\paragraph{Transaction shipping}
+\subsubsection{Transaction shipping}
 I log possono essere mandati a un server per replicare lo stato del database e avere
 una copia esatta del sistema. È un'operazione molto pesante poichè bisogna scrivere
 tutte le operazioni che sono effettuate sulle tabelle.
@@ -39,7 +39,7 @@ tutte le operazioni che sono effettuate sulle tabelle.
 Delta lake ha l'obiettivo di garantire le ACID properties su HDFS, quindi su 
 storage distribuiti.
 
-\paragraph{Apache Parquet}
+\subsubsection{Apache Parquet}
 Parquet è un formato con cui mantenere le tabelle. Usa memorizzazione 
 per colonna piuttosto che per riga, per velocizzare le operazioni di select.\\
 Dividendo per colonna poi si può ottimizzare lo spazio richiesto per la codifica
@@ -47,13 +47,13 @@ dei valori nella tabella. Infatti, i valori di una colonna sono più omogenei
 di quelli presenti in un'intera riga, quindi richiedono meno spazio e si possono
 comprimere. Parquet non è abbastanza per garantire transazionalità.
 
-\paragraph{Write-ahead log} 
+\subsubsection{Write-ahead log} 
 Si mantengono quali oggetti fanno parte di una delta table, oltre ad 
 aclune infomazioni statistiche quali massimo, minimo, count, etc \dots\\
 Si scrivono poi le operazioni da fare sulle tabelle nel log, prima di eseguirle, 
 oltre a quelle da applicare in caso di rollback.
 
-\paragraph{Funzionalità}
+\subsubsection{Funzionalità}
 Le funzionalità principali di un Delta Lake, che lo rendono propenso a un forte lock-in, sono:
 \begin{itemize}
     \item \emph{Time travel}: esiste la possibilità di riportare lo stato dello storage a un determinato

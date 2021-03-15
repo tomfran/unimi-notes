@@ -1,7 +1,7 @@
 \section{Architetture}
 \subsection{Introduzione}
 
-\paragraph{Stile architetturale}
+\subsubsection{Stile architetturale}
 Uno stile architetturale definisce la lista di design elements utilizzabili, 
 oltre alle relazioni che sussistono tra essi. Nel contesto di sviluppo software 
 uno stile incapsula le scelte importanti prese dagli architetti e ne coordina le 
@@ -10,7 +10,7 @@ Esistono due problemi, erosion e drift, il primo consiste nell'usare l'architett
 impropriamente, il secondo si manifesta quanto un'architettura viene usata per scopi 
 diversi da quelli originali.
 
-\paragraph{Elementi}
+\subsubsection{Elementi}
 Per quanto riguarda gli elementi di un'architettura, essi si suddividono in:
 \begin{enumerate}
     \item \emph{Data elements}: contengono informazione
@@ -18,11 +18,11 @@ Per quanto riguarda gli elementi di un'architettura, essi si suddividono in:
     \item \emph{Processing elements}: trasformano i dati
 \end{enumerate}
 
-\paragraph{Materiali}
+\subsubsection{Materiali}
 Un materiale ha qualche peculiare caratteristica, è necessario scegliere materiali
 adatti agli scopi. Nel software, si parla di framework, linguaggi di programmazione, etc \dots
 
-\paragraph{Point of views}
+\subsubsection{Point of views}
 È cruciale avere diversi punti di vista nella presentazione di un architettura, poichè 
 esitono più attori con ruoli differenti.
 Ad ognuno interessano o meno alcuni dettagli o aspetti dell'architettura totale.\\
@@ -31,7 +31,7 @@ data allo sviluppatore.
 Si può pensare poi ad una vista riguardo alle spese, che molto probabilmente non importerà 
 ad esempio al team di sviluppo. 
 
-\paragraph{Astrazione}
+\subsubsection{Astrazione}
 Per astrazione si intende l'individuare un pattern, nominarlo, definirlo, 
 analizzarlo e trovare un modo di invocarlo tramite il suo nome, così da evitare
 errori.\\
@@ -52,7 +52,7 @@ Esistono vari motivi per cui si architetta un'architettura software.
     \item Mitiga il rischio di lock-in
 \end{enumerate}
 
-\paragraph{Vendor lock-in}
+\subsubsection{Vendor lock-in}
 Condizione in cui un cliente dipende da un certo vendor.
 Tale dipendenza si manifesta se il costo di cambiare vendor è maggiore rispetto al 
 tenerlo. Per esempio, deciso un cloud o un servizio, un'azienda potrebbe avere 
@@ -62,14 +62,14 @@ Esiste anche il \emph{knowledge lock-in}, ovvero quando il costo di spiegare o i
 una conoscenza in qualcuno costa più di mantenere la persona attuale.
 Per proteggersi da vendor lock-in si può ricorrere ad \emph{Adapter Pattern}.
 
-\paragraph{Design pattern}
+\subsubsection{Design pattern}
 Un design pattern è la formalizzazione di una best practice per risolvere un
 problema comune.
 Ad esempio: singleton, SOA, REST, P2P, MapReduce \dots
 
 \subsection{CDC e Datalake}
 
-\paragraph{Datalake}
+\subsubsection{Datalake}
 L'idea di un Datalake è quella di avere un luogo in cui salvare dati strutturati, 
 ottenuti da una certa sorgente in forma non strutturata. Su un datalake si salva 
 solamente, non si elimina nulla, alla modifica di un dato si inserisce la sua versione 
@@ -79,7 +79,7 @@ si effettua una Extract e una
 Load per salvare su datalake, mentre in un secondo momento si trasformano i dati in base 
 all'utilizzo.
 
-\paragraph{Change data capture}
+\subsubsection{Change data capture}
 L'idea del CDC è quella di salvare solo i dati che sono nuovi o aggiornati dall'ultima
 raccolta dati. Ad esempio, nella raccola giornaliera di una tabella SQL, è possibile, 
 invece che salvare più volte la tabella intera, salvare solo le tuple nuove o 
@@ -95,7 +95,7 @@ Esistono vari modi di implementare CDC:
     tipicamente coinvolto nel backup automatico
 \end{itemize}
 
-\paragraph{Diff and Where}
+\subsubsection{Diff and Where}
 Si differenziano due tipi di tabelle, log e registry table.
 Nella prima esiste un \emph{chronoattribute}, utilizzabile per ottenere i dati aggiornati 
 tramite query, nella seconda si applica un approccio basato su hash per capire 
@@ -113,7 +113,7 @@ per ogni tupla della tabella, si confrontano tali dizionari:
 \end{itemize}
 
 
-\paragraph{Move and rename}
+\subsubsection{Move and rename}
 L'approccio consiste nel garantire transazionalità di un CDC, 
 è necessario quindi rendere possibile un eventuale rollback e non lasciare mai 
 il datalake in uno stato inconsistente.\\
@@ -121,14 +121,14 @@ L'idea è scrivere su datalake i file in formato tmp e rinominarli al termine de
 All'iterazione successiva si eliminano eventuali file tmp, lasciati da un eventuale 
 interruzione del CDC.
 
-\paragraph{Adapter pattern}
+\subsubsection{Adapter pattern}
 Per evitare vendor lock-in, si utilizzando classi wrapper per evitare di dipendere
 strettamente da metodi definiti da un vendor.
 Un esempio può essere un source o destination adapter, che espongono metodi read e 
 write, implementati a seconda del contesto.
 
 \subsection{Jobs e scheduler}
-\paragraph{Job}
+\subsubsection{Job}
 Un job è un elemento atomico che identifica una sequenza di passi o task da compiere. 
 Può essere lanciato interattivamente o schedulato. Si identifica con 
 un singolo processo.\\
@@ -138,20 +138,20 @@ Un job è caratterizzato da un \emph{id}, un \emph{nome} e uno \emph{stato}, pu�
     \item \emph{Online}: possono essere solo interrotti quando terminano
 \end{enumerate}
 
-\paragraph{Scheduler}
+\subsubsection{Scheduler}
 Governa l'esecuzione dei job, può essere basato sul tempo o su eventi.
 Può decidere a quale processore o server (sistema distribuito) mandare un certo job, scegliendo 
 tra quelli liberi.
 
-\paragraph{Job queue}
+\subsubsection{Job queue}
 Coda dei job che sono da eseguire, esiste un concetto di priorità, riconducibile alle classiche 
 priorità dei processi nei sistemi operativi.
 
-\paragraph{Job impersonation}
+\subsubsection{Job impersonation}
 Un thread che esegue un job può impersonare un determinato client.
 Ad esempio, dopo un login, un thread può agire impersonando l'utente loggato, 
 in modo che il server possa rispondere nel modo opportuno.
 
-\paragraph{Concurrency}
+\subsubsection{Concurrency}
 Due job possono essere sequenziali o concorrenti.
 Nel primo caso il secondo attende la terminazione del primo, nel secondo caso no.

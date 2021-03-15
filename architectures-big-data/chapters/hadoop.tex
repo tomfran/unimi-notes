@@ -4,22 +4,22 @@ Apache Hadoop è un framework open source con l'intento di aumentare l'affidabil
 
 \subsection{Elementi}
 
-\paragraph{Job Tracker}
+\subsubsection{Job Tracker}
 Servizio che decide dove una task deve essere eseguita.
 
-\paragraph{Task Tracker}
+\subsubsection{Task Tracker}
 Nodo che accetta la task data da un job tracker. Espone slot che possono eseguire
 task parallele, infatti, all'arrivo di una nuova task, uno slot libero viene utilizzato per eseguire una JVM. Manda segnali di heartbeat.
 
-\paragraph{Name node}
+\subsubsection{Name node}
 Contiene informazioni su dove i dati sono scritti. Mantiene quindi una lista 
 di risorse e i relativi nodi che le contengono. Rappresenta un sigle point of failure
 per Hadoop. Esiste un nodo di backup pronto in caso di fallimento.
 
-\paragraph{Data node}
+\subsubsection{Data node}
 Nodo che contiene i dati effettivi.
 
-\paragraph{Master e worker node}
+\subsubsection{Master e worker node}
 Un nodo master è composto da un job tracker, un task tracker, un data node e un name node. Mentre un nodo worker è composto da data node e task tracker.
 
 \subsection{Processo}
@@ -37,7 +37,7 @@ Un esempio del processo seguito da Hadoop è il seguente.
         può scegliere di aggiungere il \emph{Task Tracker} a una \emph{blacklist}.
 \end{enumerate}
 
-\paragraph{Confronto costi}
+\subsubsection{Confronto costi}
 Bisogna tenere presente che in un contesto come quello di Hadoop risulta 
 più economico muovere la computazione piuttosto che i dati.
 Bisogna quindi scegliere i task tracer in modo opportuno, tenendoli vicini ai 
@@ -49,32 +49,18 @@ righe di codice.
 HDFS è uno storage distribuito pensato per essere utilizzato su macchine poco
 performanti.
 
-\paragraph{Architettura}
+\subsubsection{Architettura}
 Un HDFS ha un architettura \emph{master/slave}, dove esiste un \emph{name node} per $N$ \emph{data node}.
 Il primo esegue operazioni sul file system, mentre i secondi si occupano di 
 servire le richieste del primo e di gestire cancellazione, creazione e replica dei 
 file.
 
-\paragraph{Data node}
+\subsubsection{Data node}
 I file sono suddivisi in blocchi, le scritture non sono concorrenti sullo stesso 
 blocco. Mandano segnali di heartbeat al name node.
 
-\paragraph{Replicazione dei dati}
-Si possono seguire varie strade per la replicazione dei dati in HDFS, ma bisogna 
-essere \emph{rake aware}, ovvero, bisogna replicare elementi dello stesso data node nello
-stesso posto, in modo da rendere più semplice la gestione di richieste multiple
-in caso di fallimento di un data node.\\
-Esistono due approcci:
-\begin{enumerate}
-        \item Un approccio è quello di replicare l'\emph{intero rack}, diventa molto costoso 
-        perchè si sta scrivendo su rack differenti
-        \item Un'altro è quello di replicare \emph{3 
-        volte}, una volta sul nodo che esegue la task, e altre due su due nodi di un rack 
-        differente. Le performance aumentano, essendoci 2 rack invece che possibilmente
-        di più
-\end{enumerate}
  
-\paragraph{Quorum Journal Manager}
+\subsubsection{Quorum Journal Manager}
 I data node sono affidabili, viste le tecniche di replicazione, per estendere
 ai name node, essi potrebbero essere multipli, uno attivo e gli altri in standby.
 I data node manderebbero il battito a tutti questi nodi. Al fallimento del name node 
