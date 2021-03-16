@@ -1,0 +1,98 @@
+\section{Architetture}
+Un'architettura di un sistema distribuito definisce le entità 
+del sistema, i pattern di comunicazione e come comunicano.
+Stabilisce inoltre il ruolo delle entità e come sono mappate 
+sull'infrastruttura fisica.
+
+\subsection{Architetture centralizzate}
+Le architetture a seguire prevedono una certa centralità, nel primo caso 
+si parla di un server che soddisfa le richieste, mentre nel secondo 
+di un bus su cui si scrivono e leggono informazioni.
+
+\subsubsection{Client server}
+Architettura che prevede uno o più server e più client, 
+il server gestisce le richieste e il client le manda.
+Un'interazione tipo prevede quindi la richiesta del client, 
+l'attesa della risposta mentre il server la computa, e la ricezione.
+Si fa notare che esite un delay di comunicazione.
+
+Nella progettazione di un sistema client server bisogna tenere in considerazione
+cosa eseguire sul server e cosa sul client.
+
+\paragraph{Varianti}
+Esistono estensioni al classico modello, si possono aggiungere ad esempio 
+\emph{proxy server}
+per fare caching, oppure avere un \emph{multi-tier} client server, dove esiste
+una divisione dei nodi in base alla loro funzionalità.
+
+\paragraph{Vertical e horizontal distribution}
+Si parla di \emph{vertical distribution} quando esiste un nodo per ogni funzionalità, 
+offerta dal server, si definisce invece \emph{horizontal distribution} la replica del 
+server su più nodi, in modo da soddisfare richieste in contemporanea.
+Si può pensare a una combinazione di distribuzione verticale e orizzontale.
+
+\subsubsection{Event Bus}
+Si basa sul pattern di comunicazione \emph{publish-subscribe}, in generale
+al verificarsi di un evento, un'informazione viene pubblicata sull'\emph{event bus}, 
+gestito da un \emph{broker}, e quell'informazione ha un particolare argomento 
+o topic.
+Esistono poi i \emph{subscriber} che sono registrati ad un certo canale o topic, 
+che leggono dall'event bus.
+
+\subsection{Architetture decentralizzate}
+Le architetture a seguire non prevedono un'entità centrale, i nodi solitamente 
+hanno lo stesso ruolo.
+
+\subsubsection{Peer-to-peer}
+Tutti i nodi hanno le stesse capacità, ogni user può condividere le proprie
+risorse e non ci sono nodi centrali che orchestrano tutto.
+
+Esistono varianti del modello peer-to-peer che prevedono nodi che fanno in 
+qualche modo da server.
+
+I problemi di questa architettura sono legati alla distribuzione delle risorse, 
+in particolare gli obiettivi sono:
+\begin{itemize}
+    \item Load balancing nell'accesso dei dati
+    \item Avere disponibilità delle risorse, senza troppo overhead
+\end{itemize}
+
+\paragraph{Peer-to-peer middleware}
+L'idea è quella di offrire in modo trasparente locazione e comunicazione 
+delle risorse, e aggiunta e rimozione di risorse e nodi.
+
+\paragraph{Overlay network}
+Rete logica costruita sulla rete fisica, serve a garantire l'efficienza
+delle operazioni che deve garantire un peer-to-peer middleware.
+
+Ad esempio deve fare routing delle richieste a livello applicativo, 
+basato su identificatori globali.
+
+Esistono due tipi di overlay network:
+\begin{itemize}
+    \item \emph{Strutturate}: network create in modo deterministico, utilizzano 
+    tabelle hash dsitribuite per garantire routing efficiente. 
+    Un esempio è \emph{Chord} oppure \emph{CAN}
+    \item \emph{Non strutturate}: utilizzano algoritmi probabilistici, 
+    ogni nodo ha una vista parziale della rete ed essa cambia nel tempo, 
+    in base allo scambio di informazioni tra i nodi, con algoritmi di \emph{gossipping}.
+    La ricerca si effettua chiedendo ai vicini, per un numero limitato di hop.
+\end{itemize}
+Nel primo caso un vantaggio è quello di invididuare sicuramente le risorse se presenti,
+inoltre esiste un numero limitato di messaggi, esiste però un costo di gestione, 
+in aggiunta e rimozione dei nodi, vista la necessità di mantenere le strutture 
+dati dei nodi.
+
+Nel secondo caso invece, se un nodo sparisce dalla rete non si verificano 
+particolari problemi, ma il numero di messaggi può essere molto alto, 
+inoltre, essendo il numero di hop per la ricerca limitato, una risorsa 
+presente in rete si potrebbe anche non raggiungere.
+
+\subsection{Microservizi}
+L'idea è quella di sppingere nella vertical distribution, separando 
+tra loro le funzionalità da garantire. In questo modo si definiscono microservizi
+potenzialmente scritti in linguaggi di programmazione differenti, che comunicano 
+tra loro tramite messaggi.
+Favorisce la manutenzione e l'aggiornamento delle singole parti, inoltre, 
+alcune funzionalità possono essere replicate più di altre.
+
