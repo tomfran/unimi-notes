@@ -1,0 +1,121 @@
+\section{Modelli di comunicazione}
+Nei sistemi distribuiti i nodi comunicano tra loro tramite qualche
+mezzo, esiste una grande eterogeneità riguardo al tipo dei canali utilizzati, 
+ma essi vengono utilizzati per scambiare messaggi.
+
+\paragraph{Middleware}
+Considerano la coda iso osi, si possono fondere sessione e presentazione 
+in un unico livello middleware. In questo livello possono essere collocati i 
+servizi di comunicazione di alto livello trattati a seguire.
+
+Considerando ad esempio un client che effettua una richiesta ad un 
+server, un middleware potrebbe gestire il messaggio mandato 
+dal client e ad esempio fornire feedback sullo stato della richiesta, 
+ad esempio la ricezione del server, il processing etc.
+\subsection{Comunicazione persistente e transiente}
+Un esempio intiuitivo di comunicazione persistente consiste nello scambio 
+di lettere da post office a post office, i messaggi sono 
+memorizzati nel transito, mentre un sistema transiente non 
+prevede la memorizzazione dei messaggi in transito, un esempio è una chiamata 
+telefonica.
+
+Esistono molte varianti di queste comunicazioni, legate a quanto 
+un client aspetta, a quando il server riceve il messaggio etc.
+
+\paragraph{Modello persistente asincrono}
+Il processo A manda un messaggio al processo B, il quale non è in esecuzione.
+Ad un certo punto B parte e riceve il messaggio. Si prevede una memorizzazione 
+intermedia. A non aspetta nessun riscontro da B, si parla quindi di comunicazione 
+asincrona.
+
+\paragraph{Modello persistente sincrono}
+In questo caso il processo A manda una richiesta a B, aspettandosi però 
+un riscontro.
+
+\paragraph{Modello transiente asincrono}
+In questo caso il messaggio inviato da A a B è ricevuto dal secondo 
+solo se in esecuzione.
+
+\paragraph{Modello transiente sincrono}
+In questo caso il processo B è in esecuzione ma sta eseguendo altro.
+Quello che succede è che B riceve il messaggio, manda un ACK e finsice di 
+processare quello che sta facendo. Poi inizia con la richiesta di A.
+
+\paragraph{Delivery-based transiente sincrono}
+In questo caso A si ferma fino a quando B non inizia ad elaborare.
+
+\paragraph{Response-based transiente sincrono}
+In questo caso A si ferma fino a quando B non finisce di elaborare.
+
+\subsection{Message-oriented communication}
+
+\paragraph{Berkeley sockets}
+Tool di comunicazione introdotto con Berkeley Unix. Si possono 
+considerare come comunicazione transiente.\\
+Fanno uso di diverse primitive di sistema per creare una connessione
+tra due nodi:
+\begin{itemize}
+    \item \emph{Socket}: crea un endpoint. Facendo riferimento 
+    a Unix, si può pensare a una socket come 
+    un descrittore, simile ad esempio ai descrittori per standard input,
+    output ed error. Alla creazione di una nuova socket si restituisce un descrittore
+    sul quale scrivere e leggere
+    \item \emph{Bind}: si collega un indirizzo locale, ovvero una porta, a una socket
+    \item \emph{Listen}: segnala la disponibilità a ricevere messaggi
+    \item \emph{Accept}: si blocca il caller fino a quando non arriva una connessione
+    \item \emph{Connect}: tentativo di stabilire una connessione, c'è bisogno di ip 
+    e porta
+    \item \emph{Send}: invio di dati sulla socket
+    \item \emph{Receive}: ricezione di dati sulla socket
+    \item \emph{Close}: rilascio delle risorse
+\end{itemize}
+
+\paragraph{Queuing systems}
+L'idea di base di questo sistema è avere delle code di messaggi, gestite 
+da nodi intermedi detti router. 
+Si garantisce la persistenza, ovvero, un nodo manda ad una coda, i router 
+indirizzano il messaggio al destinatario e lo inseriscono nella loro coda.
+Tra le primitive del sistema si potrebbero trovare:
+\begin{itemize}
+    \item \emph{Put}: append del messaggio a una coda
+    \item \emph{Get}: prelevo il messaggio da una coda, primitiva bloccante
+    \item \emph{Poll}: controlla se una coda ha messaggi e rimuove il primo, non bloccante
+    \item \emph{Notify}: notifica quando un messaggio è inserito in una certa coda
+\end{itemize}
+In un sistema di questo tipo, il ruolo dei broker è quello di garantire la persistenza, 
+ma anche quello di effettuare eventuali conversioni. Il secondo scenario accade quando 
+due nodi che vogliono comunicare hanno convenzioni diverse. 
+
+Il sistema a code è preferibile quando :
+\begin{itemize}
+    \item si vuole comunicazione ascincrona e persistente 
+    \item quando si può aumentare la scalabilità ammettendo ritardi di gestione delle richieste, 
+    \item quando i producer sono più veloci dei consumer
+    \item quando si sta implementando un pattern pub-sub
+\end{itemize}
+
+\paragraph{Remote proceduce call}
+L'idea è quella di nascondere la messaggistica necessaria ad effettuare una 
+chiamata ad una procedura remota.
+
+Non è possibile inviare al processo remoto il semplice indirizzo di memoria dei 
+dati sul client, bensì serve mandare al processo remoto una funzione con parametri.
+La logica quindi si riassume in questi punti:
+\begin{enumerate}
+    \item Arrivo ad un'istruzione da eseguire in remoto
+    \item Serializzazione dei parametri e invio nella rete del messaggio
+    \item Ricezione del server, deserializzazione ed esecuzione della funzione
+    \item Invio del risultato al client
+\end{enumerate}
+L'implementazione di questo scambio di messaggi è offerta da uno standard, 
+non bisogna "inventarsi" nulla al contrario della comunicazione con socket.
+Il passaggio da dati a messaggio e viceversa è chiamato:
+\begin{itemize}
+    \item Marshalling: formattazione dei parametri in messaggio, prevede
+    eventuale serializzazione, bisogna anche porre attenzione all'architettura
+    di partenza e arrivo, potrebbero differire in termini di codifica
+    \item Unmarshalling: procedure inversa di marshalling
+\end{itemize}
+Il binding tra client e server è trasparente, alcuni sistemi offrono la possiblità 
+di scoprire dinamicamente quale server offre una determinata funzione.
+
