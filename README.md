@@ -6,7 +6,7 @@ Also, feel free to contact me if you've found any errors.
 
 ## Completed notes
 * ***Artificial Intelligence***: notes about [evolutionary algorithms](https://github.com/tomfran/unimi-notes/blob/main/artificial-intelligence/evolutionary.pdf) :it:
-<!-- * ***Architectures for big data***: [notes](https://github.com/tomfran/unimi-notes/blob/main/architectures-big-data/architectures-for-big-data.pdf) about all the course :it: -->
+* ***Architectures for big data***: [notes](https://github.com/tomfran/unimi-notes/blob/main/architectures-big-data/architectures-for-big-data.pdf) about all the course :it:
 
 ## Work in progress
 Those are a collection of courses I am currently following. 
