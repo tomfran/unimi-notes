@@ -163,7 +163,8 @@ vale:
 \end{equation}
 
 \paragraph{Terzo livello}
-Per gli uni del caso denso del secondo livello si crea un terzo livello.
+Per gli uni del caso denso del secondo livello, ovvero quando 
+$r_i \leq (\log n\log \log n )^2$, si crea un terzo livello.
 $S[i]$ contiene le posizioni multiple di $\log r_i \log \log n$.
 Definiamo ora
 $$\forall j, \bar{r}_j^i = S[i][j+1] - S[i][j]$$
@@ -173,8 +174,55 @@ Esistono ora due casi, come in precendenza:
 \begin{itemize}
     \item Caso sparso: $\bar{r}_j^i \geq \log \bar{r}_j^i \log r_i (\log \log n)^2$.\\
     Memorizzo in $T[i][j]$ la lista delle posizioni degli uni, come differenza da $S[i][j]$.
-    La memoria occupata è 
-    $$(\log r_i \log \log n)\cdot \log \bar{r}_j^i $$
-    \item \dots
+    La memoria occupata da un elemento è:
+    \begin{equation}
+        \begin{aligned}
+            (\log r_i \log \log n)\cdot \log \bar{r}_j^i = 
+            \frac{\log r_i (\log \log n)^2\cdot \log \bar{r}_j^i}{\log\log n} 
+            \\\leq \frac{\bar{r}_j^i}{\log \log n}
+            = \frac{S[i][j+1] - S[i][j]}{\log \log n}
+        \end{aligned}
+    \end{equation}
+    Considerando tutti gli elementi:
+    \begin{equation}
+        \begin{aligned}
+            \sum_j \frac{S[i][j+1] - S[i][j]}{\log \log n} = 
+            \frac{P[i+1] - P[i]}{\log \log n} \leq \frac{n}{\log \log n}
+        \end{aligned}
+    \end{equation}
+    \item Caso denso: $\bar{r}_j^i < \log \bar{r}_j^i \log r_i (\log \log n)^2$.\\
+    In questo caso tra $S[i][j+1]$ e $S[i][j]$ ci sono pochi zeri, si utilizza il 
+    Four-Russian trick, vale che:
+    \begin{itemize}
+        \item visto che $r_i \leq (\log n \log \log n)^2$, essendo nel 
+        caso denso del secondo livello:
+        \begin{equation}
+            \begin{aligned}
+                \log \bar{r}_j^i \leq \log r_i \leq \log((\log n \log \log n)^2) = \\
+                2 \log \log n + 2 \log \log \log n \leq 4\log\log n        
+            \end{aligned}
+        \end{equation}
+        \item ricordiamo che vale $\bar{r}_j^i < \log \bar{r}_j^i \log r_i (\log \log n)^2$.
+        Per il punto precedente, $\log \bar{r}_j^i$ e $\log r_i$ sono entrambi $\leq 4\log\log n$.
+        quindi, mettendo tutto insieme:
+        $$\bar{r}_j^i \leq 16(\log \log n)^4$$
+    \end{itemize}
 \end{itemize}
-\dots
+Lo spazio utilizzato dal Four-Russian trick è minore uguale di
+$$\leq 2^{\bar{r}_j^i}\cdot\bar{r}_j^i\cdot\log \bar{r}_j^i$$
+Ovvero il numero di tabelle, per il numero di righe per i bit per riga.
+Sfruttando le osservazioni precedenti:
+\begin{equation}
+    \begin{aligned}
+        2^{\bar{r}_j^i}\cdot\bar{r}_j^i\cdot\log \bar{r}_j^i
+        \leq 2^{16 (\log \log n)^4}\cdot 16(\log \log n)^4 \cdot \log(16(\log \log n)^4)\\
+        = (\log \log n)^{4\cdot 16} \cdot 16(\log \log n)^4\cdot \log(16(\log \log n)^4) = o(n)
+    \end{aligned}
+\end{equation}
+\begin{remark}
+    Nonostante la struttura sia teoricamente succinta, bisogna notare come 
+    la quantità $(\log \log n)^{4\cdot 16}$ sia nella pratica enorme.\\
+    La soluzione più semplice per adottare il design di Clark è saltare il 
+    Four-Russian trick e utilizzare sempre la memorizzazione esplicita, 
+    ovvero il primo punto del terzo livello.
+\end{remark}
