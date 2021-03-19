@@ -1,0 +1,150 @@
+\section{Relevance feedback and query expansion}
+The idea behind this section is the possibility to 
+use some sort of feedbacks to tweak queries before passing
+them to the information retrieval system.
+
+\paragraph{Relevance feedback}
+It's any feedback we can collect about correctness 
+of a certain query. For instance a user feedback or a indirect 
+feedback about usefulness of an answer, i.e. the user clicked on a 
+particular website
+
+\paragraph{Query expansion}
+Transform user queries exploiting the relevance feedback
+to improve system results over that query.
+
+When expanding a query there are two possible methods, 
+local and global methods, depending on whereas the expansion
+is applied to a single query or to all queries to the system:
+\begin{itemize}
+    \item \emph{Local methods}: related to a particular query, they are based 
+    on relevance and indirect feedback of that particular query
+    \item \emph{Global methods}: methods applied to all queries, those can be 
+    expansion with a thesaurus, or spelling correction
+\end{itemize}
+
+\subsection{Local methods}
+\paragraph{Vector shifting}
+Given the sets $R$ and $N$ of relevant and non relevant results respectively, 
+the task is to find a query vector $\vec{q}_o$ that maximizes similarity 
+with $R$ and minimizes the one with $N$:
+$$\vec{q}_o = \mathit{argmax}_{\vec{q}}[\mathit{sim}(\vec{q}, R) - \mathit{sim}(\vec{q}, N)]$$
+
+Given a similarity function, for instance the cosine similarity, the equation becomes
+$$\vec{q}_o = \frac{1}{|R|}\sum_{\vec{d}_i \in R}\vec{d}_i - \frac{1}{|N|}\sum_{\vec{d}_j \in N}\vec{d}_j$$
+where the two elements are the centroids of $R$ and $N$.
+
+\paragraph{Rocchio algorithm}
+This approach is a generalization of the main idea introduced in the 
+section, it proposes a new vector derived by making the query vector closer
+to the centroid of relevant documents.
+$$\vec{q}_m = \alpha\vec{q} + \beta\frac{1}{|R|}\sum_{\vec{d}_i \in R}\vec{d}_i 
+- \gamma\frac{1}{|N|}\sum_{\vec{d}_j \in N}\vec{d}_j$$
+where $\alpha$, $\beta$ and $\gamma$ can balance the role of each component.\
+
+One of the problems of this approach is the difficulty in estimating a document 
+relevance, also, the sets $R$ and $N$ could be somehow merged.
+
+\paragraph{Pseudo-relevance feedback}
+Instead of collecting real feedback for a query, we assume that the top $k$ 
+results are correct, we then use them as a feedback for the Rocchio algorithm.
+
+To motivate this choice we can look at the precision and recall curve, indeed
+a small set of results usually lead to high precision, thus we can move the 
+system in the direction of the top results. 
+
+\paragraph{Indirect relevance feedback}
+In this case the feedback is obtained by looking at user behavior, for instance 
+we could count the number of visits to the results to measure the popularity of 
+documents.
+
+\subsection{Global Methods}
+\paragraph{Query expansion}
+The idea here is to expand the query by adding new information, 
+this could mean adding terminology or shifting the query vector as before.
+
+\subsubsection{How to add information?}
+To add information to a query we can perform \emph{syntactic analysis} of 
+the original query, using \emph{dictionaries} to add new terms related to the 
+query, or use the \emph{corpus of reference documents} to add terminology.
+
+\paragraph{Dictionaries and knowledge bases}
+The process to enrich a query when having a knowledge base, that could 
+be a dictionary an ontology or whatever, is to:
+\begin{enumerate}
+    \item \emph{Lookup} the original query on the external knowledge base
+    \item Extract \emph{candidate terminology}, so terms that could be added 
+    to the query and are somehow related to the one in the original string
+    \item Use a \emph{word sense disambiguation} tool to split relevant and 
+    non relevant terms, and add the relevant ones to the original
+    query
+\end{enumerate}
+
+\paragraph{Wordnet}
+As introduced in section \vref{normalization}, Wordnet can be used to extract 
+lemmas but also to find hypernyms and hyponyms or a given word. For instance, 
+if a query presents the word \emph{play}, with the meaning of a 
+\emph{dramatic composition} we could add the latter to the original query.
+
+Another use case could be searching for something like \emph{President Lincoln}.
+In this case we check for the definition of the two terms, and find 
+out that there's a matching in some possible definitions, indeed the first one 
+could be related to the president of the US, and also the second, thus we can 
+infer that the query is related to US presidency and enrich the query with this 
+information.
+
+\paragraph{Statistical terminology expansion}
+Given the set of relevant and non relevant documents $R$ and $N$ we can select 
+relevant terminology by using the \emph{pointwise Kullback-Leibler divergence}.
+We compute the probability of a word  to be in $R$ and in $N$
+$$p(w) = \frac{\mathit{count}(w, R)}{\sum_{w_i \in R}\mathit{count}(w_i, R)},\;\;
+q(w) = \frac{\mathit{count}(w, N)}{\sum_{w_i \in N}\mathit{count}(w_i, N)}$$
+and then compare them 
+$$\delta_w(p\;||\;q) = p(w)\log\frac{p(w)}{q(w)}$$
+if this quantity is close to zero a term is not useful to separate relevant and non 
+relevant documents. On the other end, words with a positive $\delta$ can be used 
+to expand the query.
+
+\subsubsection{Spelling correction}
+There are main phases in spelling correction, 
+the first one is to select the correct versions of a certain 
+query in a set of candidates and then choosing the best one, i.e. the
+most common or the nearest one.
+
+To detect a \emph{spelling error} we could see few query results, or maybe 
+search for the query tokens in a vocabulary.
+
+\paragraph{String similarity}
+A measure that computes the distance of two strings, one could be the 
+\emph{Levenshtein distance}, also known as the edit distance.
+It can be solved with dynamic programming implementing the following recursive 
+definition:
+\[
+    DP[i][j] = 
+    \begin{cases}
+        j \mathit{\;if\;} i = 0\\
+        i \mathit{\;if\;} j = 0\\
+        DP[i-1][j-1] \mathit{\;if\;} s[i] = r[i]\\
+        \min(DP[i-1][j], DP[i][j-1], DP[i-1][j-1]) + 1 \mathit{\;otherwise\;}\\
+    \end{cases}
+\]
+
+\paragraph{Phonetic correction}
+To minimize errors due to phonetic misspelling the idea is to 
+use a \emph{phonetic hash}, so that similar sounding words have the same value. 
+These algorithm are called \emph{Soundex} and are language-dependent.
+
+\paragraph{K-gram classification and matching}
+The idea is to consider for each word the subsequences of $K$ characters.
+
+An example, for the word \emph{PLAY}, is to first add a start and end symbol, 
+$\#s$ and $\#e$ respectively and then computing the subsequences, counting how 
+many times they appear in the word.
+
+This creates a vector representation for the words, and to find similar words 
+we can use cosine similarity like we did in section \vref{vect-vect-model}.
+
+\paragraph{Sequence-to-sequence learning}
+This technique use deep learning to match a sequence into another one.
+The idea is to train a model to map misspelled words into they correct 
+counterpart.

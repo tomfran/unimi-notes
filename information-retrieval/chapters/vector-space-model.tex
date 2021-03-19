@@ -1,4 +1,5 @@
 \section{Vector space model}
+\label{vect-vect-model}
 
 \paragraph{Text transformation}
 The first step to process queries on text is to transform 
@@ -12,8 +13,8 @@ The main idea of a vector space model is to map documents in a vector,
 so they appear as points in a certain space.
 
 For instance, we can collect some words and index them, then build a vector 
-for each document $$[x_0, \dots, x_n]$$
-Where the value $x_i$ stores the occurrences of the word indexed with $i$ 
+for each document $$d_k = [x_0, \dots, x_n]$$
+where the value $x_i$ stores the occurrences of the word indexed with $i$ 
 in that document.
 
 \paragraph{Similarity} 
@@ -57,6 +58,7 @@ In practice this can be obtained with:
 \end{itemize}
 
 \subsection{Normalization}
+\label{normalization}
 The idea is to normalize each token, that could mean writing verbs in the normal 
 form, or plurals at the singular.
 

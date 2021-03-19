@@ -226,3 +226,80 @@ Sfruttando le osservazioni precedenti:
     Four-Russian trick e utilizzare sempre la memorizzazione esplicita, 
     ovvero il primo punto del terzo livello.
 \end{remark}
+\subsection{Alberi binari}
+Un albero binario è definito ricorsivamente, ovvero, un albero può essere:
+\begin{enumerate}
+    \item Un nodo singolo
+    \item Un nodo con due figli che sono alberi binari
+\end{enumerate}
+I nodi senza figli sono detti \emph{nodi esterni} o foglie, 
+gli altri sono \emph{nodi interni}.
+
+\begin{theorem}
+    Il numero di nodi esterni è uguale al numero di nodi interni aumentato di uno.
+    $$|E| = |I| + 1$$
+\end{theorem}
+\begin{proof}
+    Su un unico nodo, il teorema vale, infatti i nodi esterni sono uno e zero 
+    quelli interni.
+
+    Su un albero $T$ con figli, indicati con $T_1$ e $T_2$: 
+    $$|E(T)| = |E(T_1)| + |E(T_2)| = (|I(T_1)| + 1 + |I(T_2)|) + 1$$
+    La quantità tra parentesi sono i nodi interni di $T$, ovvero quelli dei 
+    figli più se stesso, vale quindi il teorema.
+\end{proof}
+In generale si può dire che il numero di nodi totali di un albero binario 
+è equivalente a $$n = |E| + |I| + 2|E| - 1 = 2|I| + 1$$
+
+\begin{theorem}
+    Il numero di alberi binari con $n$ nodi interni equivale a
+    $$C_n = \frac{1}{n+1}\binom{2n}{n}$$
+\end{theorem}
+\paragraph{Information theoretical Lower Bound}
+Utilizzando l'\emph{approssimazione di Stirling}
+$$x! \approx \sqrt{2\pi x}\bigg(\frac{x}{e}\bigg)^x $$
+Si ottiene che il numero di alberi binari con $n$ nodi interi equivale a 
+\begin{equation}
+    \begin{aligned}
+        C_n = \frac{1}{n+1}\binom{2n}{n} = \frac{1}{n+1}\cdot\frac{(2n)!}{n!(2n-n)!} 
+        = \frac{1}{n+1}\cdot\frac{(2n)!}{(n!)^2} \\
+        \approx \frac{1}{n+1}\cdot
+        \frac{\sqrt{2\pi n}(\frac{2n}{e})^{2n}}{(\sqrt{2\pi n}(\frac{n}{e})^n)^2}
+        = \frac{1}{n+1}\cdot \frac{\sqrt{4\pi n}(\frac{2n}{e})^{2n}}{2\pi n (\frac{n}{e})^{2n}}\\
+        = \frac{1}{n+1} \cdot \frac{1}{\sqrt{\pi n}}\cdot \bigg(\frac{2n}{n}\bigg)^{2n}
+        = \frac{1}{n+1}\cdot \frac{1}{\sqrt{\pi n}}\cdot 2^{2n} \approx \frac{4^n}{\sqrt{\pi n^3}}
+    \end{aligned}
+\end{equation}
+Segue che $$Z_n = \log(4^n) = n\log 4 = 2n$$
+
+\begin{theorem}
+    Per rappresentare un albero binario con $n$ nodi interni sono necessari
+    $2n - O(\log n)$ bit.
+\end{theorem}
+
+\paragraph{Numerazione nodi}
+I nodi dell'albero si considerano numerati dalla radice per livelli, 
+si mantiene poi un vettore $b$ lungo $2n +1$ per un albero con $n$ nodi interni
+dove una componente a uno significa che il nodo $i$ è interno, zero che è esterno.
+
+Definiamo ora delle primitive sull'albero:
+\begin{itemize}
+    \item $\mathit{isInternal(k)} = b_k$
+    \item $\mathit{leftChild(k)} = 2\mathit{rank}_b(k) +1$
+    \item $\mathit{rightChild(k)} = 2\mathit{rank}_b(k) +2$
+    \item $\mathit{parent(k)} = \mathit{select}_b(\lfloor \frac{k-1}{2} \rfloor)$
+\end{itemize}
+
+\paragraph{Spazio}
+Lo spazio occupato equivale a quello delle strutture più il vettore
+ $$2n + o(2n)$$
+Si possono considerare anche i dati per i nodi, nel caso in cui 
+i dati siano solo in quelli interni, si possono memorizzare in un vettore 
+e accedervi tramite indice $\mathit{rank}_b(k)$.
+
+\paragraph{Tempo}
+Il tempo delle primitive è costante.
+
+Segue che la struttura per gli alberi definita in questo modo è succinta.
+
+\subsection{Sequenze monotone di Elias-Fano}
