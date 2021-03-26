@@ -1,7 +1,7 @@
 <h1 align="center"> UniMi Notes</h1>
 
 <p align="justify">
-This is a collection of my university courses notes, keep in mind some of them might not be complete. Some of them are in italian, others in english, in the latter case there might be some imprecision.
+This is a collection of my university courses notes, some are in italian, others in english, in the latter case there might be some imprecision.
 
 Also, feel free to contact me if you've found any errors.
 </p>
