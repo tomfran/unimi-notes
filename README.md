@@ -1,17 +1,31 @@
-# UniMI Notes
+<h1 align="center"> UniMi Notes</h1>
 
-This is a collection of my university courses notes, keep in mind some of them might not be complete.
+<p align="justify">
+This is a collection of my university courses notes, keep in mind some of them might not be complete. Some of them are in italian, others in english, in the latter case there might be some imprecision.
 
 Also, feel free to contact me if you've found any errors.
+</p>
+<br>
 
-## Completed notes
-* ***Artificial Intelligence***: notes about [evolutionary algorithms](https://github.com/tomfran/unimi-notes/blob/main/artificial-intelligence/evolutionary.pdf) :it:
-* ***Architectures for big data***: [notes](https://github.com/tomfran/unimi-notes/blob/main/architectures-big-data/architectures-for-big-data.pdf) about all the course :it:
+<h2 align="center"> Completed Notes</h1>
+<br>
 
-## Work in progress
-These are a collection of courses I am currently following. 
-* ***Algoritmi e complessità***: incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/algoritmi-complessita/algo_comp.pdf) :it:
-* ***Sistemi distribuiti e pervasivi***: incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/sistemi-distribuiti/sistemi-distribuiti.pdf) :it:
-* ***Simulation***: incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/simulation/simulation.pdf) :gb:
-* ***Information retrieval*** incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/information-retrieval/information-retrieval.pdf) :gb:
-* ***Statistical methods for machine learning***: incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/statistical-methods-machine-learning/statistical-methods.pdf) :gb:
+These notes are considered finished, they will probably not be updated:
+
+* ***Artificial Intelligence*** notes about [evolutionary algorithms](https://github.com/tomfran/unimi-notes/blob/main/artificial-intelligence/evolutionary.pdf) :it:
+* ***Architectures for big data*** [notes](https://github.com/tomfran/unimi-notes/blob/main/architectures-big-data/architectures-for-big-data.pdf) about all the course :it:
+
+<br>
+<br>
+
+<h2 align="center"> Work in progress Notes</h1>
+<br>
+
+This is a list of courses I am currently following, thus the notes 
+might not be complete:
+
+* ***Algoritmi e complessità*** [notes](https://github.com/tomfran/unimi-notes/blob/main/algoritmi-complessita/algo_comp.pdf) :it:
+* ***Sistemi distribuiti e pervasivi*** [notes](https://github.com/tomfran/unimi-notes/blob/main/sistemi-distribuiti/sistemi-distribuiti.pdf) :it:
+* ***Simulation*** [notes](https://github.com/tomfran/unimi-notes/blob/main/simulation/simulation.pdf) :gb:
+* ***Information retrieval*** [notes](https://github.com/tomfran/unimi-notes/blob/main/information-retrieval/information-retrieval.pdf) :gb:
+* ***Statistical methods for machine learning*** [notes](https://github.com/tomfran/unimi-notes/blob/main/statistical-methods-machine-learning/statistical-methods.pdf) :gb:
