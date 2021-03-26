@@ -14,4 +14,4 @@ These are a collection of courses I am currently following.
 * ***Sistemi distribuiti e pervasivi***: incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/sistemi-distribuiti/sistemi-distribuiti.pdf) :it:
 * ***Simulation***: incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/simulation/simulation.pdf) :gb:
 * ***Information retrieval*** incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/information-retrieval/information-retrieval.pdf) :gb:
-<!-- * ***Statistical methods for machine learning***: incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/statistical-methods/statistical-methods.pdf) :gb: -->
+* ***Statistical methods for machine learning***: incomplete [notes](https://github.com/tomfran/unimi-notes/blob/main/statistical-methods/statistical-methods.pdf) :gb:

@@ -1,0 +1,156 @@
+\section{Statistical learning}
+
+We talked so far bout data, where 
+examples were obtained through \emph{independent} draws from a \emph{fixed} but unknown 
+\emph{probability distribution} on the data domain cartesian the label set $X \times Y$.
+
+Fixed means that the probability distribution do not change with time, while independent means 
+that every data point is independent from the other. \\The first statement is probably not true, 
+as the data distribution could change in time, for instance news or images at certain hours, 
+time of year etc.\\
+The second statement is probably not true either, as maybe some data points are related, 
+let's consider news about a pandemic in time.
+
+The idea is to find a trade-off between simplicity of assumptions and effectivity of algorithms.
+
+\paragraph{Dataset and learning problem}
+From now on every example will be of the form $$(X,Y) \thicksim D \mathit{\;over\;} X \times Y$$ 
+where the twos are random variables.
+A dataset, made of training and test set will be a collection of \emph{random statistical samples}
+$$D = (X_1, Y_1) \dots (X_m, Y_m)$$
+A learning problem will be defined as a pair between the dataset and the loss function $(D,l)$.
+
+\subsection{Bayes Optimal Predictor}
+
+\paragraph{Statistical risk}
+Given $(D,l)$ and a predictor $h: X \rightarrow Y$, the question is how good is $h$ on $(D,l)$?
+We can look at \emph{statistical risk}
+$$l_D(h) = E[l(Y, h(X))]$$
+The expectation is computed with respect to the random draw of $(X,Y)$ from $D$.
+The goal is to find a predictor $h$ such that $l_D(h)$ is small as possible.
+
+\paragraph{Optimal Predictor}
+We want to define the predictor with the smallest statistical risk given a problem $(D,l)$, 
+it is defined as
+$$f^*(x) = \min_{\hat{y} \in Y}E[l(Y, \hat{y})| X =x]$$
+this is the conditional expected value of $l(Y, \hat{y})$, given $X = x$. I have a label 
+distribution given a value for $X$.
+The predictor $f^* : X \rightarrow Y$ is called the \emph{Bayes Optimal Predictor}.
+
+By definition the following holds
+$$\forall h : X \rightarrow Y, E[l(y, f^*(x))|X = x] \leq E[l(y, h(x))|X = x]$$
+furthermore, by averaging over $X$, the following holds NOTA 1
+$$l_D(f^*) = E[l(y,f^*(x))] \leq E[l(y,h(y))] = l_D(h)$$
+
+Can we compute $f^*$? No unless I know the distribution of $Y$ given $X$. 
+\begin{remark}
+    That could also mean having to learn the distribution given the dataset, 
+    but that requires a lot of data.
+\end{remark}
+Unless labels are uniquely determined by data points, $l_D(f^*) > 0$, this is also called the 
+\emph{Bayes risk}.
+The quantity is greater than zero in the case that two same data points have different labels.
+
+\paragraph{Optimal predictor for square loss}
+Let's consider the square loss in a regression task.
+The optimal predictor now becomes: 
+\begin{equation}
+    \begin{aligned}
+        f^*(x) = \min_{\hat{y} \in \mathbb{R}} E[(y - \hat{y})^2 | X = x]\\
+        f^*(x) = \min_{\hat{y} \in \mathbb{R}} E[(y^2 + \hat{y}^2 - 2y\hat{y}) | X = x]\\
+        f^*(x) = \min_{\hat{y} \in \mathbb{R}} E[y^2| X = x] + \hat{y}^2 - 2\hat{y}E[y | X = x] && \text{Expected value linearity}\\
+        f^*(x) = \min_{\hat{y} \in \mathbb{R}} \hat{y}^2 - 2\hat{y}E[y | X = x] && \text{Can ignore the first}
+    \end{aligned}
+\end{equation}
+We now compute the derivative to find the optimal predictor
+\begin{equation}
+    \begin{aligned}
+        F(\hat{y}) = \hat{y}^2 - 2\hat{y}\square\\
+        \frac{\mathrm{d}F(\hat{y})}{\mathrm{d}\hat{y}} = 2\hat{y} - 2\square = 0\\
+        \hat{y} = \square
+    \end{aligned}
+\end{equation}
+This means that the optimal predictor can be defined as follows:
+$$f^*(x) = E[Y | X = x]$$
+If we substitute $\hat{y}$ with $f^*(x)$ in the previous formula, we find that
+$$E[(y - f^*(x))^2|X=x] = E[(y - E[Y | x] | X = x)] = \mathit{Var}[Y | X = x]$$
+This implies that 
+$$l_D(f^*) = E[\mathit{Var}[Y | X]] \neq \mathit{Var}[Y | X]$$
+
+% \paragraph{Optimal predictor for zero one loss}
+
+% \dots
+
+\begin{remark}
+    The idea is to find the right error function that ultimately 
+    defines an $f^*$ predictor.
+\end{remark}
+
+\subsection{Estimating the statistical risk}
+Let's assume to have a predictor $h : X \rightarrow Y$, we want to compute the risk $l_D(h)$. 
+The loss $l(y, \hat{y}) \in [0,1]$ is bounded in that interval.
+
+$D$ is unknown, is that were not the case, we could compute $f^*$.
+We used so far the test error to evaluate a predictor performances.
+So we have the test set and the error:
+$$S^\prime = (x^\prime_1, y^\prime_1), \dots, (x^\prime_n, y^\prime_n),\;\;
+\hat{l}_{S^\prime}(h) = \frac{1}{n}\sum_{t = 1}^n l(y^\prime_t, h(x_t^\prime))$$
+The test set is made of statistical samples, 
+while the second value is the sample mean over $S^\prime$.
+
+We know that $(X_t^\prime, Y_t^\prime) \thicksim D$ is a random pair drawn from a distribution.
+If we compute the expected value of the loss, we find the risk
+$$t = 1, \dots, n \;\; E[l(y^\prime_t, h(x_t^\prime)] = l_D(h)$$
+
+By the \emph{law of large numbers} we know that $\hat{l}_{S^\prime}(h)$ converges to 
+$l_D(h)$ in probability.
+
+\paragraph{Chernoff-Huffding inequality}
+Given the independent random variables $$Z_t,
+P(Z_t \in [0,1]) = 1, 0 \leq Z_t \leq 1, E[Z_t] = \mu, t=1, \dots, n$$
+The following holds $\forall \epsilon > 0$
+$$P\bigg(\frac{1}{n}\sum_t Z_t > \mu + \epsilon\bigg) \leq e^{-2\epsilon ^2 n}, 
+P\bigg(\frac{1}{n}\sum_t Z_t < \mu - \epsilon\bigg) \leq e^{-2\epsilon ^2 n}$$
+Note that 
+$$E\bigg[\frac{1}{n}\sum_{t=1}^{n}Z_t\bigg] = \mu$$
+
+Continuing with the previous equation we can write
+$$l(y^\prime_t, h(x_t^\prime) = Z_t \in [0,1], E[l(y^\prime_t, h(x_t^\prime)] = l_D(h) = \mu$$
+
+\paragraph{Union bound}
+Given the events $A_i$, $$P(\cup_i A_i) \leq \sum_i^n P(A_i)$$
+
+Let's not continue with the previous equation, calculating the probability the 
+test error diverges from the risk
+\begin{equation}
+    \begin{aligned}
+        P(|l_D(h) - \hat{l}_{S^\prime}(h)| \geq \epsilon) 
+        = P(l_D(h) - \hat{l}_{S^\prime}(h) > \epsilon \cup
+        \hat{l}_{S^\prime}(h) - l_D(h) > \epsilon)\\
+        \leq P(l_D(h) - \hat{l}_{S^\prime}(h) > \epsilon) +
+        P(\hat{l}_{S^\prime}(h) - l_D(h) > \epsilon)\\
+        = P(\hat{l}_{S^\prime}(h) < l_D(h) - \epsilon) +
+        P(\hat{l}_{S^\prime}(h) > l_D(h) + \epsilon)
+    \end{aligned}
+\end{equation}
+I can apply the Chernoff-Huffding inequality to find that
+ $$P(|l_D(h) - \hat{l}_{S^\prime}(h)| \geq \epsilon) \leq 2e^{-2\epsilon^2n}$$
+If we call that probability $\delta$ and solve for $\epsilon$
+$$\delta = 2e^{-2\epsilon^2n}, \epsilon = \sqrt{\frac{1}{n}\ln \frac{2}{\delta}}$$
+This means that the loss function diverges from the risk less than $\epsilon$ with probability
+$1-\delta$.
+This actually means that the test error is a good proxy
+for the statistical risk of any given predictor $h$. It is in fact a 
+probabilistic upper bound.
+
+\subsection{Training}
+Let's assume to have some learning algorithm $A$, where
+$A(S) = h_S$ is the predictor output by $A$ on input $S$, where the latter 
+is a training set.
+
+$A$ is such that $A(S) \in H\;\forall S$, i.e. $A$ always picks a predictor 
+from some class $H$. For instance $A$ could be the $\mathit{ERM}$ for $H$.
+
+\dots
+
+\paragraph{Bias-variance decomposition}
