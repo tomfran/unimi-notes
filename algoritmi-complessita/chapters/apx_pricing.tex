@@ -77,8 +77,8 @@ dell'universo.
     Riguardo al costo dell'elemento $j$, e in geenerale per tutti i $j$, vale:
     \begin{equation}
         \begin{aligned}
-            C_{s_j} = \frac{W_h}{|S_h \cap R|} \leq \frac{W_k}{|S_k \cap R|} && \text{\emph{h} minimizza quel rapporto}\\
-            \leq \frac{W_k}{d-j+1} && \text{equazione precedente}\\
+            C_{s_j} &= \frac{W_h}{|S_h \cap R|} \leq \frac{W_k}{|S_k \cap R|} && \text{\emph{h} minimizza quel rapporto}\\
+            &\leq \frac{W_k}{d-j+1} && \text{equazione precedente}\\
         \end{aligned}
     \end{equation}
     Considerando ora tutti gli elementi di $S_k$: 
@@ -192,8 +192,8 @@ Un nodo si vende, se la somma delle offerte degli archi incidenti arriva al suo 
     Consideriamo ora la somma delle disequazioni per la soluzione ottima
 \begin{equation}
     \begin{aligned}
-        \sum_{i \in S^*} \sum_{e\in E, i \in e}P_e \leq \sum_{i \in S^*}W_i\\
-        \sum_{e \in E} P_e \leq \sum_{i \in S^*} \sum_{e\in E, i \in e}P_e \leq W^*
+        \sum_{i \in S^*} \sum_{e\in E, i \in e}P_e &\leq \sum_{i \in S^*}W_i\\
+        \sum_{e \in E} P_e &\leq \sum_{i \in S^*} \sum_{e\in E, i \in e}P_e \leq W^*
     \end{aligned}
 \end{equation}
 Questo vale perchè la seconda parte della disequazione considera potenzialmente più volte alcuni lati.
@@ -236,8 +236,8 @@ aumenta la sua offerta, del minimo per soddisfare uno dei due nodi.
 \begin{proof}
     \begin{equation}
         \begin{aligned}
-            \frac{w}{w^*} \leq \frac{2\sum_{e \in E}P_e}{w^*} && \text{Per il lemma \ref{pscl2}}\\
-            \frac{w}{w^*} \leq \frac{2\sum_{e \in E}P_e}{\sum_{e \in E} P_e } \leq 2 && \text{Per il lemma \ref{pscl1}}
+            \frac{w}{w^*} &\leq \frac{2\sum_{e \in E}P_e}{w^*} && \text{Per il lemma \ref{pscl2}}\\
+            \frac{w}{w^*} &\leq \frac{2\sum_{e \in E}P_e}{\sum_{e \in E} P_e } \leq 2 && \text{Per il lemma \ref{pscl1}}
         \end{aligned}
     \end{equation}
 \end{proof}
@@ -343,10 +343,10 @@ in quell'istante.
     Consideriamo ora la differenza delle lunghezze
     \begin{equation}
         \begin{aligned}
-            \sum_{e \in E} l_1(e) - \sum_{e \in E} l_2(e) = \sum_{e \in E} (l_1(e) - l_2(e))\\
-            = \sum_{e \in E} (l_1(e) - l_2(e)) = \sum_{e \in \Pi} (\beta l_1(e) - l_2(e))\\
-            = \sum_{e \in \Pi} (\beta -1)l_1(e) = (\beta -1) \sum_{e \in \Pi} l_1(e)\\
-            = (\beta -1)l(\Pi) \leq (\beta -1)\beta^c \leq \beta^{c+1}
+            \sum_{e \in E} l_1(e) - \sum_{e \in E} l_2(e)&= \sum_{e \in E} (l_1(e) - l_2(e))\\
+            &= \sum_{e \in E} (l_1(e) - l_2(e)) = \sum_{e \in \Pi} (\beta l_1(e) - l_2(e))\\
+            &= \sum_{e \in \Pi} (\beta -1)l_1(e) = (\beta -1) \sum_{e \in \Pi} l_1(e)\\
+            &= (\beta -1)l(\Pi) \leq (\beta -1)\beta^c \leq \beta^{c+1}
         \end{aligned}
     \end{equation}
     Considerando l'inizio della dimostrazione, visto che ad ogni passo la lunghezza aumenta di al 
@@ -367,20 +367,20 @@ in quell'istante.
 Mettendo tutto insieme: 
 \begin{equation}
     \begin{aligned}
-        \beta^c|I^*| = \beta^c|I^* \setminus I| + \beta^c|I^* \cap I|\\
-        \leq \sum_{i \in I^* \setminus I} \bar{\Pi_i^*} + \beta^c && \text{per il punto 1 di oss. \ref{oss3dis}, e maggioro}\\
-        \leq c(\beta^{c+1}|\bar{I}| + m) + \beta^c |I|&& \text{per il punto 2 di oss. \ref{oss3dis}}\\
-        \leq c(\beta^{c+1}|I| + m) + \beta^c |I|&& \text{I è sovrainsieme per I barra}\\
-        |I^*| \leq c\beta|I| + c\beta^{-c}m + |I|&& \text{divido per beta elevato alla c}\\
-        |I^*| \leq c\beta|I| + c\beta^{-c }m|I| + |I|&& \text{moltiplico per la cardinalità quello in mezzo}\\
-        \frac{|I^*|}{|I|} \leq c\beta + c\beta^{-c}m + 1&& \text{divido per cardinalità di I}
+        \beta^c|I^*| &= \beta^c|I^* \setminus I| + \beta^c|I^* \cap I|\\
+        &\leq \sum_{i \in I^* \setminus I} \bar{\Pi_i^*} + \beta^c && \text{per il punto 1 di oss. \ref{oss3dis}, e maggioro}\\
+        &\leq c(\beta^{c+1}|\bar{I}| + m) + \beta^c |I|&& \text{per il punto 2 di oss. \ref{oss3dis}}\\
+        &\leq c(\beta^{c+1}|I| + m) + \beta^c |I|&& \text{I è sovrainsieme per I barra}\\
+        |I^*| &\leq c\beta|I| + c\beta^{-c}m + |I|&& \text{divido per beta elevato alla c}\\
+        |I^*| &\leq c\beta|I| + c\beta^{-c }m|I| + |I|&& \text{moltiplico per la cardinalità quello in mezzo}\\
+        \frac{|I^*|}{|I|} &\leq c\beta + c\beta^{-c}m + 1&& \text{divido per cardinalità di I}
     \end{aligned}
 \end{equation}
 Poniamo ora $\beta = m^{\frac{1}{c+1}}$ si ottiene:
 \begin{equation}
     \begin{aligned}
-        \frac{|I^*|}{|I|} \leq c(m^{\frac{1}{c+1}} + m^{\frac{-c+c+1}{c+1}}) + 1\\
-        \frac{|I^*|}{|I|} \leq 2cm^{\frac{1}{c+1}} +1
+        \frac{|I^*|}{|I|} &\leq c(m^{\frac{1}{c+1}} + m^{\frac{-c+c+1}{c+1}}) + 1\\
+        &\leq 2cm^{\frac{1}{c+1}} +1
     \end{aligned}
 \end{equation}
 
@@ -653,9 +653,9 @@ a quello per individuare una soluzione.
     Vale che:
     \begin{equation}
         \begin{aligned}
-            \delta(M) \leq \delta(M_1)\\
-            \delta(M) \leq \delta(M_2)\\
-            2\delta(M) \leq \delta(M_1) + \delta(M_2) \leq \delta^*
+            \delta(M) &\leq \delta(M_1)\\
+            \delta(M) &\leq \delta(M_2)\\
+            2\delta(M) &\leq \delta(M_1) + \delta(M_2) \leq \delta^*
         \end{aligned}
     \end{equation}
     L'ultima disequazione segue dal fatto che, collegando i nodi che sono in $D$ si sta cortocircuitando il cammino, 
@@ -673,8 +673,8 @@ a quello per individuare una soluzione.
     Vale che:
     \begin{equation}
         \begin{aligned}
-            \delta(\tilde{\Pi}) \leq \delta(\Pi) = \sum_{e \in M}\delta_e + \sum_{e \in T}\delta_e\\
-            \delta(\tilde{\Pi}) \leq \frac{1}{2}\delta^* + \delta^* \leq \frac{3}{2}\delta^* && \text{Per i lemmi \ref{tspl1} e \ref{tspl2}}\\
+            \delta(\tilde{\Pi}) \leq \delta(\Pi) &= \sum_{e \in M}\delta_e + \sum_{e \in T}\delta_e\\
+            \delta(\tilde{\Pi}) &\leq \frac{1}{2}\delta^* + \delta^* \leq \frac{3}{2}\delta^* && \text{Per i lemmi \ref{tspl1} e \ref{tspl2}}\\
         \end{aligned}
     \end{equation}
 \end{proof}
@@ -818,10 +818,10 @@ alcuni task.
     Sia il peso subito prima dell'ultimo task, vale che: 
     \begin{equation}
         \begin{aligned}
-            w(y_1) - w_h \leq w(y_2)^\prime \leq w(y_2) && \text{peso della macchina 2 in quel momento}\\
-            w(y_1) + w(y_1)- w_h \leq w(y_2) + w(y_1)&& \text{sommiamo il peso della macchina 1}\\
-            2w(y_1) - w_h \leq 2L\\
-            w(y_1) \leq \frac{w_h}{2} + L\\
+            w(y_1) - w_h &\leq w(y_2)^\prime \leq w(y_2) && \text{peso della macchina 2 in quel momento}\\
+            w(y_1) + w(y_1)- w_h &\leq w(y_2) + w(y_1)&& \text{sommiamo il peso della macchina 1}\\
+            2w(y_1) - w_h &\leq 2L\\
+            w(y_1) &\leq \frac{w_h}{2} + L\\
         \end{aligned}
     \end{equation}
     Inoltre:
@@ -835,10 +835,10 @@ alcuni task.
     Calcoliamo ora il rapporto di approssimazione:
     \begin{equation}
         \begin{aligned}
-            \frac{w(y_1)}{w^*} \leq \frac{w(y_1)}{L}&& \text{per la proprietà vista all'inizio}\\
-            \leq \frac{\frac{w_h}{2} + L}{L} = 1 + \frac{w_h}{2L}&& \text{per la seconda proprietà}\\
-            \leq 1 + \frac{w_h}{2\frac{w_h}{2}(k+1)} = 1 + \frac{1}{k+1}&& \text{per la terza proprietà}\\
-            = \frac{1}{\lceil \frac{1}{\epsilon} -1 \rceil +1} \leq 
+            \frac{w(y_1)}{w^*} &\leq \frac{w(y_1)}{L}&& \text{per la proprietà vista all'inizio}\\
+            &\leq \frac{\frac{w_h}{2} + L}{L} = 1 + \frac{w_h}{2L}&& \text{per la seconda proprietà}\\
+            &\leq 1 + \frac{w_h}{2\frac{w_h}{2}(k+1)} = 1 + \frac{1}{k+1}&& \text{per la terza proprietà}\\
+            &= \frac{1}{\lceil \frac{1}{\epsilon} -1 \rceil +1} \leq 
             \frac{1}{\frac{1}{\epsilon} -1 +1} = 1+\epsilon&& \text{per la definizione di k}
         \end{aligned}
     \end{equation}
@@ -953,12 +953,12 @@ si può risolvere in programmazione dinamica, visto che i valori non sono interi
 \begin{proof}
     \begin{equation}
         \begin{aligned}
-            \sum_{i \in S} v_i \leq \sum_{i \in S} \bar{v_i} && \text{Per l'operazione di ceil}\\
-            \leq \sum_{i \in \bar{S^*}} \bar{v_i} && \text{S ammissibile, S barra ottima}\\
-            = \sum_{i \in \hat{S^*}} \bar{v_i} && \text{per la prima osservazione}\\
-            \leq \sum_{i \in \hat{S^*}} (v_i + \theta) = \sum_{i \in \hat{S^*}} v_i + |\hat{S^*}|\theta\\
-            \leq \sum_{i \in \hat{S^*}} v_i + n \theta = \sum_{i \in \hat{S^*}} v_i + n\frac{\epsilon v_{max}}{2n}\\
-            = \sum_{i \in \hat{S^*}} v_i + \frac{\epsilon v_{max}}{2} 
+            \sum_{i \in S} v_i &\leq \sum_{i \in S} \bar{v_i} && \text{Per l'operazione di ceil}\\
+            &\leq \sum_{i \in \bar{S^*}} \bar{v_i} && \text{S ammissibile, S barra ottima}\\
+            &= \sum_{i \in \hat{S^*}} \bar{v_i} && \text{per la prima osservazione}\\
+            &\leq \sum_{i \in \hat{S^*}} (v_i + \theta) = \sum_{i \in \hat{S^*}} v_i + |\hat{S^*}|\theta\\
+            &\leq \sum_{i \in \hat{S^*}} v_i + n \theta = \sum_{i \in \hat{S^*}} v_i + n\frac{\epsilon v_{max}}{2n}\\
+            &= \sum_{i \in \hat{S^*}} v_i + \frac{\epsilon v_{max}}{2} 
         \end{aligned}
     \end{equation}
     Siccome questo vale per ogni soluzione ammissibile, è vera anche per $S = \{i_{max}\}$, ovvero l'indice

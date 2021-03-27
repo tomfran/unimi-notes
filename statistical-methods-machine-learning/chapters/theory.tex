@@ -56,30 +56,27 @@ Let's consider the square loss in a regression task.
 The optimal predictor now becomes: 
 \begin{equation}
     \begin{aligned}
-        f^*(x) = \min_{\hat{y} \in \mathbb{R}} E[(y - \hat{y})^2 | X = x]\\
-        f^*(x) = \min_{\hat{y} \in \mathbb{R}} E[(y^2 + \hat{y}^2 - 2y\hat{y}) | X = x]\\
-        f^*(x) = \min_{\hat{y} \in \mathbb{R}} E[y^2| X = x] + \hat{y}^2 - 2\hat{y}E[y | X = x] && \text{Expected value linearity}\\
-        f^*(x) = \min_{\hat{y} \in \mathbb{R}} \hat{y}^2 - 2\hat{y}E[y | X = x] && \text{Can ignore the first}
+        f^*(x) &= \min_{\hat{y} \in \mathbb{R}} E[(y - \hat{y})^2 | X = x]\\
+        &= \min_{\hat{y} \in \mathbb{R}} E[(y^2 + \hat{y}^2 - 2y\hat{y}) | X = x]\\
+        &= \min_{\hat{y} \in \mathbb{R}} E[y^2| X = x] + \hat{y}^2 - 2\hat{y}E[y | X = x] && \text{Expected value linearity}\\
+        &= \min_{\hat{y} \in \mathbb{R}} \hat{y}^2 - 2\hat{y}E[y | X = x] && \text{Can ignore the first}
     \end{aligned}
 \end{equation}
 We now compute the derivative to find the optimal predictor
 \begin{equation}
     \begin{aligned}
-        F(\hat{y}) = \hat{y}^2 - 2\hat{y}\square\\
-        \frac{\mathrm{d}F(\hat{y})}{\mathrm{d}\hat{y}} = 2\hat{y} - 2\square = 0\\
-        \hat{y} = \square
+        F(\hat{y}) &= \hat{y}^2 - 2\hat{y}\square\\
+        \frac{\mathrm{d}F(\hat{y})}{\mathrm{d}\hat{y}} &= 2\hat{y} - 2\square = 0\\
+        \hat{y} &= \square
     \end{aligned}
 \end{equation}
 This means that the optimal predictor can be defined as follows:
 $$f^*(x) = E[Y | X = x]$$
+
 If we substitute $\hat{y}$ with $f^*(x)$ in the previous formula, we find that
 $$E[(y - f^*(x))^2|X=x] = E[(y - E[Y | x] | X = x)] = \mathit{Var}[Y | X = x]$$
 This implies that 
 $$l_D(f^*) = E[\mathit{Var}[Y | X]] \neq \mathit{Var}[Y | X]$$
-
-% \paragraph{Optimal predictor for zero one loss}
-
-% \dots
 
 \begin{remark}
     The idea is to find the right error function that ultimately 
@@ -87,6 +84,7 @@ $$l_D(f^*) = E[\mathit{Var}[Y | X]] \neq \mathit{Var}[Y | X]$$
 \end{remark}
 
 \subsection{Estimating the statistical risk}
+\label{stat}
 Let's assume to have a predictor $h : X \rightarrow Y$, we want to compute the risk $l_D(h)$. 
 The loss $l(y, \hat{y}) \in [0,1]$ is bounded in that interval.
 
@@ -125,15 +123,16 @@ test error diverges from the risk
 \begin{equation}
     \begin{aligned}
         P(|l_D(h) - \hat{l}_{S^\prime}(h)| \geq \epsilon) 
-        = P(l_D(h) - \hat{l}_{S^\prime}(h) > \epsilon \cup
+        &= P(l_D(h) - \hat{l}_{S^\prime}(h) > \epsilon \cup
         \hat{l}_{S^\prime}(h) - l_D(h) > \epsilon)\\
-        \leq P(l_D(h) - \hat{l}_{S^\prime}(h) > \epsilon) +
+        &\leq P(l_D(h) - \hat{l}_{S^\prime}(h) > \epsilon) +
         P(\hat{l}_{S^\prime}(h) - l_D(h) > \epsilon)\\
-        = P(\hat{l}_{S^\prime}(h) < l_D(h) - \epsilon) +
+        &= P(\hat{l}_{S^\prime}(h) < l_D(h) - \epsilon) +
         P(\hat{l}_{S^\prime}(h) > l_D(h) + \epsilon)
     \end{aligned}
 \end{equation}
-I can apply the Chernoff-Huffding inequality to find that
+
+We can apply the Chernoff-Huffding inequality to find that
  $$P(|l_D(h) - \hat{l}_{S^\prime}(h)| \geq \epsilon) \leq 2e^{-2\epsilon^2n}$$
 If we call that probability $\delta$ and solve for $\epsilon$
 $$\delta = 2e^{-2\epsilon^2n}, \epsilon = \sqrt{\frac{1}{n}\ln \frac{2}{\delta}}$$
@@ -143,14 +142,96 @@ This actually means that the test error is a good proxy
 for the statistical risk of any given predictor $h$. It is in fact a 
 probabilistic upper bound.
 
-\subsection{Training}
+\subsection{Balancing underfitting and overfitting}
+
+\paragraph{Bias-variance decomposition}
 Let's assume to have some learning algorithm $A$, where
 $A(S) = h_S$ is the predictor output by $A$ on input $S$, where the latter 
 is a training set.
 
 $A$ is such that $A(S) \in H\;\forall S$, i.e. $A$ always picks a predictor 
-from some class $H$. For instance $A$ could be the $\mathit{ERM}$ for $H$.
+from some class $H$, for instance $A$ could be the $\mathit{ERM}$ for $H$.
 
-\dots
+Let $h^*$ be any predictor with minimum risk in $H_A$, so 
+$$l_D(h^*) \leq \min_{h \in H_A} l_D(h)$$
 
-\paragraph{Bias-variance decomposition}
+If we consider a generic predictor in the set $H_A$ we split the risk 
+in three parts, and this is called bias-variance decomposition:
+\begin{equation}
+    \begin{aligned}
+        l_D(h_S) &= l_D(h_S) - l_D(H^*) && \text{estimation or variance error, overfitting}\\
+        &+ l_D(h^*) - l_D(f^*) && \text{approximation or bias error, underfitting}\\
+        &+ l_D(f^*) && \text{Bayes error}
+    \end{aligned}
+\end{equation}
+The estimation error is due to the fact that generally $h_S$ is different from 
+$h^*$, the approximation error arises because the set $H_A$ might not contain
+the Bayes optimal predictor, and the Bayes error in unavoidable.
+
+\paragraph{ERM risk}
+Given the bias-variance decomposition we want to study the risk of an ERM.
+As seen in section \ref{erm}, the ERM minimizes the training error $\hat{l}$
+$$h_s = \min_{h \in H} \hat{l}(h)$$
+while the best predictor in the class $H$ is $h^*$ such that
+$$l_D(h^*) = \min_{h \in H} l_D(h)$$
+
+Thanks to the law of large numbers, we know that the training error of $h^*$
+is close to its risk with high probability, as the training 
+set is obtained by a random draw of the dataset, so it means that 
+the result of section \vref{stat} holds. 
+
+However, we can't apply the Chernoff-Hoeffding inequality to show that 
+the training error of $h_S$ is close to its risk, as it is function of 
+the training set, thus a random variable.
+
+The goal here is to rewrite the difference of risk and training error of $h_S$,
+so we are able to apply the inequality.
+\begin{equation}
+    \begin{aligned}
+        l_D(h_S) - l_D(h^*) &= l_D(h_S) - \hat{l}(h_S) + \hat{l}(h_S) - l_D(h^*)\\
+        &\leq l_D(h_S) - \hat{l}(h_S) + \hat{l}(h^*) - l_D(h^*)\\
+        &\leq |l_D(h_S) - \hat{l}(h_S)| + |\hat{l}(h^*) - l_D(h^*)|\\
+        &\leq 2\max_{h \in H} |\hat{l}(h) - l_D(h)|
+    \end{aligned}
+\end{equation}
+We used the fact that $h_S$ minimizes the training error, and we provided an upper bound
+with the max at the end.
+Therefore, for all $\epsilon > 0$
+$$l_D(h_S) - l_D(h^*) > \epsilon \implies 
+\max_{h \in H} |\hat{l}(h) - l_D(h)| > \frac{\epsilon}{2}
+\implies \exists h \in H: |\hat{l}(h) - l_D(h)| > \frac{\epsilon}{2}$$
+
+The above holds for any training set, so we can write 
+$$\mathbb{P}(l_D(h_S) - l_D(h^*) > \epsilon) \leq 
+\mathbb{P}\bigg(\exists h \in H: |\hat{l}(h) - l_D(h)| > \frac{\epsilon}{2}\bigg)$$
+
+Considering $|H| < \infty$, we can rewrite the exists as the union, and then apply 
+the union bound and Cheronff-Hoeffding inequality:
+\begin{equation}
+    \begin{aligned}
+        \mathbb{P}\bigg(\exists h \in H: |\hat{l}(h) - l_D(h)| > \frac{\epsilon}{2}\bigg)
+        &= \mathbb{P}\bigg(\bigcup_{h \in H}\bigg(|\hat{l}(h) - l_D(h)| > \frac{\epsilon}{2}\bigg)\bigg)\\
+        &\leq \sum_{h\in H}\mathbb{P}\bigg(|\hat{l}(h) - l_D(h)| > \frac{\epsilon}{2}\bigg)\\
+        &\leq |H|\max_{h\in H}\mathbb{P}\bigg(|\hat{l}(h) - l_D(h)| > \frac{\epsilon}{2}\bigg)\\
+        &\leq |H|2e^{-m\epsilon^2/2}
+    \end{aligned}
+\end{equation}
+In conclusion, we have that 
+$$\mathbb{P}(l_D(h_S) - l_D(h^*) > \epsilon) \leq |H|2e^{-m\epsilon^2/2}$$
+Setting the left equal to $\delta$ and solving for $\epsilon$ we find that  
+$$l_D(h_S) \leq l_D(h^*) + \sqrt{\frac{2}{m}\ln \frac{2|H|}{\delta}}$$
+holds with probability $1-\delta$.
+
+This means that to reduce the estimation error of the ERM we must decrease 
+$|H|$, but this might increase $l_D(h^*)$, we conclude by saying that the ERM 
+generates predictors with high risk.
+
+In the proof above we also shown that with probability $1-\delta$
+$$\forall h \in H |\hat{l}(h) - l_D(h)| \leq \sqrt{\frac{1}{2m}\ln\frac{2|H|}{\delta}}$$
+This implies that, when the cardinality of the training set is sufficiently large with respect to 
+$\ln|H|$, then the training error becomes a good estimation of the risk.
+This tells us that ranking predictors in the training set by their training error, 
+corresponds to ranking them according to their risk.
+
+
+

@@ -177,9 +177,9 @@ Esistono ora due casi, come in precendenza:
     La memoria occupata da un elemento è:
     \begin{equation}
         \begin{aligned}
-            (\log r_i \log \log n)\cdot \log \bar{r}_j^i = 
+            (\log r_i \log \log n)\cdot \log \bar{r}_j^i &= 
             \frac{\log r_i (\log \log n)^2\cdot \log \bar{r}_j^i}{\log\log n} 
-            \\\leq \frac{\bar{r}_j^i}{\log \log n}
+            \\&\leq \frac{\bar{r}_j^i}{\log \log n}
             = \frac{S[i][j+1] - S[i][j]}{\log \log n}
         \end{aligned}
     \end{equation}
@@ -261,12 +261,12 @@ $$x! \approx \sqrt{2\pi x}\bigg(\frac{x}{e}\bigg)^x $$
 Si ottiene che il numero di alberi binari con $n$ nodi interi equivale a 
 \begin{equation}
     \begin{aligned}
-        C_n = \frac{1}{n+1}\binom{2n}{n} = \frac{1}{n+1}\cdot\frac{(2n)!}{n!(2n-n)!} 
+        C_n &= \frac{1}{n+1}\binom{2n}{n} = \frac{1}{n+1}\cdot\frac{(2n)!}{n!(2n-n)!} 
         = \frac{1}{n+1}\cdot\frac{(2n)!}{(n!)^2} \\
-        \approx \frac{1}{n+1}\cdot
+        &\approx \frac{1}{n+1}\cdot
         \frac{\sqrt{2\pi n}(\frac{2n}{e})^{2n}}{(\sqrt{2\pi n}(\frac{n}{e})^n)^2}
         = \frac{1}{n+1}\cdot \frac{\sqrt{4\pi n}(\frac{2n}{e})^{2n}}{2\pi n (\frac{n}{e})^{2n}}\\
-        = \frac{1}{n+1} \cdot \frac{1}{\sqrt{\pi n}}\cdot \bigg(\frac{2n}{n}\bigg)^{2n}
+        &= \frac{1}{n+1} \cdot \frac{1}{\sqrt{\pi n}}\cdot \bigg(\frac{2n}{n}\bigg)^{2n}
         = \frac{1}{n+1}\cdot \frac{1}{\sqrt{\pi n}}\cdot 2^{2n} \approx \frac{4^n}{\sqrt{\pi n^3}}
     \end{aligned}
 \end{equation}
@@ -328,8 +328,8 @@ quindi $nl$ bit per l'intera sequenza.
 Riguardo lo spazio occupato dalle differenze, indicato con $S$ vale
 \begin{equation}
     \begin{aligned}
-        S \leq \sum_{i=0}^{n-1} ( u_i + 1) = \sum_{i=0}^{n-1} \bigg( \bigg\lfloor \frac{x_i}{2^l} 
-        \bigg\rfloor -\bigg\lfloor \frac{x_{i-1}}{2^l} \bigg\rfloor  + 1\bigg) \\=
+        S &\leq \sum_{i=0}^{n-1} ( u_i + 1) = \sum_{i=0}^{n-1} \bigg( \bigg\lfloor \frac{x_i}{2^l} 
+        \bigg\rfloor -\bigg\lfloor \frac{x_{i-1}}{2^l} \bigg\rfloor  + 1\bigg) \\&=
         n + \bigg\lfloor \frac{x_{n-1}}{2^l} \bigg\rfloor \leq n + \bigg\lfloor \frac{u}{2^l} \bigg\rfloor
         \leq n + \frac{u}{2^l} \leq n + \frac{u}{2^{\lfloor\log \frac{u}{n}\rfloor}}
     \end{aligned}
@@ -384,12 +384,12 @@ $$\binom{u + n-1}{u-1}$$
 Vale quindi che 
 \begin{equation}
     \begin{aligned}
-        Z_n = \log \binom{u + n-1}{u-1} = \log \frac{(u+n-1)!}{(u-1)! n!} = \log \binom
+        Z_n &= \log \binom{u + n-1}{u-1} = \log \frac{(u+n-1)!}{(u-1)! n!} = \log \binom
         {u+n-1}{n} \\
-        \approx n\log\frac{u+n-1}{n} = n\log\frac{u}{n}\cdot\bigg(1 + \frac{n}{u} - \frac{1}{u}\bigg)
-        \\= n\log\frac{u}{n} + \log \bigg(1 + \frac{n}{u} - \frac{1}{u}\bigg) \approx
+        &\approx n\log\frac{u+n-1}{n} = n\log\frac{u}{n}\cdot\bigg(1 + \frac{n}{u} - \frac{1}{u}\bigg)
+        \\&= n\log\frac{u}{n} + \log \bigg(1 + \frac{n}{u} - \frac{1}{u}\bigg) \approx
         n\log\frac{u}{n} + n \bigg(\frac{n}{u} - \frac{1}{u}\bigg)\\
-        = n \log \frac{u}{n} + \frac{n^2}{u} - \frac{n}{u} \leq n\log\frac{u}{n} + \frac{n^2}{u}
+        &= n \log \frac{u}{n} + \frac{n^2}{u} - \frac{n}{u} \leq n\log\frac{u}{n} + \frac{n^2}{u}
     \end{aligned}
 \end{equation}
 l'ultimo termine è legato alla densità della sequenza, assumento che essa sia sparsa, 

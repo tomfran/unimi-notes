@@ -69,9 +69,9 @@ $$O(R=1 | q, \vec{x}) = \frac{P(R=1|q, \vec{x})}{P(R=0|q, \vec{x})}$$
 Applying the Bayes rule leads to
 \begin{equation}
     \begin{aligned}
-        O(R=1 | q, \vec{x}) = \frac{P(R=1|q, \vec{x})}{P(R=0|q, \vec{x})}
+        O(R=1 | q, \vec{x}) &= \frac{P(R=1|q, \vec{x})}{P(R=0|q, \vec{x})}
         = \frac{\frac{P(\vec{x}|R=1,q)P(R=1|q)}{P(q, \vec{x})}}{\frac{P(\vec{x}|R=0,q)P(R=0|q)}{P(q, \vec{x})}}\\
-        = \frac{P(\vec{x}| R = 1, q)}{P(\vec{x}| R = 0, q)}\cdot\frac{P(R=1|q)}{P(R=0|q)}
+        &= \frac{P(\vec{x}| R = 1, q)}{P(\vec{x}| R = 0, q)}\cdot\frac{P(R=1|q)}{P(R=0|q)}
     \end{aligned}
 \end{equation}
 
@@ -153,9 +153,9 @@ for queries, so we need some assumptions:
 By applying the previous assumptions we obtain
 \begin{equation}
     \begin{aligned}
-        \mathit{RSV}_{q,d} = \sum_{x_i=1, q_i = 1} \log \frac{p_i(1-q_i)}{q_i(1-p_i)}
-        = \sum_{x_i=1, q_i = 1} \log \frac{(1-q_i)}{q_i}\\
-        = \sum_{x_i=1, q_i = 1} \log \frac{N - N_i + 0.5}{N_i + 0.5}
+        \mathit{RSV}_{q,d} &= \sum_{x_i=1, q_i = 1} \log \frac{p_i(1-q_i)}{q_i(1-p_i)}\\
+        &= \sum_{x_i=1, q_i = 1} \log \frac{(1-q_i)}{q_i}\\
+        &= \sum_{x_i=1, q_i = 1} \log \frac{N - N_i + 0.5}{N_i + 0.5}
     \end{aligned}
 \end{equation}
 By having $n$ and $N$ as the number of docs with $t$ and the total 

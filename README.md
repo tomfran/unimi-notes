@@ -20,7 +20,6 @@ These notes are considered finished, they will probably not be updated:
 <br>
 
 <h2 align="center"> Work in progress Notes</h1>
-<br>
 
 <p align="justify">
 This is a list of courses I am currently following, thus the notes 

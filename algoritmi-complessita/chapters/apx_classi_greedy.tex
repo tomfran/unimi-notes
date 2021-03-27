@@ -354,10 +354,10 @@ la ricerca del minimo con coda di priorità si ottiene $O(n\log(m))$.
     Ottengo $m$ disequazioni che posso sommare tra loro:
     \begin{equation}
         \begin{aligned}
-            m(L_{\hat{i}} - t_{\hat{j}}) \leq \sum_{i \in m}L_{i} =  \sum_{i \in n}t_{i} && \text{divido per m}\\
-            L_{\hat{i}} - t_{\hat{j}} \leq \frac{1}{m}\sum_{i \in n}t_{i} \leq L^* && \text{dall'osservazione iniziale}\\
-            L = L_{\hat{i}} = (L_{\hat{i}} - t_{\hat{j}}) + t_{\hat{j}}  && \text{uso la riga sopra e la seconda osservazione}\\
-            L \leq L^* + L^* \leq 2L^*
+            m(L_{\hat{i}} - t_{\hat{j}}) &\leq \sum_{i \in m}L_{i} =  \sum_{i \in n}t_{i} && \text{divido per m}\\
+            L_{\hat{i}} - t_{\hat{j}} &\leq \frac{1}{m}\sum_{i \in n}t_{i} \leq L^* && \text{dall'osservazione iniziale}\\
+            L &= L_{\hat{i}} = (L_{\hat{i}} - t_{\hat{j}}) + t_{\hat{j}}  && \text{uso la riga sopra e la seconda osservazione}\\
+            L &\leq L^* + L^* \leq 2L^*
         \end{aligned}
     \end{equation}
 
@@ -413,10 +413,10 @@ greedy vista in precendeza.
     Si osserva che: 
     \begin{equation}
         \begin{aligned}        
-            \hat{j} \geq m\\
-            t_{\hat{j}} \leq t_m  \leq \frac{1}{2}L^* && \text{dall'osservazione iniziale}\\
-            L = L_{\hat{i}} = (L_{\hat{i}} - t_{\hat{j}}) + t_{\hat{j}} && \text{vale la dimostrazione precedente}\\
-            L \leq L^* + \frac{1}{2}L^* \leq \frac{3}{2}L^*
+            \hat{j} &\geq m\\
+            t_{\hat{j}} &\leq t_m  \leq \frac{1}{2}L^* && \text{dall'osservazione iniziale}\\
+            L &= L_{\hat{i}} = (L_{\hat{i}} - t_{\hat{j}}) + t_{\hat{j}} && \text{vale la dimostrazione precedente}\\
+            L &\leq L^* + \frac{1}{2}L^* \leq \frac{3}{2}L^*
         \end{aligned}
     \end{equation}
 \end{proof}
@@ -498,11 +498,11 @@ $\rho^*$, ovvero la soluzione ottima.
     Si considerano ora i punti che si riferiscono a quel centro: 
     \begin{equation}
         \begin{aligned}
-            X = \{ s \in S | C^*(\bar{s}) = C^*(s)\}\\
+            X &= \{ s \in S | C^*(\bar{s}) = C^*(s)\}\\
             \forall s \in X
-            d(s, \bar{s}) \leq d(s, C^*(s)) + d(C^*(s), \bar{s}) && \text{triangolare}\\
-            \leq d(s, C^*(s)) + d(C^*(\bar{s}), \bar{s})\\
-            \leq \rho^* + \rho^* = 2 \rho^* \leq 2r
+            d(s, \bar{s}) &\leq d(s, C^*(s)) + d(C^*(s), \bar{s}) && \text{triangolare}\\
+            &\leq d(s, C^*(s)) + d(C^*(\bar{s}), \bar{s})\\
+            &\leq \rho^* + \rho^* = 2 \rho^* \leq 2r
         \end{aligned}
     \end{equation}
     Questo implica che dopo aver inserito $\bar{s}$ tutti i punti in $X$ sono eliminati.\\
@@ -552,8 +552,8 @@ aggiungere a $C$ il punto piu sfortunato, ovvero quello con distanza dai centri 
     Considerando la distanza del centro $s_i$:
     \begin{equation}
         \begin{aligned}
-            d(\bar{s}_i,\bar{C}_i) \geq d(\hat{s},\bar{C}_i) && \text{per massimizzazione}\\
-            d(\hat{s},\bar{C}_i) \leq d(\hat{s}, C) \leq 2\rho^*
+            d(\bar{s}_i,\bar{C}_i)&\geq d(\hat{s},\bar{C}_i) && \text{per massimizzazione}\\
+            d(\hat{s},\bar{C}_i) &\leq d(\hat{s}, C) \leq 2\rho^*
         \end{aligned}
     \end{equation}
     Questo caso coincide con le prime $k$ iterazioni di Center Selection Plus con $r = \rho^*$.

@@ -95,9 +95,9 @@ Durante l'esecuzione dell'algoritmo si può pensare al grafo come: $G = G_0, G_1
     Mettendo insieme le osservazioni fatte in precedenza, si ottiene che:
     \begin{equation}
         \begin{aligned}
-            2(m - i + 1 ) \geq 2 * \mathit{lati\;di\;G_i} = \sum_{v \in V_i} d_{G_i}(v) && \text{Per osservazione 1}\\
-            \geq \sum_{v \in V_i} k^* && \text{Per osservazione 3}\\
-            \geq k^*(n-i+1) && \text{Per osservazione 1}
+            2(m - i + 1 ) \geq 2 * \mathit{lati\;di\;G_i} &= \sum_{v \in V_i} d_{G_i}(v) && \text{Per osservazione 1}\\
+            &\geq \sum_{v \in V_i} k^* && \text{Per osservazione 3}\\
+            &\geq k^*(n-i+1) && \text{Per osservazione 1}
         \end{aligned}
     \end{equation}
 \end{proof}
@@ -111,10 +111,11 @@ di $E_s^*$.
 \begin{proof}
     \begin{equation}
         \begin{aligned}
-            P(E_i | E_1, \dots, E_{i-1}) = 1- P(\bar{E_i} | E_1, \dots, E_{i-1})\\
-            = 1 - \frac{k^*}{\mathit{\#\;lati\;G_i}} \geq 1 - \frac{2k^*}{(n-i+1)k^*} && \text{Vale per oss. \ref{osskarg} punto 4}\\
-            \geq 1 - \frac{2k^*}{k^*(n-i+1)} \\
-            = \frac{n-i+1-2}{n-i+1} = \frac{n-i-1}{n-i+1}
+            P(E_i | E_1, \dots, E_{i-1}) &= 1- P(\bar{E_i} | E_1, \dots, E_{i-1})\\
+            &= 1 - \frac{k^*}{\mathit{\#\;lati\;G_i}}\\
+            &\geq 1 - \frac{2k^*}{(n-i+1)k^*} && \text{Vale per oss. \ref{osskarg} punto 4}\\
+            &\geq 1 - \frac{2k^*}{k^*(n-i+1)} \\
+            &= \frac{n-i+1-2}{n-i+1} = \frac{n-i-1}{n-i+1}
         \end{aligned}
     \end{equation}
 \end{proof}
@@ -127,9 +128,9 @@ di $E_s^*$.
     Sviluppando si ottiene 
     \begin{equation}
         \begin{aligned}
-            P[E_1 \cap E_2 \cap, \dots, \cap, E_{n-2}] = P[E_1]\cdot P[E_2 | E_1]\cdot P[E_3 | E_1,E_2] \dots\\
-            \geq \frac{n-1-1}{n-1+1} \dots \frac{n - (n-2)-1}{n - (n-2)+1} = \frac{\prod_{i=1}^{n-2}i}{\prod_{i=3}^{n}i}\\
-            = \frac{1 \cdot 2}{n(n-1)} = \frac{2}{n(n-1)} = \frac{1}{\binom{n}{2}}
+            P[E_1 \cap E_2 \cap, \dots, \cap, E_{n-2}] &= P[E_1]\cdot P[E_2 | E_1]\cdot P[E_3 | E_1,E_2] \dots\\
+            &\geq \frac{n-1-1}{n-1+1} \dots \frac{n - (n-2)-1}{n - (n-2)+1} = \frac{\prod_{i=1}^{n-2}i}{\prod_{i=3}^{n}i}\\
+            &= \frac{1 \cdot 2}{n(n-1)} = \frac{2}{n(n-1)} = \frac{1}{\binom{n}{2}}
         \end{aligned}
     \end{equation}
 
@@ -239,11 +240,11 @@ $$P[X > \alpha] \leq \frac{E[X]}{\alpha}$$
     Vale che
     \begin{equation}
         \begin{aligned}
-            \alpha I_{X \geq \alpha} \leq X && \text{X è sempre maggiore di zero}\\
-             E[\alpha I_{X \geq \alpha}] \leq E[X] && \text{monotonia valore atteso}\\
-             \alpha E[ I_{X \geq \alpha}] \leq E[X] && \text{linearità valore atteso}\\
-             \alpha (1\cdot P[X\geq \alpha] + 0\cdot P[X< \alpha]) \leq E[X] && \text{definizione di I}\\
-             \alpha P[X\geq \alpha]\leq E[X] \implies \frac{E[X]}{\alpha} \geq P[X\geq \alpha]
+            \alpha I_{X \geq \alpha} &\leq X && \text{X è sempre maggiore di zero}\\
+             E[\alpha I_{X \geq \alpha}] &\leq E[X] && \text{monotonia valore atteso}\\
+             \alpha E[ I_{X \geq \alpha}] &\leq E[X] && \text{linearità valore atteso}\\
+             \alpha (1\cdot P[X\geq \alpha] + 0\cdot P[X< \alpha]) &\leq E[X] && \text{definizione di I}\\
+             \alpha P[X\geq \alpha]\leq E[X] \implies \frac{E[X]}{\alpha} &\geq P[X\geq \alpha]
         \end{aligned}
     \end{equation}
 \end{proof}
@@ -287,8 +288,8 @@ $$P[X > \alpha] \leq \frac{E[X]}{\alpha}$$
     Ragionando sul rapporto di approssimazione
     \begin{equation}
         \begin{aligned}
-            P[\frac{v}{v^*}\geq \alpha(k +\ln n)]\leq \frac{E[\frac{v}{v^*}]}{\alpha(k + \ln n)} && \text{Per disuguaglianza di Markov}\\
-            = \frac{E[v]}{\alpha v^* (k + \ln n)} \leq \frac{v^* (k + \ln n)}{\alpha v^* (k + \ln n)} = \frac{1}{\alpha}
+            P[\frac{v}{v^*}\geq \alpha(k +\ln n)] &\leq \frac{E[\frac{v}{v^*}]}{\alpha(k + \ln n)} && \text{Per disuguaglianza di Markov}\\
+            = \frac{E[v]}{\alpha v^* (k + \ln n)} &\leq \frac{v^* (k + \ln n)}{\alpha v^* (k + \ln n)} = \frac{1}{\alpha}
         \end{aligned}
     \end{equation}
 \end{proof}
@@ -314,10 +315,10 @@ $$P[X > \alpha] \leq \frac{E[X]}{\alpha}$$
     ottenere dall'algoritmo.
     \begin{equation}
         \begin{aligned}
-            P[E_1 \wedge E_2] = 1 - P[\bar{E_1} \lor \bar{E_2}]\\
-            \leq 1 - (P[\bar{E_1}] + P[\bar{E_2}]) && \text{Per union bound}\\
-            \leq 1 - (0.05 + 0.5) && \text{Per il corollario \ref{setcr}}\\
-            = 1 - 0.55 = 0.45
+            P[E_1 \wedge E_2] &= 1 - P[\bar{E_1} \lor \bar{E_2}]\\
+            &\leq 1 - (P[\bar{E_1}] + P[\bar{E_2}]) && \text{Per union bound}\\
+            &\leq 1 - (0.05 + 0.5) && \text{Per il corollario \ref{setcr}}\\
+            &= 1 - 0.55 = 0.45
         \end{aligned}
     \end{equation}    
 \end{proof}

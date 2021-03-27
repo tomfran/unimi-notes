@@ -167,6 +167,7 @@ $$\hat{l}_s(f) = \frac{1}{m}\sum_{t=1}^m l(y_t, f(x_t))$$
 The idea is that the learning algorithm can infer the test error from the training error.
 
 \section{Empirical risk minimizer}
+\label{erm}
 The main idea of the Empirical risk minimizer is to find the best predictor given 
 a training set and a loss function.
 
@@ -348,8 +349,8 @@ $$S_l^+ = \{ (x_t, y_t) \in S_l, y_t = +1\},\;\;S_l^- = \{ (x_t, y_t) \in S_l, y
 Let's compute the error, where $I$ is one if the condition is true
 \begin{equation}
     \begin{aligned}
-        \hat{l}_j(h_t) = \frac{1}{m}\sum_{t=1}^m I(h_t(x_t) \neq y_t)\\
-        = \frac{1}{m}\min\{N_l^+, N_l^-\}
+        \hat{l}_j(h_t) &= \frac{1}{m}\sum_{t=1}^m I(h_t(x_t) \neq y_t)\\
+        &= \frac{1}{m}\min\{N_l^+, N_l^-\}
     \end{aligned}
 \end{equation}
 If we take the sum of the positive and negative sets over all leaves, we 
@@ -358,9 +359,9 @@ $$\sum_l(N_l^+ + N_l^-) = m = |S|$$
 We can keep on going with the previous equation:
 \begin{equation}
     \begin{aligned}
-        \hat{l}_j(h_t) = \frac{1}{m}\min\{N_l^+, N_l^-\}\\
-        \hat{l}_j(h_t) = \frac{1}{m}\min\bigg\{\frac{N_l^+}{N_l}, \frac{N_l^-}{N_l}\bigg\}N_l\\
-        \hat{l}_j(h_t) = \Psi\bigg(\frac{N_l^+}{N_l}\bigg)N_l && \text{Where\;} \Psi(a) = \min\{a, 1-a\}
+        \hat{l}_j(h_t) &= \frac{1}{m}\min\{N_l^+, N_l^-\}\\
+        &= \frac{1}{m}\min\bigg\{\frac{N_l^+}{N_l}, \frac{N_l^-}{N_l}\bigg\}N_l\\
+        &= \Psi\bigg(\frac{N_l^+}{N_l}\bigg)N_l && \text{Where\;} \Psi(a) = \min\{a, 1-a\}
     \end{aligned}
 \end{equation}
 Given a certain tree, 
@@ -384,10 +385,10 @@ to the previous}
         \Psi\bigg(\frac{N_{l^\prime}^+}{N_{l^\prime}}
     \frac{N_{l^\prime}}{N_l}+\frac{N_{l^{\prime\prime}}^+}{N_{l^{\prime\prime}}}
     \frac{N_{l^{\prime\prime}}}{N_l}
-    \bigg)N_l \geq 
+    \bigg)N_l &\geq 
     \bigg(\frac{N_{l^\prime}}{N_l}\Psi\bigg(\frac{N_{l^\prime}^+}{N_{l^\prime}}
     \bigg) + \frac{N_{l^{\prime\prime}}}{N_l}\Psi\bigg(\frac{N_{l^{\prime\prime}}^+}{N_{l^{\prime\prime}}}\bigg)\bigg)N_l\\
-    = N_{l^\prime}\Psi\bigg(\frac{N_{l^\prime}^+}{N_{l^\prime}}
+    &= N_{l^\prime}\Psi\bigg(\frac{N_{l^\prime}^+}{N_{l^\prime}}
     \bigg) + N_{l^{\prime\prime}}\Psi\bigg(\frac{N_{l^{\prime\prime}}^+}{N_{l^{\prime\prime}}}\bigg)
     \end{aligned}
 \end{equation}
