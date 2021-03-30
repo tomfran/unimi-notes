@@ -2,7 +2,7 @@
 Apache Spark è un framework open source per il calcolo distribuito.
 
 \subsection{Elementi}
-\subsubsection{Resilient Distributed Dataset}
+\paragraph{Resilient Distributed Dataset}
 È un \emph{dataset distribuito} in memoria su cui si possono effettuare operazioni in parallelo.\\
 Si può ottenere da un HDFS, oppure parallelizzando qualsiasi oggetto.\\
 L'idea è quella di distribuire gli elementi tramite una funzione di hash tra i nodi 
@@ -10,51 +10,51 @@ che offrono computazione, tale distribuzione può essere forzata con un \emph{re
 L'operazione è necessaria poichè ci si potrebbe trovare in casi dove un nodo ha molti più 
 elementi degli altri, oppure per raggruppare meglio le chiavi in seguito a una join.
 
-\subsubsection{Driver}
+\paragraph{Driver}
 Processo responsabile dell'esecuzione di Spark, divide l'applicazione in task piccole
 computabili dai nodi worker, che eseguiranno.\\
 Racchiude lo \emph{Spark Context}, che permette di utilizzare Spark, e i metadati per l'RDD.
 
-\subsubsection{Master}
+\paragraph{Master}
 È un nodo che contiene il driver, si occupa di \emph{orchestrare} il lavoro tra i \emph{nodi worker}, 
 e ne monitora lo stato. Può avere un nodo di backup pronto in caso di fallimento.
 
-\subsubsection{Spark Context}
+\paragraph{Spark Context}
 È il core di Spark, permette al driver di utilizzare il cluster. È singleton e manda segnali 
 di \emph{heartbit} agli \emph{executor} per monitorarne lo stato.
 
-\subsubsection{Worker}
+\paragraph{Worker}
 Nodo che si occupa della \emph{computazione}, contiene molti executors.
 
-\subsubsection{Executors}
+\paragraph{Executors}
 Sono quelli che effettuano le computazioni vere e proprie. Hanno un id, ed è 
 garantito il backup se falliscono.
 
 \subsection{Funzionalità e caratteristiche}
 
-\subsubsection{Pigrizia}
+\paragraph{Pigrizia}
 Spark è pigro, non computa il risultato subito ma solo quando serve. 
 È possibile quindi che un errore si verifichi solo all'esecuzione di una particolare 
 riga dell'RDD.
 
-\subsubsection{Map e reduce}
+\paragraph{Map e reduce}
 Spark offre alcune funzioni di map e reduce. La prima permette di applicare una funzione
 ad ogni entry dell'RDD, mentre la seconda permette di eseguire riduzioni. Le seconde devono essere
 commutative, poichè non è garantito l'ordine con cui si eseguono le operazioni.
 
-\subsubsection{DAG Scheduler}
+\paragraph{DAG Scheduler}
 Ogni qualvolta che si effettua un'operazione su un RDD non si sta facendo altro che 
 aggiugnere una task al DAG Scheduler. Il suo compito è quello di trasformare un 
 \emph{execution plan} logico in uno fisico, in modo da effettuare la computazione vera e propria.
 Ogni passo del DAG Scheduler è chiamato \emph{Stage}.
 
-\subsubsection{Task Scheduler}
+\paragraph{Task Scheduler}
 Uno stage su un sottoinsieme di righe è chiamata Task.
 Una Task è lanciata dal Task Scheduler ed eseguita da uno Worker 
 attraverso il Cluster manager. Il numero 
 di Task è proporzionale al numero di partizioni considerate nell'RDD.
 
-\subsubsection{Shared Variables}
+\paragraph{Shared Variables}
 All'esecuzione di una map o reduce, Spark distribuisce una copia delle 
 variabili delle funzioni tra tutte le righe. Questo comportamento 
 può portare a problemi, nel caso di variabili molto pesanti.\\
@@ -90,23 +90,23 @@ La scrittura di dati da Spark a un database SQL potrebbe risultare critica e
 rallentare di molto il sistema. Infatti, la presenza di molti worker che tentano
 di scrivere in parallelo non aiuta, rendendo il database un collo di bottiglia.
 
-\subsubsection{Table index}
+\paragraph{Table index}
 Struttura dati che aumenta le performance in lettura di una particolare tabella del 
 database, non è necessario infatti effettuare una scan completa, ma si individua 
 immediatamente la riga necessaria.
 In fase di inserimento, sono necessarie scritture addizionali per aggiornare l'indice.
 
-\subsubsection{Problemi}
+\paragraph{Problemi}
 Esistono problemi nella scrittura da Sparkl a SQL. In particolare, le operazioni di 
 write occupano memoria, bisogna stabilire una connessione fisica e le tabelle indexed 
 vanno lockate.
 
-\subsubsection{Struttura interna database}
+\paragraph{Struttura interna database}
 Un database SQL è composto da data file e log file. I primi sono raggruppati in extents 
 composti da pagine. Essi possono essere uniform, se ogni pagina è una data page, oppure 
 mixed, se alcune pagine contengono informazioni sugli indici.
 
-\subsubsection{Esecuzione query}
+\paragraph{Esecuzione query}
 All'arrivo di una query, questa viene convertita in un TDS utilizzando uno tra ODBC, 
 OLEDB, SNAC, o SNI.
 Successivamente, SNI sul server decapsula il TDS e passa i comandi al query parser.
@@ -114,7 +114,7 @@ Il query executor esegue la query e richiede agli access methods le pagine che s
 coinvolte dalla query. Se si parla di query non select, interviene la logica di log e lock.
 La prima logga le operazioni, la seconda effettua il lock sulle pagine per garantire ACID properties.
 
-\subsubsection{Tecniche di connessione}
+\paragraph{Tecniche di connessione}
 Per connettersi a un dataabase esistono tre metodi:
 \begin{enumerate}
     \item \emph{Connessione diretta}: si apre una connessione con una socket, bisogna 
@@ -125,7 +125,7 @@ Per connettersi a un dataabase esistono tre metodi:
      pool o no, differisce dal secondo perchè ogni client ha il proprio pool
 \end{enumerate}
 
-\subsubsection{Creazione e update di un indice}
+\paragraph{Creazione e update di un indice}
 Se una tabella risulta indicizzata, un inserimento deve tenere conto 
 di alcune cose.
 Utilizzando ad esempio un B-tree+, i dati sono solo nelle foglie, le distanze tra le 
@@ -135,7 +135,7 @@ aggiungono dati ad essa, quando questa è piena, si aggiunge un'altra root figli
 Per aggiornare un indice, prima si cerca la posizione dove mettere l'informazione, 
 se la pagina trovata è piena, si splitta la pagina ricorsivamente fino alla root.
 
-\subsubsection{Scrittura intermedia Data Lake}
+\paragraph{Scrittura intermedia Data Lake}
 Per risolvere il problema di scrittura in SQL da parte di worker multipli, si possono 
 scrivere tutte le informazioni su un Data Lake e successivamente scriverle in bulk su SQL.\\
 L'idea è quella di sfruttare il BCP, bulk copy program, per copiare tutte le righe nuove 

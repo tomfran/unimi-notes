@@ -3,7 +3,7 @@ La base di SOA è quella di fare da ponte tra il mondo IT e quello business,
 pensando un'architettura come qualcosa basato su servizi.
 Essi collaborano e possono potenzialmente creare applicazioni molto complesse.
 
-\subsubsection{Strati SOA}
+\paragraph{Strati SOA}
 Una SOA può essere vista a cinque strati:
 \begin{enumerate}
     \item \emph{Sistemi operativi}: asset IT attuale
@@ -20,7 +20,7 @@ Un servizio è una risorsa identificata da un nome che esegue un compito ripetit
 È descritta da una service specification, senza scendere nei dettagli, ma rimanendo 
 ad alto livello. Si può vedere quindi come una black box.\\
 Ogni servizio offre le proprie funzionalità sotto forma di contratto.
-\subsubsection{Elementi}
+\paragraph{Elementi}
 Ogni servizio è costituito da:
 \begin{itemize}
     \item \emph{Nome}
@@ -34,21 +34,21 @@ Ogni servizio è costituito da:
     container} e un \emph{integration implementation}
 \end{itemize}
 
-\subsubsection{Server catalog}
+\paragraph{Server catalog}
 Catalogo di tutti i servizi disponibili, contiene una lista dei message in usati 
 per configurare l'esecuzione dei servizi.
 
-\subsubsection{Service queue}
+\paragraph{Service queue}
 Lista delle esecuzioni dei servizi. Monitorandola si può controllare lo stato dei 
 servizi in real time.
 
-\subsubsection{Enterprise service bus}
+\paragraph{Enterprise service bus}
 Sistema di comunicazione che permette ai servizi di comunicare con legacy systems.
 È utile per evitare la \emph{system-to-system integration} ovvero integrazioni specifiche
 per ogni sistema. L'idea è quella di far comunicare ogni sistema con l'enterprise 
 service bus, in modo da non occuparsene lato servizio, bensì lato legacy system.
 
-\subsubsection{Service broker}
+\paragraph{Service broker}
 Implementa il broker pattern, ha come compito il mandare 
 i servizi al corretto application server, controllando la service queue.
 Si occupa anche di controllare lo stato dei \emph{message ins} e \emph{message outs}.
@@ -56,29 +56,29 @@ Fornisce inoltre la descrizione di un servizio quando richiesta da un client,
 e controlla che un determinato clien abbia i requisiti di accesso richiesti.
 
 \subsection{Modelli di comunicazione}
-\subsubsection{Sincrono}
+\paragraph{Sincrono}
 Il client compila il message in, l'ESB guida la richiesta, il service broker si occupa di 
 inviare al server corretto, il quale esegue e risponde sul message out. L'esecuzione
 è corredata da uno stato e un log. I log sono mantenuti all'interno della Service Queue Table.
 
-\subsubsection{Asincrono}
+\paragraph{Asincrono}
 Il client compila il message in, il service broker aggiunge il servizio da eseguire in 
 coda. Quando il turno del servizio arriva, il broker troverà l'application server corretto.
 Esiste un ID, ritornato immediatamente, che il client può controllare per monitorare lo stato del servizio 
 richiesto.
 
-\subsubsection{Streamed outbound file reference}
+\paragraph{Streamed outbound file reference}
 Quando l'output è molto grande, è infattibile scrivere sul message out.
 Si può estendere la logica asincrona in modo da scrivere l'output su un certo file.
 È possibile iniziare a consumare l'output durante la scrittura.
 
-\subsubsection{Pub-sub service call-back}
+\paragraph{Pub-sub service call-back}
 L'idea di un pub-sub è che un client possa iscriversi a un determinato topic e ricevere
 una notifica ad ogni evento.
 L'ESB può evitare al client la complessità del message bus, ad ogni nuovo evento 
 un object id è passato al client.
 
-\subsubsection{Batch sync data process}
+\paragraph{Batch sync data process}
 Un job CDC permette di estrarre dati incrementali da un legacy system, salvandole su un data 
 lake.
 Un servizio gateway invia queste richieste al target system, es SQL.

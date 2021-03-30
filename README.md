@@ -30,4 +30,4 @@ might not be complete:
 * ***Sistemi distribuiti e pervasivi*** [notes](https://github.com/tomfran/unimi-notes/blob/main/sistemi-distribuiti/sistemi-distribuiti.pdf) :it:
 * ***Simulation*** [notes](https://github.com/tomfran/unimi-notes/blob/main/simulation/simulation.pdf) :gb:
 * ***Information retrieval*** [notes](https://github.com/tomfran/unimi-notes/blob/main/information-retrieval/information-retrieval.pdf) :gb:
-* ***Statistical methods for machine learning*** [notes](https://github.com/tomfran/unimi-notes/blob/main/statistical-methods-machine-learning/statistical-methods.pdf) :gb:
+* ***Statistical methods for machine learning*** [notes](https://github.com/tomfran/unimi-notes/blob/main/statistical-methods/statistical-methods.pdf) :gb:

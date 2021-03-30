@@ -4,18 +4,18 @@ racchiudere software in containers.
 
 \subsection{Componenti}
 
-\subsubsection{Container}
+\paragraph{Container}
 I container sono isolati uno dall'altro in termini di librerie e configurazioni, 
 ma possono parlare attraverso alcuni metodi.
 L'idea è quella di utilizzare \emph{cgroups} del kernel Linux, che permette
 di limitare l'uso delle risorse da parte di un certo insieme di processi.
 In tal modo un container docker è meno impattante di una virtual machine.
 
-\subsubsection{Docker file}
+\paragraph{Docker file}
 Contiene tutti i comandi necessari per assemblare l'immagine.
 Utilizzando \emph{Docker build} si compila il docker file eseguendo i comandi.
 
-\subsubsection{Docker daemon} 
+\paragraph{Docker daemon} 
 Si occupa di eseguire i comandi definiti nel docker file, ogni riga è eseguita
 e considerata come un singolo step.
 Modificando una certa riga, solo le righe successive ad essa verranno eseguite.

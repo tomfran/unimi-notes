@@ -14,7 +14,7 @@ strutturati o no.\\
 È basato su Apache Lucene, che offre analisi e ricerche testuali, lo estende e lo semplifica.
 Offre una REST API e costituisce la base dell'EKL stack.
 
-\subsubsection{Processo}
+\paragraph{Processo}
 Per popolare Elasticsearch si seguono solitamente questi passi:
 \begin{enumerate}
     \item I dati si raccolgono da uan sorgente
@@ -23,7 +23,7 @@ Per popolare Elasticsearch si seguono solitamente questi passi:
     \item Data visualization con Kibana
 \end{enumerate}
 
-\subsubsection{Indice}
+\paragraph{Indice}
 Un indice Elasticsearch è una collezione di documenti che per qualche ragione sono raggruppati.
 Un indice ha varie caratteristiche:
 \begin{itemize}
@@ -36,34 +36,34 @@ Un indice ha varie caratteristiche:
 
 \subsection{Text preprocessing}
 
-\subsubsection{Bag of Words}
+\paragraph{Bag of Words}
 Dato un insieme di testi, si crea una lista di di parole univoche ed ordinate che compaiono in essi, 
 questo sarà l'Absolute dictionary.
 Ogni documento ha associato un vettore, che contiene per ogni parola dell'absolute vector
 il numero di occorrenze nel testo.
 Si crea quindi una matrice di documenti sulle righe e parole sulle colonne.
 
-\subsubsection{Inverted index}
+\paragraph{Inverted index}
 L'approccio opposto al bag of word è quello di associare ad ogni parola, invece che ad ogni 
 documento, i documenti in cui essa è contenuta.
 La matrice quindi è inversa, le parole sono sulle righe e i documenti sulle colonne.
 
-\subsubsection{Analyzer}
+\paragraph{Analyzer}
 Elasticsearch prima di indicizzare i testi si occupa di applicare alcune trasformazioni 
 ai testi, per evitare alcuni problemi legati all'analisi testuale puntuale.
 
-\subsubsection{Lemming and stemming}
+\paragraph{Lemming and stemming}
 Prima di procedere a un'analisi testuale è necessario un preprocessing.
 L'idea è quella di ridurre ogni parola alla sua forma base, in modo da unificare in un 
 unico termine forme complesse dello stesso verbo, o singolari e plurali dei termini.
 Stemming è euristico, mentre lemming è deterministico.
 
-\subsubsection{Stop words removal}
+\paragraph{Stop words removal}
 Un'altra cosa che bisogna fare prima di procedere ad un'analisi testuale è 
 la rimozione delle così dette stop words, ovvero congiunzioni o termini specifici del 
 linguaggio.
 
-\subsubsection{Mapping}
+\paragraph{Mapping}
 Un indice elastic cerca di capire il tipo degli attributi degli oggetti contenuti nell'indice.
 Per ogni attributo si può poi definire come gestire l'indice, le opzioni possibili sono:
 \begin{itemize}
@@ -76,7 +76,7 @@ Esiste poi la possibilità di avere tipi innestati, che sono appiattiti da Lucen
 \subsection{Query}
 Ogni query assegna uno score ai documenti, in base a quanto matchano la query.
 
-\subsubsection{Query context e Filter context}
+\paragraph{Query context e Filter context}
 Le query a un indice Elasticsearch sono in json, esistono vari tipi di query, che differiscono 
 per complessità. Ad ogni documento viene assegnato uno score di matching.\\
 Un esempio di query è quella \emph{bool}, che permette di definire condizioni molto 
@@ -91,22 +91,22 @@ Elasticsearch è basato su uno storage object pattern, quindi la scalabilità or
 è garantita.
 L'architettura è abbastanza simile a quella di Hadoop.
 
-\subsubsection{Master node}
+\paragraph{Master node}
 Esiste un nodo master che si occupa di richieste 
 generali come creare indici e gestire le risorse.
 
-\subsubsection{Name node, kinda}
+\paragraph{Name node, kinda}
 Non esistono veri e propri name nodes come in Hadoop, infatti, tutti i nodi contengono
 informazioni su dove sono i documenti, in modo da reindirizzare le richieste verso 
 il nodo che contiene le informazioni richieste.
 
-\subsubsection{Shard}
+\paragraph{Shard}
 Ogni cosa è organizzata in shard, ognuno dei quali 
 può essere primario o una replica di uno primario.
 Ogni nodo ha multiple shard.\\
 Uno shard è un search engine funzionante, e può essere utilizzato a sè.
 
-\subsubsection{Scalabilità}
+\paragraph{Scalabilità}
 Distribuendo gli shard tra i nodi si possono garantire elevate performace
 e più scalabilità.
 
@@ -119,14 +119,14 @@ testi sotto forma di vettore. Si introducono quindi misure di distanza e di simi
 Computando la distanza tra due vettori, dove i vettori sono bag of words, si può 
 calcolare la distanza di due testi.
 
-\subsubsection{Distanza Euclidea}
+\paragraph{Distanza Euclidea}
 La distanza tra due vettori è data da
 $$
     dis(A, B) = \sqrt{\sum_{i=0}^{n} (A_i - B_i)^2}
 $$
 È infattibile computare la distanza euclidea per vettori molto sparsi molto lunghi.
 
-\subsubsection{Cosine similarity}
+\paragraph{Cosine similarity}
 La similarità tra due vettori è data da
 $$
     cos(\theta) = \frac{A \cdot B}{||A||  \cdot  ||B||} = 

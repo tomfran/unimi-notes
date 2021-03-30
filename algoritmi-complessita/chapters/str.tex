@@ -399,3 +399,39 @@ Considerando poi i bit per elemento
 $$\bar{Z_n} \leq \log\frac{u}{n}, \; \bar{D_n} = 2 + \bigg\lceil \log \frac{u}{n}\bigg\rceil 
 = \bar{Z_n} + O(1)$$
 Segue che la struttura non è succinta.
+
+\subsection{Parentesi bilanciate}
+
+Si studiano ora parole del linguaggio di Dick.
+Sia $D = \{(, ) \}$ l'insieme delle parentesi aperte e chiuse, 
+il linguaggio di Dick è $L \subseteq D^*$.
+
+Una parola $w \in L$ se:
+\begin{enumerate}
+    \item $\#_( w = \#_) w$ ovvero il numero di parentesi aperte
+    e chiuse coincide in $w$
+    \item $w = w_1w_2 \implies \#_( w_1 \geq \#_) w_2$
+\end{enumerate}
+
+Sia la funzione $$E_w(i) = |\{ j| j < i \mathit{\;t.c.\;} w_j = "(" \}| -
+|\{ j| j \leq i \mathit{\;t.c.\;} w_j = ")" \}|$$
+ovvero il numero di parentesi aperte con posizione minore ad $i$, meno il numero 
+di parentesi chiuse $i$ compresa.
+
+Si ovverva che in una parola di Dick, $E_w$ parte e finisce in zero, 
+può però ritoccarlo scorrendo la parola, 
+se la funzione assume zero solo all'inizio e alla fine si parla di parole
+\emph{fortemente bilanciate}, altrimenti di parole \emph{debolemente bilanciate}.
+Nel secondo caso si possono individuare punti di spezzamento che dividono 
+la parola in due parole di Dick.
+
+\paragraph{Primitive}
+Le primitive necessarie per questa struttura sono:
+\begin{enumerate}
+    \item $\mathit{findOpen}(p)$: trova la parentesi aperta corrispondente 
+    alla chiusa in posizione $p$
+    \item $\mathit{findClosed}(p)$: contrario del precedente
+    \item $\mathit{enclose}(p)$: trova la posizione della prima parentesi 
+    aperta che racchiude $p$, può non individuare nulla
+\end{enumerate}
+

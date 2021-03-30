@@ -4,22 +4,22 @@ Apache Hadoop è un framework open source con l'intento di aumentare l'affidabil
 
 \subsection{Elementi}
 
-\subsubsection{Job Tracker}
+\paragraph{Job Tracker}
 Servizio che decide dove una task deve essere eseguita.
 
-\subsubsection{Task Tracker}
+\paragraph{Task Tracker}
 Nodo che accetta la task data da un job tracker. Espone slot che possono eseguire
 task parallele, infatti, all'arrivo di una nuova task, uno slot libero viene utilizzato per eseguire una JVM. Manda segnali di heartbeat.
 
-\subsubsection{Name node}
+\paragraph{Name node}
 Contiene informazioni su dove i dati sono scritti. Mantiene quindi una lista 
 di risorse e i relativi nodi che le contengono. Rappresenta un sigle point of failure
 per Hadoop. Esiste un nodo di backup pronto in caso di fallimento.
 
-\subsubsection{Data node}
+\paragraph{Data node}
 Nodo che contiene i dati effettivi.
 
-\subsubsection{Master e worker node}
+\paragraph{Master e worker node}
 Un nodo master è composto da un job tracker, un task tracker, un data node e un name node. Mentre un nodo worker è composto da data node e task tracker.
 
 \subsection{Processo}
@@ -37,7 +37,7 @@ Un esempio del processo seguito da Hadoop è il seguente.
         può scegliere di aggiungere il \emph{Task Tracker} a una \emph{blacklist}.
 \end{enumerate}
 
-\subsubsection{Confronto costi}
+\paragraph{Confronto costi}
 Bisogna tenere presente che in un contesto come quello di Hadoop risulta 
 più economico muovere la computazione piuttosto che i dati.
 Bisogna quindi scegliere i task tracer in modo opportuno, tenendoli vicini ai 
@@ -49,18 +49,18 @@ righe di codice.
 HDFS è uno storage distribuito pensato per essere utilizzato su macchine poco
 performanti.
 
-\subsubsection{Architettura}
+\paragraph{Architettura}
 Un HDFS ha un architettura \emph{master/slave}, dove esiste un \emph{name node} per $N$ \emph{data node}.
 Il primo esegue operazioni sul file system, mentre i secondi si occupano di 
 servire le richieste del primo e di gestire cancellazione, creazione e replica dei 
 file.
 
-\subsubsection{Data node}
+\paragraph{Data node}
 I file sono suddivisi in blocchi, le scritture non sono concorrenti sullo stesso 
 blocco. Mandano segnali di heartbeat al name node.
 
  
-\subsubsection{Quorum Journal Manager}
+\paragraph{Quorum Journal Manager}
 I data node sono affidabili, viste le tecniche di replicazione, per estendere
 ai name node, essi potrebbero essere multipli, uno attivo e gli altri in standby.
 I data node manderebbero il battito a tutti questi nodi. Al fallimento del name node 
