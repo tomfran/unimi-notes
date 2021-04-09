@@ -73,7 +73,7 @@ for instance
 $$\mathit{Rand} = \frac{\mathit{TP} + \mathit{TN}}{\mathit{TP} + \mathit{TN} + \mathit{FP} + \mathit{FN}}$$
 but also \emph{Purity} and \emph{Normalized Mutual Information}.
 
-\subsubsection{K-means}
+\subsection{K-means}
 This approach starts with $k$ random centroids and assign each data point 
 to the closets one. We then recompute the centroids with the current clusters 
 and repeat the first point until termination.
@@ -159,3 +159,80 @@ words in the same cluster. Basically if two words appears in a document
 they should have a high probability of being assigned to the same cluster, 
 so they have the same $q_{mk}$. This leads to assigning documents with the 
 same words in the same clusters.
+
+\subsection{Affinity propagation clustering}
+
+\paragraph{Input}
+The input is a similarly matrix, for instance $s(i,j) = - ||\vec{i} - \vec{j}||^2$.
+There are also some special values for the diagonal of the matrix, 
+where larger values are more likely to be chosen as exemplars for 
+clusters.
+
+\paragraph{Idea}
+Documents exchange messages to decide exemplars and clusters assignments.
+This approach is similar to \emph{page rank with authorities} \footnote{\url{https://nlp.stanford.edu/IR-book/html/htmledition/hubs-and-authorities-1.html}}. 
+
+\paragraph{Responsibility messages}
+A message $r(i,k)$ that denotes how well $k$ is an exemplar for $i$.
+An example can be
+$$r(i, k) = s(i, k) - \max_{k^\prime s.t.k^\prime \neq k} \{ a(i, k^\prime) + s(i, k^\prime)\}$$
+basically we take the similarity of a pair of nodes and subtract the maximum 
+similarity for any other document. This value will be zero for the most similar 
+document, and negative for all other, as the quantity $a(i, k^\prime)$ is initially zero.
+
+\paragraph{Availability}
+This message $a(i, k)$ represent how appropriate is for $i$ to choose 
+$k$ as exemplar.
+$$a(i, k) = \min \bigg\{ 0, r(k, k) + \sum_{i^\prime s.t.i^\prime \notin \{i, k\}} \max\{0, r(i^\prime, k)\}\bigg\}$$
+
+\paragraph{Self availability}
+The availability measure given the same document as argument, is 
+$$a(k, k) = \sum_{i^\prime s.t.i^\prime \neq k} \max\{0, r(i^\prime, k)\}$$
+
+\paragraph{Process}
+At first, documents are connected by similarity, then we recompute the availability 
+with respect to the responsibility and vice versa. This leads to making documents 
+connections stronger and stronger and to the election of an exemplar for clusters.
+After some iterations convergence is reached.
+
+\subsection{Hierarchical clustering}
+This approach produces a hierarchy of clusters. It does not need the number of clusters 
+but a criterion of optimal cluster selection. Most of this algorithms are deterministic.
+
+\paragraph{Process}
+Staring from a similarity matrix for the documents, we start taking the pair 
+of documents with maximum similarity and group them in the same cluster. 
+An idea is to have documents as nodes, and to add a cluster node connected 
+to the two most similar documents.
+
+The next step is to delete the rows and columns of the two selected documents, 
+as they are already assigned, but, we add a new row and column 
+for the cluster node.
+The similarity value between a document and a cluster is the minimum similarity 
+in that cluster for the considered document, but many strategies can be applied.
+
+After rebuilding the table, we continue with the initial step, 
+note that if a cluster and document are selected as most similar items, 
+we are adding a cluster connected to them, ergo we are considering the cluster 
+obtained in the first step, as a sub-cluster for the last one.
+
+The last step is to select the number of clusters.
+The previous logic created tree, as we grouped documents and clusters by adding 
+nodes connected to them.
+We can choose a threshold for the intra-cluster similarity, or select a certain 
+number of clusters, or considering the maximum jump in similarity in the obtained cluster
+tree and cut off the tree there. By cutting off the tree, we take the lower part, so 
+the one with the leaves.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/hierarchical-clustering.png}
+    \caption{Hierarchical clustering example with 4 clusters}
+\end{figure}
+
+\paragraph{Top-down clustering}
+This approach starts from a cluster containing all the documents, and
+recursively splits it keeping track of the parent of each document. 
+The process stops when a threshold of intra-cluster similarity is obtained 
+or when there's a cluster for each document.
+This approach is the opposite of the bottom up tree creation.

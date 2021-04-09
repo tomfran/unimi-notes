@@ -111,10 +111,10 @@ L'implementazione di questo scambio di messaggi è offerta da uno standard,
 non bisogna "inventarsi" nulla al contrario della comunicazione con socket.
 Il passaggio da dati a messaggio e viceversa è chiamato:
 \begin{itemize}
-    \item Marshalling: formattazione dei parametri in messaggio, prevede
+    \item \emph{Marshalling}: formattazione dei parametri in messaggio, prevede
     eventuale serializzazione, bisogna anche porre attenzione all'architettura
     di partenza e arrivo, potrebbero differire in termini di codifica
-    \item Unmarshalling: procedure inversa di marshalling
+    \item \emph{Unmarshalling}: procedure inversa di marshalling
 \end{itemize}
 Il binding tra client e server è trasparente, alcuni sistemi offrono la possiblità 
 di scoprire dinamicamente quale server offre una determinata funzione.

@@ -1,0 +1,155 @@
+\section{Sincronizzazione}
+
+\paragraph{Clock interno}
+Ogni nodo in un sistema distribuito ha un clock interno. 
+Esistono alcuni problemi, ad esempio, considerando due eventi 
+consecutivi su due macchine differenti, il secondo 
+evento potrebbe avere tempo inferiore al primo, 
+se il clock del nodo che l'ha eseguito è leggermente minore dell'altro nodo.
+
+Questo tipo di problemi porta inevitabilmente a comportamenti 
+inaspettati, è necessaria una sincronizzazione.
+ 
+\paragraph{È possibile una sincronizzazione perfetta?}
+Sostanzialmente no, non è possibile pensare di avere una 
+sincronizzazione perfetta in un sistema distribuito, 
+si punta ad una certa precisione.
+
+\subsection{Orologi fisici}
+
+Nel contesto degli orologi fisici, si fa riferimento al 
+tempo UTC. Esso è calcolato osservando fenomeni naturali ed
+astronomici.
+ 
+In particolare il tempo UTC fa riferimento al 
+TAI, il tempo internazionale atomico, regolato 
+aggiungendo \emph{leap seconds} per allinearlo al tempo 
+solare.
+
+\paragraph{Clock lento e veloce}
+Facendo riferimento all'UTC, si parla di clock perfetto 
+se il rapporto tra clock e UTC equivale ad uno.
+Il clock invece è veloce se il rapporto è maggiore 
+di uno e lento altrimenti.
+
+Se il clock dei nodi di un sistema distribuito non è perfetto, 
+saranno necessarie operazioni di sincronizzazione di tanto 
+in tanto.
+
+\subsubsection{Metodi di sincronizzazione}
+
+\paragraph{Sincronizzazione tramite GNSS}
+Per gli orologi fisici è possibile utilizzare 
+il GNSS per capire la posizione attuale. 
+Il tempo ottenuto tramite questo metodo, 
+che sfrutta più satelliti, 
+è preciso ai micro o anche ai nano secondi. 
+
+I satelliti hanno a bordo un orologio atomico.
+Il ricevitore GNSS manda un messaggio ai satelliti e, 
+osservando il tempo di risposta e interpolando 
+i segnali ricevuti, determina la posizione attuale e 
+la deviazione dal tempo UTC. Ovviamente la 
+posizione è approssimata come il tempo che si calcola.
+
+\paragraph{Algoritmo di Cristian e NTP}
+L'idea è quella di chiedere il tempo preciso ad un server,
+tenendo in considerazione la latenza della richiesta.
+
+Quindi, il client manda la richiesta al server NTP, 
+esso manda la risposta, ma ovviamente esistono ritardi.
+I messaggi contengono perciò timestamp, sia lato client che 
+lato server, si stimano i ritardi di comunicazione e si calcola
+il tempo attuale di conseguenza. Il procedimento 
+viene ripetuto più volte per stimare bene la latenza e il 
+risultato è preciso ai millisecondi.
+
+\paragraph{Algortimo di Berkeley}
+Non sempre è necessario sincronizzare gli orologi 
+di un sistema distribuito con il tempo esterno. 
+
+Esiste quindi un server che fa da \emph{time deamon}, 
+esso manda il suo orario a tutti i nodi 
+del sistema, essi rispondono con la differenza 
+del loro tempo rispetto a quella del time deamon. 
+Il nodo deamon calcola la media degli orari del sistema 
+e manda il risultato a tutti. 
+
+La latenza del procedimento è ignorata, si assume che 
+esistano comunicazioni pressochè istantanee.
+
+Inoltre, il tempo di un nodo non si riporta mai indietro, 
+visti i possibili problemi di inconsistenza che il procedimento 
+creerebbe. Si rallenta semplicemente il tempo fino a quando 
+non si allinea con quello del nodo deamon.
+
+\subsection{Orologi logici}
+
+In molti casi non è necessario che i nodi siano sincronizzati 
+rispetto ai loro clock fisici, potrebbe essere abbastanza 
+conoscere un'ordine parziale di eventi sul sistema distribuito.
+
+\paragraph{Idea}
+Quello che serve è un modo per far concordare i nodi sulla
+sequenza di certi eventi, dove un evento 
+è interno o l'invio o ricezione di un messaggio. 
+
+Si mantiene un contatore e ogni volta che accade un evento 
+esso viene aumentato. Si nota che i contatori 
+dei nodi potrebbero avere valori differenti.
+
+\subsubsection{Algoritmo di Lamport}
+
+L'idea dell'algoritmo è che, dati due eventi 
+$A, B$ l'espressione $A \rightarrow B$ indica la relazione 
+che $A$ è accaduto prima di $B$, ed essa è transitiva.
+
+Dato $C(a)$ il valore del clock logico assegnato 
+al momento in cui $a$ è accaduto, l'obiettivo dell'algortimo 
+è far valere la seguente espressione
+$$A \rightarrow B \implies C(a) < C(b)$$
+
+\paragraph{Logica}
+L'aggiornamento del counter $C_i$ per il 
+processo $P_i$ avviene come segue: 
+\begin{enumerate}
+    \item Prima di eseguire un evento, il processo $P_i$ 
+    esegue $C_i \gets C_i + 1$
+    \item Se il processo $P_i$ manda un messaggio $m$ a $P_j$, 
+    setta il timestamp di $m$ con il valore del counter attuale, 
+    $ts(m) \gets C_i$
+    \item $P_j$ quando riceve il messaggio agggiorna il suo 
+    contatore secondo la logica $C_j \gets \max(C_j, ts(m)) + 1$
+\end{enumerate}
+Si nota che non è detto che si riesca a dare un ordine per ogni 
+coppia di eventi, ma solo tra quelli collegati da un messaggio.
+
+\paragraph{Implementazione}
+All'interno del sistema si può pensare all'Implementazione
+dell'algoritmo come middleware.
+
+\paragraph{Problematiche}
+L'algoritmo può essere modificato aggiungendo un contatore, 
+ovvero, il processo $P_i$ assegna all'evento 
+$e$, $C_i(e).i$ dove $i$ è il suo indice.
+
+Se due eventi nel sistema hanno lo stesso $C$, si riesce 
+a disambiguare scegliendo in ordine l'evento con indice 
+del processo minore.
+
+\paragraph{Applicazioni}
+Una possibile applicazione dell'algoritmo è quella 
+della replica di database, 
+
+\subsection{Algoritmi di mutua esclusione}
+È necessaria mutua esclusione quando esistono risorse 
+comuni a cui non possono accedere più nodi in contemporanea.
+
+\paragraph{Soluzione centralizzata}
+Una soluzione semplice consiste nell'usare un nodo 
+coordinatore che regola l'accesso alla risorsa 
+condivisa. Si può utilizzare una coda gestita dal coordinatore.
+
+
+\subsection{Algoritmi di elezione}
+\dots
