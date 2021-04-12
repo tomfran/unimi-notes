@@ -135,7 +135,7 @@ test error diverges from the risk
 We can apply the Chernoff-Huffding inequality to find that
  $$P(|l_D(h) - \hat{l}_{S^\prime}(h)| \geq \epsilon) \leq 2e^{-2\epsilon^2n}$$
 If we call that probability $\delta$ and solve for $\epsilon$
-$$\delta = 2e^{-2\epsilon^2n}, \epsilon = \sqrt{\frac{1}{n}\ln \frac{2}{\delta}}$$
+$$\delta = 2e^{-2\epsilon^2n}, \epsilon = \sqrt{\frac{1}{2  n}\ln \frac{2}{\delta}}$$
 This means that the loss function diverges from the risk less than $\epsilon$ with probability
 $1-\delta$.
 This actually means that the test error is a good proxy

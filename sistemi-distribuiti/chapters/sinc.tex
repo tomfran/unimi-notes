@@ -150,6 +150,31 @@ Una soluzione semplice consiste nell'usare un nodo
 coordinatore che regola l'accesso alla risorsa 
 condivisa. Si può utilizzare una coda gestita dal coordinatore.
 
+\paragraph{Soluzione distribuita}
+L'idea è che se un processo P deve utilizzare una risorsa
+R, costruisce un messaggio contenente il suo id, il nome 
+della risorsa e un timestamp. Manda poi il messaggio a tutti, 
+incluso se stesso.
+
+Si assume che esista ordine totale degli eventi, tramite 
+ack.
+
+Si pensi ora a due processi 0 e 2 che vogliono accedere 
+alla risorsa $R$ e il processo 3 che non fa nulla.\\
+P0 manda un messaggio con timestamp 8, P2 uno con timestamp 12.
+P3 risponde OK ad entrambi, mentre, P2 risponde OK a P0, 
+non il viceversa, visto che il timestamp di P0 è minore di P2.
+
+A questo punto P0 aggiunge nella sua coda P2 e ottiene la 
+risorsa. Al termine manda il messaggio di OK a P2, che è l'unico 
+processo nella sua coda che sta aspettando il messaggio 
+per accedere alla risorsa condivisa.
+
+\paragraph{Problematiche distribuite}
+Una mancanza di risposta potrebbe essere un crash, 
+inoltre il richiedere l'intervento di tutti 
+i nodi ogni volta che si vuole accedere ad una risorsa non è |
+desiderabile.
 
 \subsection{Algoritmi di elezione}
 \dots
