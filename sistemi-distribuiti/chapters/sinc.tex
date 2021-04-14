@@ -141,7 +141,9 @@ del processo minore.
 Una possibile applicazione dell'algoritmo è quella 
 della replica di database, 
 
+\section{Esclusione ed elezione}
 \subsection{Algoritmi di mutua esclusione}
+\label{mutua}
 È necessaria mutua esclusione quando esistono risorse 
 comuni a cui non possono accedere più nodi in contemporanea.
 
@@ -173,8 +175,97 @@ per accedere alla risorsa condivisa.
 \paragraph{Problematiche distribuite}
 Una mancanza di risposta potrebbe essere un crash, 
 inoltre il richiedere l'intervento di tutti 
-i nodi ogni volta che si vuole accedere ad una risorsa non è |
+i nodi ogni volta che si vuole accedere ad una risorsa non è
 desiderabile.
 
+\paragraph{Algoritmo ad anello}
+Si crea una struttura logica sopra la rete distribuita ad anello.
+Si considera un token, che viene scambiato tra i nodi della rete.
+
+Esso viene inviato dal processo $i$ al processo $(i+1)\mathit{mod\;}n$.
+Se un processo è interessato ad usare una risorsa, può farlo 
+quando riceve il token, quando ha finito, o se non interessato, 
+manda il messaggio al processo successivo.
+
+Esistono problemi, ad esempio il blocco di un nodo 
+rompe la circolazione del token, ma può essere risolto avendo più 
+successori a cui mandare il token in caso di errore. Esiste però 
+anche la possibilità di perdere il token se il nodo che lo ha crasha.
+
+\paragraph{Confronto tra gli algoritmi}
+Nell'algoritmo centralizzato servono meno messaggi, visto che ne bastano 
+3 per ottenere la risorsa, in quello distribuito si parla 
+dell'ordine di $n$ messaggi dove $n$ è il numero di nodi, 
+mentre in quello ad anello si può osservare anche un numero 
+infinito di messaggi, nel caso in cui nessuno voglia utilizzare 
+la risorsa condivisa.
+
 \subsection{Algoritmi di elezione}
-\dots
+Questi algoritmi hanno come obiettivo eleggere un coordinatore 
+tra i nodi. 
+Potrebbe essere utile ad esempio per ottenere il coordinatore dell'algoritmo 
+centralizzato di mutua esclusione introdotto in sezione \vref{mutua}.
+L'obiettivo è quello di eleggere il procesos con identifier più alto.
+
+\subsubsection{Algoritmo del bullo}
+Un processo, quando si accorge che il coordinatore 
+è fallito, manda un messaggio di elezione 
+al precedente coordinatore e ai processi con identifier più alto.
+
+\paragraph{Esecuzione}
+L'esecuzione procede come segue 
+\begin{itemize}
+    \item Per esempio, dati 7 processi, il 4, accortosi che il coordinatore 
+    è crahsato, manderà un messaggio a 5, 6 e 7, dove l'ultimo è il coordinatore
+    \item I processi 5 e 6 si prendono in carico l'elezione, 
+    mandando un messaggio di ok, 5 e 6 ripetono il procedimento 
+    di 4
+    \item A questo punto 6 risponde ok a 5.
+    6 prova ad eseguire il procedimento di 4, 7 non risponde più
+    e quindi capisce che è il nuovo coordinatore
+    \item 6 manda in broadcast che è il nuovo coordinatore
+\end{itemize}
+
+\paragraph{Problematiche}
+Una domanda che ci si può fare, cosa succede se due processi 
+iniziano un processo di elezione contemporaneamente?
+Potrebbe non essere un problema, se il sistema non è estremamente 
+dinamico. I processi di elezione portano allo stesso coordinatore.
+
+Se si parte da un nodo con id molto basso, nella rete circolano 
+molti messaggi.
+
+Se un coordinatore vecchio si risveglia bisogna gestirlo. Potrebbe ad 
+esempio mandare un nuovo messaggio di elezione.
+
+\subsubsection{Elezione ad anello}
+
+Si continua con l'idea dell'anello della sezione precedente.
+Si crea quindi la struttura logica, ogni nodo ha un id e i messaggi 
+circolano in senso orario, dove il successore è calcolato in modulo 
+$n$.
+
+\paragraph{Esecuzione}
+L'esecuzione dell'algoritmo procede come segue, si assume che 
+tutti i processi inizialmente sono \emph{non partecipanti}:
+\begin{itemize}
+    \item Un processo $P_k$ che si accorge che il coordinatore è fallito, 
+    si setta \emph{partecipante} e invia al successore un messaggio 
+    del tipo $[\mathit{Election}, \mathit{ID}(P_k)]$
+    \item Un processo $P_m$ che riceve $[\mathit{Election}, \mathit{ID}(P_k)]$:
+    \begin{itemize}
+        \item Se $\mathit{ID}(P_k) > \mathit{ID}(P_m)$ manda il messaggio 
+        marcandosi come \emph{partecipante}
+        \item Se $\mathit{ID}(P_k) < \mathit{ID}(P_m)$ se il processo 
+        non è partecipante si setta e manda $[\mathit{Election}, \mathit{ID}(P_m)]$
+        al successore
+        \item Se $k = m$ il processo è diventato coordinatore, si setta 
+        come non partecipante e manda al successore $[\mathit{Elected}, \mathit{ID}(P_m)]$
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Caso pessimo}
+Se il processo con ID più alto è il vicino in senso antiorario 
+di chi inizia l'elezione, sono necessari $n-1$ messaggi per arrivare ad esso, 
+poi altri $n$ messaggi per diffondere il nuovo ID massimale, 
+e infine altri $n$ messaggi \emph{Elected}, quindi $3n-1$.

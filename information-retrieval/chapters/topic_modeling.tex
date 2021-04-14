@@ -7,6 +7,38 @@ We understood that the vector space models suffer
 from high dimensionality, the terms also could be synonyms, 
 leading to ambiguity, in fact two words that means 
 the same thing are two different dimensions in the model.
+\subsection{Linear algebra recap}
+
+\paragraph{Eigenvalues and eigenvectors}
+Given a square matrix of size $n$, if we find a
+ $n$ dimensional vector such that
+$$A\vec{x} = \lambda\vec{x}$$
+$\lambda$ is a eigenvalue and $\vec{x}$ is an eigenvector.
+It also holds that 
+$$(A - \lambda I )\vec{x} = 0 \implies |A - \lambda I| = 0$$
+where $I$ is the identity matrix, and the implication holds as $\vec{x}$ is non-zero.
+In general the second part of the implication has $n$ solutions, so 
+$n$ eigenvalues associated with a certain eigenvector.
+
+After finding the solutions we can write that 
+\begin{equation}
+    \begin{aligned}
+        AX &= A[\vec{x_1}, \dots, \vec{x_n}] = A\vec{x_1} + \dots + A\vec{x_n}\\
+        & = \lambda_1\vec{x_1} + \dots + \lambda_n\vec{x_n} = \varLambda X  
+    \end{aligned}
+\end{equation}
+Where $\varLambda$ is the diagonal matrix of the eigenvalues, and $X$ the matrix 
+with eigenvectors. 
+
+\paragraph{Diagonalization}
+If the $n$ eigenvector found at the previous step are independent, 
+and the matrix $A$ is invertible, which is not a problem as its square, 
+we can write 
+$$AX = X\varLambda \rightarrow AXX^{-1} = XAX^{-1} \rightarrow A = X\varLambda X^{-1}$$
+
+This representation is called diagonalization of $A$.
+Also, if $A$ is symmetric, we can write
+$$A = X\varLambda X^{\top}$$
 
 \subsection{Latent Semantic Indexing}
 The goal is to discover topics that motivate data
@@ -14,5 +46,68 @@ by using matrix factorization techniques, while
 taking in consideration the possibility of expressing
 the same topic with different words.
 
+\paragraph{Idea}
+We learned that if a matrix is symmetric we can write the 
+diagonalization as $A = X\varLambda X^{\top}$.
+The question is, what happens if we multiply the 
+document-term matrix by itself? 
+
+We find a symmetric matrix that somehow encapsulates a notion of similarity 
+of documents because if two documents share the same words the 
+product will be really high for that two documents.
+
+If we multiply the term-document matrix we obtain a similar result.
+
+\paragraph{Process}
+Formally, we consider a matrix $B_{n\times n}$ as the product of the document-term 
+matrix $A_{m\times n}$ by itself.
+We then take the eigenvalues of the matrix $B$ and start diagonalization.
+
+The process involves first sorting the eigenvalues, and taking the first 
+$k$ non-zero ones, that will be $k$ topics we are finding in the documents, 
+and we arrange the corresponding eigenvectors in $V = [\vec{v_1}, \dots, \vec{v_k}]$.
+
+We proceed with the definition of $U = [\vec{u_1} = \frac{1}{\sigma_1}A\vec{v_1}, \dots, 
+\vec{u_k} = \frac{k}{\sigma_k}A\vec{v_k}]$, that contains perpendicular $m$-dimensional 
+vectors of length 1. Then we can write:
+$$A = U \Sigma V^\top$$
+where $\Sigma_{k \times k}$ is the diagonal matrix having $\sigma_i = \sqrt{\lambda_i}$ along the diagonal.
+
+\paragraph{Singular value decomposition}
+A more simple way of seeing the vectors introduced in the previous paragraph is:
+\begin{itemize}
+    \item$V$ are the eigenvectors of $AA^\top$
+    \item$U$ are the eigenvectors of $A^\top A$
+    \item $\Sigma$ is the diagonal matrix composed starting from the eigenvalues
+    of $A A^\top$ and $A^\top A$, which are the same
+\end{itemize}
+
+\paragraph{Defining topics}
+After applying singular value decomposition 
+to the document term matrix we have the latent topic matrix
+$\Sigma_{k \times k}$.
+This matrix somehow encapsulate the top $k$ relevant topics for 
+the documents, and now, to make them human understandable 
+we assign each a set of words, and also, we can assign to each 
+document a topic, in a soft clustering fashion.
+
+Basically, given the three matrixes that SVD outputs, 
+namely $U, \Sigma, V$, 
+we can discover what topics have the documents by multiplying 
+$U$ and $\Sigma$. The output will be a matrix with document 
+on rows and topics on columns, where the absolute value of 
+a cell represent how strong a topics is present in a document.
+
+In the same way we can find a relation between topics and words 
+by multiplying $\Sigma$ and $V^\top$.
 
 \subsection{Latent Dirichlet Allocation}
+This approach relies on probability theory to find topics
+in documents. 
+In the LSI approach we tried to find a \emph{glue}, formally $\Sigma$,
+between document and terms.
+
+In LDA the goal is to estimate the probabilistic relation 
+between topics and documents, basically the probability that 
+a given document contains a given topic, and the one that 
+a topics contains a certain word.
