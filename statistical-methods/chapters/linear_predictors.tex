@@ -1,0 +1,45 @@
+\section{Linear predictors}
+
+\subsection{Structure}
+Linear predictors are the simplest case of 
+parametric algorithms.
+We start with $X = \mathbb{R}^d$, so we handle only numerical
+data. The predictors are defined as follows 
+$$h : \mathbb{R}^d \rightarrow Y, \;\; h(x) = f(w^Tx), \;\; w \in \mathbb{R}^d$$
+where $w$ is the description of the predictor, so it's what we are 
+learning, and $f : \mathbb{R} \rightarrow \mathbb{R}$ is the activation function, 
+and $w^Tx = \sum_{i=0}^d w_ix_i = ||w||||x|| \cos \theta$ where $\theta$
+is the angle between the two vectors.
+
+\paragraph{Binary classification}
+In a binary classification task, $f = \mathit{sgn}$ 
+\[
+    \mathit{sgn}(z) = \begin{cases}
+        +1 \mathit{\;if\;} x \in H^+\\
+        -1 \mathit{\;if\;} x \in H^-
+    \end{cases}\]
+The halfspaces $H^+$ and $H^-$ are defined like this
+$$H^+ = \big\{ x : w^Tx > c\big\} \;\;\mathit{and}\;\; H^- = \big\{ x : w^Tx \leq c\big\}$$
+
+The predictor $h : \mathbb{R}^d \rightarrow \{-1, +1\}$ is defined 
+as follows
+$$h(x) = \mathit{sgn}(w^Tx - c)$$
+
+The hyperplane $w$ has $d$ dimensions, and it is called homogeneous
+if it crosses the origin. Basically if we learn $(w, c), c\neq 0$ we learned 
+a non-homogeneous hyperplane, it holds that $v(w, -c), v\in \mathbb{R}^{d+1}$ is homogeneous.
+
+Thus we can encapsulate the $c$ parameter into the hyperplane by adding 
+dimension and an extra feature to the data points with value $1$.
+
+\subsection{Training}
+Note that $||w||$ is irrelevant to determine $\mathit{sgn}(w^Tx)
+= \mathit{sgn}(||w||||x||\cos \theta)$, thus we can assume $||w|| = 1$.
+
+Let $H_d = \{ w \in \mathbb{R}^d : ||w|| = 1\}$ we can rewrite the predictor 
+output as follows 
+$$h(x) = I\{ yw^Tx \leq 0\}$$
+and we can apply the ERM over $H_D$, whose output is 
+$$h_s = \min_{h \in H_d} \frac{1}{m} \sum_{t=1}^m I\{ y_tw^Tx_t \leq 0\}$$
+this is nasty to minimize, as it is the sum of non-continuous functions, 
+in fact the problem is in NP.
