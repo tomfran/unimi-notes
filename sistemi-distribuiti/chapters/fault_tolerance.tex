@@ -1,0 +1,106 @@
+\section{Fault tolerance}
+Uno degli obiettivi di un sistema distribuito è
+la trasparenza ai guasti. I requisiti da fornire sono 
+disponibilità, affidabilità, sicurezza e mantenibilità.
+
+\paragraph{Cause di fallimento}
+Un sistema potrebbe fallire per molti motivi, ad esempio
+potrebbe crashare, fallire sia nella ricezione che invio 
+di messaggi, fallire nel tempo di risposta, rispondere 
+con messaggi sbagliati.
+
+\subsection{Ridondanza}
+I fallimenti possono essere mascherati dalla ridondanza.
+Si può pensare di \emph{ridondare le informazioni}, 
+tramite bit extra. Esiste anche la \emph{ridondanza in termini 
+temporali}, se una transazione è abortita essa può essere 
+ripetuta. Infine si parla di \emph{ridondanza fisica} quando 
+esiste hardware o processi addizionali usati per sistemare
+guasti.
+
+\paragraph{Resilienza dei processi}
+Per aumentare la fault tolerance dei processi 
+si può ricorrere ad utilizzare gruppi di processi 
+equivalenti dove ogni processo riceve i messaggi indirizzati al gruppo.
+
+Servono metodi di accesso ai gruppi e la domanda che 
+sorge spontanea è, quanta ridondanza serve?
+
+\paragraph{Quanta ridondanza}
+Se un processo smette di funzionare $k + 1$ processi 
+offrono $k$-fault tolerance.
+
+Se invece il processo che fallisce risponde con valori 
+errati, sono necessari almeno $2k +1$ processi, il client può 
+capire la risposta contanto la maggioranza.
+
+Nel caso in cui serva un consenso, ad esempio in un algoritmo 
+di elezione, il problema diventa molto difficile e a volte 
+impossibile.
+
+\subsection{Problemi di accordo}
+I problemi che si tentanto di risolvere sono:
+\begin{itemize}
+    \item \emph{Problemi di consenso}: in questo caso ogni processo 
+    propone un singolo valore e i processi devono mettersi d'accordo 
+    sullo stesso valore
+    \item \emph{Generali Bizantini}: un processo propone un valore $v$, 
+    tutti i processi corretti devono mettersi d'accordo su $v$, se 
+    il processo iniziale non è faulty
+    \item \emph{Interactive consistency}: ogni processo propone un valore, 
+    e tutti devono mettersi d'accordo su un vettore di valori, 
+    ovvero su tutti i valori proposti dai singoli processi
+\end{itemize}
+
+Tutti i problemi sono complicati e un algoritmo per uno di essi 
+porta ad una soluzione per gli altri in maniera facile.
+
+\paragraph{Soluzione generali Bizantini}
+Nel problema dei generali bizantini sono necessari almeno 
+$N = 3k + 1$ processi per compensare $k$ processi malfunzionanti.
+L'esecuzione con $k = 1, N = 4$ procede come segue: 
+\begin{itemize}
+    \item Il comandante manda il valore ai messaggeri
+    \item Essi mandano in broadcast agli altri
+    \item Ora si distinguono alcuni casi:
+    \begin{itemize}
+        \item nel caso in cui uno dei messaggeri fosse malfunzionante, 
+        gil altri possono applicare uan funzione di maggioranza 
+        per capire quale valore ha mandato il comandante
+        \item se il comandante è malfunzionante, gli altri 3 processi 
+        riconoscono che il valore del comandante non è affidabile, 
+        procedono come devono
+    \end{itemize}
+\end{itemize}
+
+\subsection{Sistemi sicroni e asincroni}
+
+\paragraph{Sistemi sincroni}
+In questo caso l'esecuzione di ogni nodo è limitata in velocità 
+e tempo, inoltre i link di comunicazione hanno delay limitato, 
+ed è limitato anche il drift del clock di ogni nodo.
+
+\paragraph{Sistemi asincroni}
+Si perdono qui le assunzioni precedenti, 
+la velocità di ogni nodo è arbitraria, come lo sono 
+i delay sui link di comunicazione e il drift del clock di ogni nodo.
+
+\paragraph{Considerazioni}
+Nei sistemi asincorni è tutto più difficile, solitamente si 
+effettuano assunzioni sulla sincronicità, si devono accettare 
+il fallimento di alcune soluzioni ed eventuali deadlock.
+
+\paragraph{Teorema FLP}
+Quando il delay sui link di comunicazione è arbitrario 
+non essite una soluzione ai generali Bizantini e a totally-ordered
+multicast, anche se solo un nodo è malfunzionante.
+
+Esistono però soluzioni per sistemi parzialmente sincroni.
+
+\paragraph{Teorema CAP}
+In un sistema ideale si vogliono \emph{consistenza}, \emph{disponibilità} 
+e \emph{tolleranza} ad un numero arbitrario di \emph{messaggi persi} o 
+arrivati tarti.
+
+In un sistema asincrono si possono ottenere solo due 
+di questi requisiti in storage read e write.
