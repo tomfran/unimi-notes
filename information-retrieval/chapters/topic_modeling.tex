@@ -46,7 +46,7 @@ by using matrix factorization techniques, while
 taking in consideration the possibility of expressing
 the same topic with different words.
 
-\paragraph{Idea}
+\paragraph{Diagonalization}
 We learned that if a matrix is symmetric we can write the 
 diagonalization as $A = X\varLambda X^{\top}$.
 The question is, what happens if we multiply the 
@@ -58,48 +58,43 @@ product will be really high for that two documents.
 
 If we multiply the term-document matrix we obtain a similar result.
 
-\paragraph{Process}
-Formally, we consider a matrix $B_{n\times n}$ as the product of the document-term 
-matrix $A_{m\times n}$ by itself.
-We then take the eigenvalues of the matrix $B$ and start diagonalization.
-
-The process involves first sorting the eigenvalues, and taking the first 
-$k$ non-zero ones, that will be $k$ topics we are finding in the documents, 
-and we arrange the corresponding eigenvectors in $V = [\vec{v_1}, \dots, \vec{v_k}]$.
-
-We proceed with the definition of $U = [\vec{u_1} = \frac{1}{\sigma_1}A\vec{v_1}, \dots, 
-\vec{u_k} = \frac{k}{\sigma_k}A\vec{v_k}]$, that contains perpendicular $m$-dimensional 
-vectors of length 1. Then we can write:
-$$A = U \Sigma V^\top$$
-where $\Sigma_{k \times k}$ is the diagonal matrix having $\sigma_i = \sqrt{\lambda_i}$ along the diagonal.
-
-\paragraph{Singular value decomposition}
-A more simple way of seeing the vectors introduced in the previous paragraph is:
+\paragraph{Singular Value decomposition}
+The idea behind the approach is to define the term document matrix 
+$A$ in terms of $$A = U \Sigma V^\top$$
+This means finding something that holds together documents and terms. 
+The terms in the diagonalization represent:
 \begin{itemize}
-    \item$V$ are the eigenvectors of $AA^\top$
-    \item$U$ are the eigenvectors of $A^\top A$
+    \item$V$ is the matrix with the eigenvectors of $AA^\top$
+    \item$U$ is the matrix with the eigenvectors of $A^\top A$
     \item $\Sigma$ is the diagonal matrix composed starting from the eigenvalues
     of $A A^\top$ and $A^\top A$, which are the same
 \end{itemize}
+Note that the eigenvalues in $\Sigma$ are sorted on the diagonal.
 
 \paragraph{Defining topics}
 After applying singular value decomposition 
 to the document term matrix we have the latent topic matrix
-$\Sigma_{k \times k}$.
-This matrix somehow encapsulate the top $k$ relevant topics for 
-the documents, and now, to make them human understandable 
+$\Sigma$.
+We can consider a new matrix $\Sigma_{k \times k}$, that 
+somehow encapsulate the top $k$ relevant topics for 
+the documents.
+Note that after this cut of $\Sigma$ we get a diagonalization 
+that is an approximation of the original matrix.
+$$A \approx U \Sigma_{k \times k} V^\top$$
+
+To make topics human understandable 
 we assign each a set of words, and also, we can assign to each 
 document a topic, in a soft clustering fashion.
 
-Basically, given the three matrixes that SVD outputs, 
-namely $U, \Sigma, V$, 
+Basically, given the three matrixes that SVD outputs, after 
+cutting $\Sigma$ as discussed above,   
 we can discover what topics have the documents by multiplying 
-$U$ and $\Sigma$. The output will be a matrix with document 
+$U$ and $\Sigma_{k \times k}$. The output will be a matrix with document 
 on rows and topics on columns, where the absolute value of 
 a cell represent how strong a topics is present in a document.
 
 In the same way we can find a relation between topics and words 
-by multiplying $\Sigma$ and $V^\top$.
+by multiplying $\Sigma_{k \times k}$ and $V^\top$.
 
 \subsection{Latent Dirichlet Allocation}
 This approach relies on probability theory to find topics
