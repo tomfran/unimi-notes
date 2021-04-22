@@ -1,0 +1,74 @@
+\section{Learning paradigms}
+
+\paragraph{Online learning}
+Recalling how a perceptron works and focusing on training 
+complexity, we have that an epoch in that learning algorithm is 
+linear in the number of data points.
+This is a good result and it makes the perceptron really competitive 
+on big datasets. 
+
+Also, perceptrons are good on data streams, as they can simply continue
+the training phase without recomputing everything.
+
+This is called online learning, so we analyze a single data point 
+and adapt the model, this means performing a local minimization.
+
+\paragraph{Batch learning}
+The opposite of online learning is batch learning, where we train 
+a model on an entire dataset rather than on a single point. 
+This means finding a global optimization, such as in ERM.
+
+\subsection{Sequential risk}
+
+\paragraph{Online learning protocol}
+We start with parameters, that is a class $H$ of predictors and 
+a loss function $l$. 
+The process is simple, a default predictor $h_1 \in H$ is given as output, 
+then, for $t = 1, 2, \dots$ :
+\begin{enumerate}
+    \item The next example is observed $(x_t, y_t)$
+    \item The loss $l(h_t(x_t), y_t)$ is computed
+    \item The predictor is updated $h_t \gets h_{t+1} \in H$
+\end{enumerate}
+In general the algorithm does not store past examples.
+
+\paragraph{Sequential risk}
+The evaluation of the algorithm performances is made via the sequential 
+risk, it somehow counts the evolution of the loss.
+$$\frac{1}{T}\sum_{t=1}^T l(h_t(x_t), y_t)$$
+this decreases overtime as the predictor improves.
+
+\paragraph{Regret}
+To have an analogy to the variance error, or the approximation error, 
+we introduce the regret measure
+$$\frac{1}{T}\sum_{t=1}^T l(h_t(x_t), y_t) - \min_{h\in H}\frac{1}{T}\sum_{t=1}^T l(h(x_t), y_t)$$
+
+\subsection{Gradient descent}
+Let's fix a stream of data, we introduce $l_t(h) = l(h_t(x_t), y_t), h\in H$.\\
+The question now is, are there any other learning algorithms 
+besides perceptron?
+
+In convex optimization the goal is to find a minimum in a convex 
+function $f : \mathbb{R}^d \rightarrow \mathbb{R}$
+One easy way to minimize such a function is to use gradient descent.
+
+Basically we compute the gradient at a point and move in the opposite direction, 
+so towards the minimum gradient.
+
+\paragraph{Projected OGD}
+We now focus on using gradient descent in an online fashion, 
+with the square loss for a linear predictor.
+The main idea is to compute the gradient of the loss 
+for each data point and update the model accordingly.
+
+For $t = 1, 2, \dots, \eta > 0, U > 0$ :
+\begin{enumerate}
+    \item $w^\prime_{t+1} = w_t - \frac{\eta}{\sqrt{t}}\nabla l_t(w_t)$
+    \item $w_{t+1} = \min_{w : ||w||\leq U} ||w- w^\prime_{t+1} || $
+\end{enumerate}
+Our goal is to bound the regret, so 
+$$\frac{1}{T}\sum_{t=1}^T l_t(w_t) - \min_{h\in H}\frac{1}{T}\sum_{t=1}^T l_t(u^*_T)\;\;\;
+\text{where}\;\;\;
+u^*_T = \min_{u : ||u|| \leq U}\frac{1}{T}\sum_{t=1}^T l_t(u)$$
+
+\dots

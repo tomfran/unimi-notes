@@ -107,3 +107,28 @@ $$w_S = \min_{w \in \mathbb{R}^d} ||Sw - y||^2$$
 
 As the function to minimize is a convex function we must find a zero 
 gradient to minimize.
+USing matrix calculus, assuming $S^TS$ is non singular, i.e. invertible, we find that the ERM for this case is 
+$$w_s = (S^TS)^{-1}S^Ty$$
+
+\paragraph{Ridge regression}
+When $S^TS$ is nearly singular we need a regularizer term to make 
+the predictor less sensitive to training set perturbations.
+Redefining the function to minimize we gets
+$$w_\alpha = \min_{w \in \mathbb{R}^d} ||Sw - y||^2 + \alpha||w||^2$$
+When $\alpha$ tends to zero we have linear regression, and when is goes to 
+infinity we get the zero vector as solution. It can control the bias of the 
+algorithm.
+
+We have a close form solution by zeroing the gradient of the function, 
+and the optimal one is:
+$$w_\alpha = (\alpha I + S^TS)^{-1}S^Ty$$
+
+We don't need to worry about the $S^TS$ singularity anymore, in fact 
+$\alpha I + S^TS$ is invertible, and the eigenvalues of the sum are simply 
+$\alpha + \lambda_i$ where $\lambda_{1, \dots, d}$ are the eigenvalues of $S^TS$.
+
+\begin{remark}
+    In all the cases where ERM is unstable, we might benefit by adding a 
+    regularizer term in the objective function. Usually the risk 
+    is lower.
+\end{remark}
