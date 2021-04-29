@@ -1,0 +1,144 @@
+\section{Language models}
+
+\paragraph{Language model}
+A language model is the probability distribution
+of a sequence of words, it can be used for all sort 
+of applications.
+$$p(w_1, w_2, \dots, w_n)$$
+
+\paragraph{Examples}
+This probability could be used to predict the next word 
+given a sequence
+$$p(w_n | w_1, w_2, \dots, w_{n-1})$$
+Another usage is to predict a feature given the sequence, 
+for instance find the author from the text 
+$$p(\mathit{author} | w_1, w_2, \dots, w_n)$$
+
+\paragraph{Bases and evaluation}
+The goal of language modeling is to build a computational model of the 
+language of an entity $X$, that can be any entity in a domain.
+
+Language models are entirely \emph{data-driven}. In other terms, 
+we need to train models on the right data. One of the disadvantages of 
+this fact is that instead of modeling the language of $X$, we are modelling
+the language of the \emph{documents about X}.
+
+\subsection{N-grams models}
+The easier way to estimate a sequence probability is to count 
+frequencies, but that could be unfeasible. We discussed a similar approach 
+in Section \vref{problangmodel} in \emph{Computing a sentence probability}.
+
+\paragraph{Unigram models}
+A first approach is to use word frequencies, 
+the idea is to find the relative frequency of a word, by simply counting 
+it in the corpus and use it to estimate
+the probability of a sequence.
+$$p(w_n, w_{n-1}\dots, w_1) = p(w_n)p(w_{n-1})\dots p(w_1)$$
+Note that this approach does not take into consideration the sequence in 
+any way, this is a \emph{Unigram model} .
+
+These models might be useful to compare two documents, where we 
+need to compare the probability of seeing a given word, 
+or to find how much relevant is a given word for a document. 
+We can do that by comparing the word probability in all the dataset and in the
+single document.
+
+\paragraph{Pointwise Mutual Information}
+$$\mathit{pmi}(a,b) = \log\frac{p(a,b)}{p(a)p(b)} = \log \frac{p(a | b)}{p(a)} = \log\frac{p(b|a)}{p(b)}$$
+We can set the two variables to the event of extracting the document $C$ from 
+the corpus and the probability $w$ of extracting a given word. 
+$$\mathit{pmi}(w, C) = \log\frac{p(w, C)}{p(w)p(C)}$$
+By computing the \emph{pmi} for the same word and two different documents, 
+we can compare the difference of relevance of a word for the two 
+documents.
+
+\paragraph{Chain rule}
+We now want to consider the sequence instead of taking words independently 
+as in the unigram model.
+$$p(w_k | w_1, \dots, w_{k-1}) = 
+\frac{\mathit{count}(w_1, \dots, w_{k-1}, w_k)}{\sum_w \mathit{count}(w_1, \dots, w_{k-1}, w)}$$ 
+Basically to compute the probability of finding a given word 
+after a sequence, we count how many times we observe the sequence with
+that word, over the count of all other words after the sequence.
+
+In practice, we can reduce a long sequence to a shorter one, for instance
+of two or three words, to potentially have enough data to estimate the probability.
+
+\subsection{Evaluation}
+
+There are basically two ways of evaluating a language model:
+\begin{itemize}
+    \item \emph{Extrinsic evaluation} : embed the system in a real applications
+    and measure improvement
+    \item \emph{intrinsic evaluation} : define a metric and evaluate the 
+    model independent from any application, this requires a training set and 
+    a testing set, where the second must be different but consistent 
+    with the language learned by the model
+\end{itemize}
+
+
+\paragraph{Perplexity}
+In the case of intrinsic evaluation, the main idea
+ is to check if the model fits the test data. 
+This measure is called perplexity.
+$$\mathit{pp}(T) = p(w_1, \dots, w_n)^{-\frac{1}{n}}$$
+For a two-gram model the measure becomes:
+$$\mathit{pp}(T)= \sqrt[n]{\prod_{i=1}^n \frac{1}{p(w_i\;|\;w_{i-1})}}$$
+
+\paragraph{Generalization and zero probabilities}
+Language models have an issue when a word is present in the test set 
+but not in the training set, this becomes unknown with no null probability.
+
+To fix this we apply smoothing, for instance \emph{Laplace smoothing}, i.e. 
+adding one to each word count, or a parameter k.
+
+\paragraph{Backoff and interpolation}
+Another way to deal with null probabilities 
+is to apply \emph{backoff and interpolation}. Basically to estimate 
+a $n$-gram frequency, if we do not have enough evidence, we use the $(n-1)$-gram 
+frequency, until we have just a unigram.
+An example can be:
+$$p(\mathit{New\;York\;City}) = p(\mathit{City}\;|\;\mathit{York})\;p(\mathit{York}\;|\;\mathit{New}) $$
+
+\emph{Interpolation} means computing a weighted sum over an $n$-gram levels, 
+this way, even if we only observe the last word of a $n$-gram, we do not 
+have zero probability.
+
+\subsection{Word-Context models}
+The problem of data sparsity is mitigated by the n-gram models, but not 
+solved completely.
+
+\paragraph{Skip-gram model}
+The main of the model is to fix the cases where two sentences
+are really similar, i.e. they give the same information, but they do 
+not have any common n-gram.
+
+We introduce the concept of \emph{word context}, 
+basically we take a n-gram by skipping at most $k$ words, 
+this leads to skip noisy terms.
+By doing so, we could potentially match two sentences 
+that differs for a few words but that do not share commons 
+grams.
+
+\paragraph{Continuous Bag of Words}
+The idea of this model is to take the context of a word, 
+for instance a collection of 2-grams, and predict a word.
+
+\paragraph{Word context matrix}
+We can think of a word context matrix, where we 
+store information about appearance of a word $w$ 
+within $t$ other words.
+
+Taking into account the word order depends on the focus of
+the model, in language the order is important, in semantics
+it is less relevant.
+
+The context matrix stores in $c_{i, j}$ for each word $w_i$
+how many times the word $w_j$ occurs in its context. 
+If we consider the row of that matrix as a vector, two words 
+are close in that space if they have a similar context.
+
+After computing the matrix, we can factorize it with singular value 
+decomposition to obtain a more compact representation.
+A problem is that such a factorization has many zero terms, to 
+fix it we can \emph{weighted matrix factorization}.
