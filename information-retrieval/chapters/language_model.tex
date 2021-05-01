@@ -142,3 +142,95 @@ After computing the matrix, we can factorize it with singular value
 decomposition to obtain a more compact representation.
 A problem is that such a factorization has many zero terms, to 
 fix it we can \emph{weighted matrix factorization}.
+
+\subsection{Word embeddings}
+
+\paragraph{Words as vectors}
+Representing words as vectors, as we did with models previously, 
+is a very efficient way to compute words similarity and 
+represent documents as regions in the vector space.
+An example of word as vectors can be found in the context matrix.
+
+The goal is to obtain \emph{dense word vectors}, so with small dimensionality 
+and with the absence of sparsity.
+
+\paragraph{Distributional hypothesis}
+In a real world scenario a word has a meaning, which is related 
+to the object, or the concept it represent, in our case there is 
+no such thing, so we must find a way to deal with this.
+
+We can assume that words that appear in the same 
+context have the same meaning.
+
+\subsubsection{Neural network models}
+
+A first example of using a neural network is 
+to take as input an $n$-gram of a word $w$ and
+as output the probability distribution over the next word.
+
+We saw this concept in the previous section when talking about 
+\emph{Continuous Bag of Words}.
+
+Basically what the network is doing is to compute 
+this function
+$$f(w_t, \dots, w_{t-n+1}) = P(w_t \; | \; w_1, \dots, w_{t-1})$$
+
+\paragraph{Decomposition}
+The idea used by the model is to decompose the function in 
+two parts:
+\begin{itemize}
+    \item A mapping from any word $w_i \in V$ to a vector $w_i \in \mathbb{R}^m$ dimensions,
+    this creates a matrix $W \in \mathbb{R}^{V \times m}$, where $V$ is the number of words
+    \item A probability function over words, that takes in input 
+    a sequence of vectors of $d$ dimensions, obtained via the previous
+    mapping, and produces a vector $g$ in the original $V$ space.
+\end{itemize}
+
+\paragraph{Why is this relevant for word embeddings?}
+The mapping to a $d$ dimensional space could be the word 
+embedding we want to obtain, we are not interested 
+in the network output.
+
+We are assuming that the embedding made by the network 
+correspond to the real meaning of the word, as such a 
+mapping is obtained minimizing the objective function. 
+
+In other words, if the network is able to perform well, that should 
+be a good embedding.
+
+\paragraph{Word2vec}
+The idea is to train the neural network with positive couples of 
+words and negative ones, with the hope the network will learn 
+to output good words sequences.
+
+The structure of the network in this implementation 
+has an input and output layer of dimensions $V \times V$, 
+and a middle layer of $V \times m$, initialized with random values.
+
+After training we discard the output layer and keep the 
+middle one, as discussed in the previous section.
+The main principle is that similar vectors in the hidden 
+layer corresponds to words with similar context. 
+
+This is due to the fact that two words with the same context
+should have similar consequent predictions, thus, the weights in 
+the middle layer for this two words must be close, as the 
+prediction made by the network must be more o less the same for 
+the twos.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/nn-words.png}
+    \caption{Word2vec implementation of Neural Network embedding}
+\end{figure}
+
+\subsubsection{Using embeddings}
+
+\paragraph{Adding information}
+We can use the word embeddings obtained in some way to improve 
+retrieval, for instance by applying query expansion.
+
+\paragraph{Similarity}
+We can also compute similarity among group of words, 
+as we have a vector space where for instance cosine similarity is 
+applicable.
