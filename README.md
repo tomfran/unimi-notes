@@ -13,7 +13,7 @@ Also, feel free to contact me if you've found any errors.
 These notes are considered finished, they will probably not be updated:
 </p>
 
-* ***Artificial Intelligence*** :it: notes about [evolutionary algorithms](https://github.com/tomfran/unimi-notes/blob/main/artificial-intelligence/evolutionary.pdf) 
+* ***Artificial Intelligence*** :it: [notes](https://github.com/tomfran/unimi-notes/blob/main/artificial-intelligence/evolutionary.pdf) about evolutionary algorithms
 * ***Architectures for big data*** :it: [notes](https://github.com/tomfran/unimi-notes/blob/main/architectures-big-data/architectures-for-big-data.pdf) about all the course
 * ***Information retrieval*** :gb: [notes](https://github.com/tomfran/unimi-notes/blob/main/information-retrieval/information-retrieval.pdf) about all the course
 * ***Algoritmi e complessità*** :it: [notes](https://github.com/tomfran/unimi-notes/blob/main/algoritmi-complessita/algo_comp.pdf) are basically completed, 
