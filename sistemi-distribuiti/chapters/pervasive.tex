@@ -1,0 +1,97 @@
+\section{Sistemi pervasivi}
+
+\subsection{Sensori}
+
+\paragraph{Transducer}
+Apparati che trasformano una forma di energia in un'altra.
+
+\paragraph{Funzionamento sensori}
+Nella pratica si utilizza un Transducer per catturare
+un fenomeno fisico, trasformandolo in un segnale elettronico.
+Uno dei parametri di tale osservazione è la frequenza con 
+cui si osserva il fenomeno fisico.
+
+\paragraph{Tipi di sensori}
+Si possono disinguere tra i sensori fisici tre tipologie:
+\begin{itemize}
+    \item \emph{Movimento}: misurano forse di accellerazione 
+    e rotazione sui tre assi
+    \item \emph{Ambientali}: misurano parametri ambientali, 
+    quali la temperatura, pressione, illuminazione e umidità
+    \item \emph{Posizione}: misurano la posizione fisica del 
+    dispositivo
+\end{itemize}
+
+\paragraph{Componenti si un sensore}
+Tra i componenti di un sensore si individuano sicuramente:
+\begin{itemize}
+    \item \emph{Sensing subsystem}: parte che cattura i fenomeni
+    fisici
+    \item \emph{Processing subsystem}: processing dei segnali individuati
+    \item \emph{Wireless communication}: comunicazione con altri apparati
+    \item \emph{Power source}: fonte di energia, batteria, pannello solare, etc.
+\end{itemize}
+
+\paragraph{Sensori virtuali}
+Un esempio di un sensore virtuale sono le Google Places API, 
+uno use-case potrebbe essere individuare la posizione 
+tramite un sensore classico, per poi utilizzare 
+un servizio, come ad esempio quella API, per capire cosa c'è 
+nelle vicinanze oppure che tempo fa. 
+
+Si può pensare a quei servizi come una sorta di sensori virtuali.
+
+\paragraph{Attuatori}
+Sono particolari tipi di transducer, sono alimentati e convertono 
+energia in azione, effettuano quindi movimenti o operazioni 
+di switch.
+
+Un esempio sono dispositivi che aprono porte, aprono valvole, 
+etc.
+
+\paragraph{Discovery e pairing}
+Smart devices possono apparire e scomparire frequentemente in rete. 
+Nella pratica serve un modo di registrare un dispositivo, assegnandogli un 
+indirizzo, simile a DHCP, per poi associare il device.
+
+\subsection{Acquisizione di dati}
+
+\paragraph{Desiderata}
+I problemi di interrogazione dati in un sistema pervasivo differisce 
+dai classici problemi legati ai database.
+
+Esiste la necessità di interrogare sensori in modo continuo, l'opposto 
+delle query in database, che sono solitamente one-time, 
+i dati hanno inoltre una forte caratterizzazione spazio-temporale, ad esempio, 
+tenedo sotto controllo una temperatura, mi basterebbe capire quando 
+questa cambia, senza continuare ad interrogare.
+
+Si fa notare che non è ragionevole ripetere una query one-time ogni secondo 
+per simulare un flusso continuo di dati.
+
+\paragraph{Processing}
+Esistono alcuni approcci semplici per il processing dei dati dai sensori:
+\begin{itemize}
+    \item \emph{Batch processing}: i sensori possono fare buffering, e poi processati offline sulla base station, 
+    o su un server.
+    Non c'è processing sul sensore
+    \item \emph{Sampling}: si campionano le misurazioni, anche se non 
+    è una misurazione completa come nel primo approccio, esistono delle garanzie 
+    di qualità
+    \item \emph{Sliding window}: si fornisce una risposta approssimata 
+    basata su un gruppo di letture consecutive, la base station 
+    riceve questa misurazione aggregata approssimata.
+\end{itemize}
+
+\paragraph{In-network query processing}
+L'idea di base di questo approccio è quello 
+di creare una overlay network, ad esempio uno spanning tree, 
+per aggregare i dati in modo gerarchico.
+
+\paragraph{Approcci model-based}
+I dati raccolti possono avere forte correlazione spazio-temporale.
+Si potrebbe sfruttare tale correlazione per ridurre il sampling necessario.
+
+Tale correlazione è utile sia per ridurre il numero di campionamenti 
+necessari, sia per pulire i dati provenienti dai sensori, tipicamente 
+poco precisi, sfruttando tecniche statistiche.

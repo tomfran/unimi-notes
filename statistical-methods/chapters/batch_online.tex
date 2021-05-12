@@ -55,24 +55,25 @@ One easy way to minimize such a function is to use gradient descent.
 Basically we compute the gradient at a point and move in the opposite direction, 
 so towards the minimum gradient.
 
-\paragraph{Projected OGD}
-We now focus on using gradient descent in an online fashion, 
-with the square loss for a linear predictor.
-The main idea is to compute the gradient of the loss 
-for each data point and update the model accordingly.
+% \paragraph{Projected OGD}
+% We now focus on using gradient descent in an online fashion, 
+% with the square loss for a linear predictor.
+% The main idea is to compute the gradient of the loss 
+% for each data point and update the model accordingly.
 
-For $t = 1, 2, \dots, \eta > 0, U > 0$ :
-\begin{enumerate}
-    \item $w^\prime_{t+1} = w_t - \frac{\eta}{\sqrt{t}}\nabla l_t(w_t)$
-    \item $w_{t+1} = \min_{w : ||w||\leq U} ||w- w^\prime_{t+1} || $
-\end{enumerate}
-Our goal is to bound the regret, so 
-$$\frac{1}{T}\sum_{t=1}^T l_t(w_t) - \min_{h\in H}\frac{1}{T}\sum_{t=1}^T l_t(u^*_T)\;\;\;
-\text{where}\;\;\;
-u^*_T = \min_{u : ||u|| \leq U}\frac{1}{T}\sum_{t=1}^T l_t(u)$$
+% For $t = 1, 2, \dots, \eta > 0, U > 0$ :
+% \begin{enumerate}
+%     \item $w^\prime_{t+1} = w_t - \frac{\eta}{\sqrt{t}}\nabla l_t(w_t)$
+%     \item $w_{t+1} = \min_{w : ||w||\leq U} ||w- w^\prime_{t+1} || $
+% \end{enumerate}
+% Our goal is to bound the regret, so 
+% $$\frac{1}{T}\sum_{t=1}^T l_t(w_t) - \min_{h\in H}\frac{1}{T}\sum_{t=1}^T l_t(u^*_T)\;\;\;
+% \text{where}\;\;\;
+% u^*_T = \min_{u : ||u|| \leq U}\frac{1}{T}\sum_{t=1}^T l_t(u)$$
 
-\dots
+% \dots
 
-\emph{sad math noises}
+% \emph{sad math noises}
 
-\dots
+% \dots
+

@@ -1,0 +1,16 @@
+\section{Kernel functions}
+We saw how easy a linearly separable binary classification instance 
+would be, the idea now is to work on non separable data to see what 
+we can do.
+
+\paragraph{Feature expansion}
+We now consider a function $\Phi$ that maps the original 
+data to a higher dimensional space, an example could be
+$$\Phi(x_1, x_2) = (1, x_1^2, x_2^2, x_1, x_2, x_1 x_2)$$
+The function starts from a two-dimensional space and ends up 
+in a six-dimensional one.
+
+\paragraph{High dimensional hyperplane}
+If we consider an homogeneous hyperplane in a high dimensional space, 
+we get 
+$$\{ z \in \mathbb{R}^6 : w^Tz = 0 \}, w \in \mathbb{R}^6$$
