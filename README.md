@@ -13,10 +13,12 @@ Also, feel free to contact me if you've found any errors.
 These notes are considered finished, they will probably not be updated:
 </p>
 
-* ***Artificial Intelligence*** notes about [evolutionary algorithms](https://github.com/tomfran/unimi-notes/blob/main/artificial-intelligence/evolutionary.pdf) :it:
-* ***Architectures for big data*** [notes](https://github.com/tomfran/unimi-notes/blob/main/architectures-big-data/architectures-for-big-data.pdf) about all the course :it:
+* ***Artificial Intelligence*** :it: notes about [evolutionary algorithms](https://github.com/tomfran/unimi-notes/blob/main/artificial-intelligence/evolutionary.pdf) 
+* ***Architectures for big data*** :it: [notes](https://github.com/tomfran/unimi-notes/blob/main/architectures-big-data/architectures-for-big-data.pdf) about all the course
+* ***Information retrieval*** :gb: [notes](https://github.com/tomfran/unimi-notes/blob/main/information-retrieval/information-retrieval.pdf) about all the course
+* ***Algoritmi e complessità*** :it: [notes](https://github.com/tomfran/unimi-notes/blob/main/algoritmi-complessita/algo_comp.pdf) are basically completed, 
+they miss only the last data structure
 
-<br>
 <br>
 
 <h2 align="center"> Work in progress Notes</h1>
@@ -26,8 +28,5 @@ This is a list of courses I am currently following, thus the notes
 might not be complete:
 </p>
 
-* ***Algoritmi e complessità*** [notes](https://github.com/tomfran/unimi-notes/blob/main/algoritmi-complessita/algo_comp.pdf) :it:
-* ***Sistemi distribuiti e pervasivi*** [notes](https://github.com/tomfran/unimi-notes/blob/main/sistemi-distribuiti/sistemi-distribuiti.pdf) :it:
-* ***Simulation*** [notes](https://github.com/tomfran/unimi-notes/blob/main/simulation/simulation.pdf) :gb:
-* ***Information retrieval*** [notes](https://github.com/tomfran/unimi-notes/blob/main/information-retrieval/information-retrieval.pdf) :gb:
-* ***Statistical methods for machine learning*** [notes](https://github.com/tomfran/unimi-notes/blob/main/statistical-methods/statistical-methods.pdf) :gb:
+* ***Sistemi distribuiti e pervasivi*** :it: [notes](https://github.com/tomfran/unimi-notes/blob/main/sistemi-distribuiti/sistemi-distribuiti.pdf) about all the course, pretty much
+* ***Statistical methods for machine learning*** :gb: [notes](https://github.com/tomfran/unimi-notes/blob/main/statistical-methods/statistical-methods.pdf)  they miss some parts and proofs
