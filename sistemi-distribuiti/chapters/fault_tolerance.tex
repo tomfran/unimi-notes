@@ -1,11 +1,11 @@
 \section{Fault tolerance}
 Uno degli obiettivi di un sistema distribuito è
 la trasparenza ai guasti. I requisiti da fornire sono 
-disponibilità, affidabilità, sicurezza e mantenibilità.
+disponibilità, affidabilità, sicurezza e manutenibilità.
 
 \paragraph{Cause di fallimento}
 Un sistema potrebbe fallire per molti motivi, ad esempio
-potrebbe crashare, fallire sia nella ricezione che invio 
+potrebbe arrestarsi, fallire sia nella ricezione che invio 
 di messaggi, fallire nel tempo di risposta, rispondere 
 con messaggi sbagliati.
 
@@ -32,7 +32,7 @@ offrono $k$-fault tolerance.
 
 Se invece il processo che fallisce risponde con valori 
 errati, sono necessari almeno $2k +1$ processi, il client può 
-capire la risposta contanto la maggioranza.
+capire la risposta contando la maggioranza.
 
 Nel caso in cui serva un consenso, ad esempio in un algoritmo 
 di elezione, il problema diventa molto difficile e a volte 
@@ -73,7 +73,7 @@ L'esecuzione con $k = 1, N = 4$ procede come segue:
     \end{itemize}
 \end{itemize}
 
-\subsection{Sistemi sicroni e asincroni}
+\subsection{Sistemi sincroni e asincroni}
 
 \paragraph{Sistemi sincroni}
 In questo caso l'esecuzione di ogni nodo è limitata in velocità 
@@ -86,13 +86,13 @@ la velocità di ogni nodo è arbitraria, come lo sono
 i delay sui link di comunicazione e il drift del clock di ogni nodo.
 
 \paragraph{Considerazioni}
-Nei sistemi asincorni è tutto più difficile, solitamente si 
-effettuano assunzioni sulla sincronicità, si devono accettare 
+Nei sistemi asincroni è tutto più difficile, solitamente si 
+effettuano assunzioni sulla sincronia, si devono accettare 
 il fallimento di alcune soluzioni ed eventuali deadlock.
 
 \paragraph{Teorema FLP}
 Quando il delay sui link di comunicazione è arbitrario 
-non essite una soluzione ai generali Bizantini e a totally-ordered
+non esiste una soluzione ai generali Bizantini e a totally-ordered
 multicast, anche se solo un nodo è malfunzionante.
 
 Esistono però soluzioni per sistemi parzialmente sincroni.
@@ -100,7 +100,7 @@ Esistono però soluzioni per sistemi parzialmente sincroni.
 \paragraph{Teorema CAP}
 In un sistema ideale si vogliono \emph{consistenza}, \emph{disponibilità} 
 e \emph{tolleranza} ad un numero arbitrario di \emph{messaggi persi} o 
-arrivati tarti.
+arrivati tardi.
 
 In un sistema asincrono si possono ottenere solo due 
 di questi requisiti in storage read e write.

@@ -13,7 +13,7 @@ server, un middleware potrebbe gestire il messaggio mandato
 dal client e ad esempio fornire feedback sullo stato della richiesta, 
 ad esempio la ricezione del server, il processing etc.
 \subsection{Comunicazione persistente e transiente}
-Un esempio intiuitivo di comunicazione persistente consiste nello scambio 
+Un esempio intuitivo di comunicazione persistente consiste nello scambio 
 di lettere da post office a post office, i messaggi sono 
 memorizzati nel transito, mentre un sistema transiente non 
 prevede la memorizzazione dei messaggi in transito, un esempio è una chiamata 
@@ -32,7 +32,7 @@ asincrona.
 In questo caso il processo A manda una richiesta a B, aspettandosi però 
 un riscontro.
 Può essere che B mandi subito il riscontro, ovvero l'accettazione del messaggio, 
-ma che si occupi in seguito di soddsfare la richiesta.
+ma che si occupi in seguito di soddisfare la richiesta.
 
 \paragraph{Modello transiente asincrono}
 In questo caso il messaggio inviato da A a B è ricevuto dal secondo 
@@ -40,7 +40,7 @@ solo se in esecuzione.
 
 \paragraph{Modello transiente sincrono}
 In questo caso il processo B è in esecuzione ma sta eseguendo altro.
-Quello che succede è che B riceve il messaggio, manda un ACK e finsice di 
+Quello che succede è che B riceve il messaggio, manda un ACK e finisce di 
 processare quello che sta facendo. Poi inizia con la richiesta di A.
 
 \paragraph{Delivery-based transiente sincrono}
@@ -90,7 +90,7 @@ due nodi che vogliono comunicare hanno convenzioni diverse.
 
 Il sistema a code è preferibile quando :
 \begin{itemize}
-    \item si vuole comunicazione ascincrona e persistente 
+    \item si vuole comunicazione asincrona e persistente 
     \item quando si può aumentare la scalabilità ammettendo ritardi di gestione delle richieste, 
     \item quando i producer sono più veloci dei consumer
     \item quando si sta implementando un pattern pub-sub
@@ -118,6 +118,6 @@ Il passaggio da dati a messaggio e viceversa è chiamato:
     di partenza e arrivo, potrebbero differire in termini di codifica
     \item \emph{Unmarshalling}: procedure inversa di marshalling
 \end{itemize}
-Il binding tra client e server è trasparente, alcuni sistemi offrono la possiblità 
+Il binding tra client e server è trasparente, alcuni sistemi offrono la possibilità 
 di scoprire dinamicamente quale server offre una determinata funzione.
 

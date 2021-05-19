@@ -76,7 +76,7 @@ Il nodo deamon calcola la media degli orari del sistema
 e manda il risultato a tutti. 
 
 La latenza del procedimento è ignorata, si assume che 
-esistano comunicazioni pressochè istantanee.
+esistano comunicazioni pressoché istantanee.
 
 Inoltre, il tempo di un nodo non si riporta mai indietro, 
 visti i possibili problemi di inconsistenza che il procedimento 
@@ -105,7 +105,7 @@ $A, B$ l'espressione $A \rightarrow B$ indica la relazione
 che $A$ è accaduto prima di $B$, ed essa è transitiva.
 
 Dato $C(a)$ il valore del clock logico assegnato 
-al momento in cui $a$ è accaduto, l'obiettivo dell'algortimo 
+al momento in cui $a$ è accaduto, l'obiettivo dell'algoritmo 
 è far valere la seguente espressione
 $$A \rightarrow B \implies C(a) < C(b)$$
 
@@ -118,7 +118,7 @@ processo $P_i$ avviene come segue:
     \item Se il processo $P_i$ manda un messaggio $m$ a $P_j$, 
     setta il timestamp di $m$ con il valore del counter attuale, 
     $ts(m) \gets C_i$
-    \item $P_j$ quando riceve il messaggio agggiorna il suo 
+    \item $P_j$ quando riceve il messaggio aggiorna il suo 
     contatore secondo la logica $C_j \gets \max(C_j, ts(m)) + 1$
 \end{enumerate}
 Si nota che non è detto che si riesca a dare un ordine per ogni 
@@ -205,7 +205,7 @@ Questi algoritmi hanno come obiettivo eleggere un coordinatore
 tra i nodi. 
 Potrebbe essere utile ad esempio per ottenere il coordinatore dell'algoritmo 
 centralizzato di mutua esclusione introdotto in sezione \vref{mutua}.
-L'obiettivo è quello di eleggere il procesos con identifier più alto.
+L'obiettivo è quello di eleggere il processo con identifier più alto.
 
 \subsubsection{Algoritmo del bullo}
 Un processo, quando si accorge che il coordinatore 
@@ -216,7 +216,7 @@ al precedente coordinatore e ai processi con identifier più alto.
 L'esecuzione procede come segue 
 \begin{itemize}
     \item Per esempio, dati 7 processi, il 4, accortosi che il coordinatore 
-    è crahsato, manderà un messaggio a 5, 6 e 7, dove l'ultimo è il coordinatore
+    è crashato, manderà un messaggio a 5, 6 e 7, dove l'ultimo è il coordinatore
     \item I processi 5 e 6 si prendono in carico l'elezione, 
     mandando un messaggio di ok, 5 e 6 ripetono il procedimento 
     di 4

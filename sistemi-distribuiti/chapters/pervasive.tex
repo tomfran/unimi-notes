@@ -95,3 +95,69 @@ Si potrebbe sfruttare tale correlazione per ridurre il sampling necessario.
 Tale correlazione è utile sia per ridurre il numero di campionamenti 
 necessari, sia per pulire i dati provenienti dai sensori, tipicamente 
 poco precisi, sfruttando tecniche statistiche.
+
+Un'altra applicazione degli approcci model based è la compressione dei dati 
+provenienti dai sensori.
+Queste tecniche sono solitamente leggere, di possibile utilizzo direttamente 
+sul dispositivo stesso.
+
+\paragraph{Poor Man's Compression MidRange}
+È un piece wise constant approximation method.
+In questa tecnica di compressione si approssima un segmento, 
+ovvero un certo numero di misurazioni nel tempo, consecutive, 
+con un valore costante, ad esempio il minimo, massimo, media etc.
+
+\paragraph{Model based compression}
+In questo caso si applica un modello alla task di compressione, il risultato è 
+una compressione potenzialmente più sofisticata, 
+si può pensare ad una regressione lineare o polinomiale dei dati di un 
+segmento.
+
+\subsection{Context awareness}
+
+\paragraph{Contesto}
+Le applicazionio classiche non sono in grado capire il constesto delle richieste.
+Un esempio di interrogazione ad un sistema classico 
+potrebbe essere, \emph{qual è la strada più veloce da X a Y considerando 
+che è l'ora di punta e non voglio prendere autostrade?}
+
+Mi sto rivolgendo quindi in linguaggio naturale ad un servizio, specificando però 
+qualsiasi cosa.
+
+Un sistema intelligente potrebbe capire da dove sto partendo con la posizione, 
+dove sto andando controllando il mio calendario, capire che è l'ora di punta controllando 
+l'orario e il traffico medio, e infine sapere che non mi piacciono le autostrade 
+ripescando i miei tragitti passati.
+
+L'idea è quella di chiedere il meno possibile al sistema, affidandosi alle 
+capacità di quest'ultimo per capire il contesto attuale, dove per contesto 
+si intendono quelle informazioni che possono essere utilizzate per caratterizzare 
+la situazione di un entità, che sia essa una persona, un luogo o un oggetto, rilevante 
+nell'interazione tra l'utente e l'applicazione.
+
+\paragraph{Adattività}
+Con questo principio si intende il cambiare alcune caratteristiche del sistema 
+a seconda dell'ambiente circostante. Un esempio potrebbe essere quello 
+di adattare la luminosità e i colori di uno schermo, 
+cambiare un'interfaccia a seconda del dispositivo, etc.
+
+In contesti meno user-related si può pensare al cambiamento delle politiche di caching, 
+computazione server-side, modificare il sampling rate, etc.
+
+\paragraph{Ottenere contesto}
+I dati \emph{low-level context} si ottengono direttamente dai sensori o da 
+altre fonti, un esempio possono essere dati grezzi dai sensori, preferenze dell'utente, etc.
+Questi sono dati sostanzialmente di basso livello.
+
+I dati invece di \emph{high-level context} possono essere derivati da una combinazione di 
+sensori e metodi di inferenza, possibilmente molto complessi.
+
+\paragraph{Inferenza}
+Per inferire il contesto dai dati si può applicare per esempio la logica. Questi 
+sono i cosiddetti approcci simbolici e si basano sulla creazione di regole 
+e statement logici.
+
+Tra gli approcci statistici invece si individuano classificazione e clustering, 
+solitamente in modalità supervised learning.
+
+Esiste poi ovviamente la possibilità di avere approcci ibridi.
