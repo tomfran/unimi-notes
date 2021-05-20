@@ -161,3 +161,47 @@ Tra gli approcci statistici invece si individuano classificazione e clustering,
 solitamente in modalità supervised learning.
 
 Esiste poi ovviamente la possibilità di avere approcci ibridi.
+
+\paragraph{Activity recognition}
+L'idea di base è quella di utilizzare i dati provenienti
+dai sensori, che potrebbero essere stati aggregati 
+da una compressione, pèer allenare un modello statistico 
+e capire l'attività svolta dall'utente.
+
+Si verifica empiricamente che un approccio statistico 
+ha risultati migliori di un modello logico basato su regole.
+
+\subsection{Rappresentazione del contesto}
+
+Una Rappresentazione formale dei dati di contesto 
+è necessaria per poterli processare in modo automatico. 
+Inoltre, tali dati potrebbero essere condivisi tra applicazioni. 
+
+\paragraph{Requisiti}
+Un modello di contesto dovrebbe supportare dati eterogenei, 
+modellare relazioni, storia del contesto, imprecisione, 
+ragionamento sui dati, efficienza ed utilizzo di essi.
+
+\paragraph{Flat models}
+Un sistema molto semplice consiste in una lista di chiavi valore, 
+magari arricchito con XML, supportando gerarchia di valori.
+
+Solitamente sono adattati alla singola applicazione.
+
+\paragraph{Modelli basati su database}
+In questo approccio si sta semplicemente utilizzando un database
+ER per rappresentare i dati di contesto. Il modello è stato 
+adattato a supportare alcune caratteristiche come l'incertezza.
+
+\paragraph{Modelli ontologici}
+Si sta cercando di assegnare una definizione formale ai dati di contesto.
+Tale formalizzazione viene fatta tramite description logic, 
+che permette di definire insiemi molto complessi, definire semantiche 
+e consistency checking e reasoning.
+
+Tale modello permette ad esempio di riconoscere in modo automatico 
+subsumption, ovvero concetti che sono specializzazioni di altri, 
+e realization, ovvero quali sono i concetti che catturano 
+un set di osservazioni.
+
+Esistono strumenti automatizzati per generare ontologie.
