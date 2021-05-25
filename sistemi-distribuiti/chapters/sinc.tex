@@ -139,7 +139,19 @@ del processo minore.
 
 \paragraph{Applicazioni}
 Una possibile applicazione dell'algoritmo è quella 
-della replica di database, 
+della replica di database.
+
+\paragraph{Totally ordered multicast}
+Un'applicazione dell'algoritmo di Lamport è l'ordinare comunicazioni multicast.
+Si assume che l'ordine di invio e di consegna sia rispettato, e che i messaggi 
+siano consegnati.
+
+Un utente manda un messaggio e lo mette in una coda locale, ogni 
+processo che riceve mette in coda, ordinando per timestamp e manda un ack a tutti. 
+
+L'operazione viene eseguita quando un messaggio è in testa alla coda 
+e tutti gli ack per quel messaggio sono stati ricevuti. Per l'assunzione fatta inizialmente 
+i messaggi arrivano in ordine quindi non ci sono problemi di ordine.
 
 \section{Esclusione ed elezione}
 \subsection{Algoritmi di mutua esclusione}
@@ -269,3 +281,7 @@ Se il processo con ID più alto è il vicino in senso antiorario
 di chi inizia l'elezione, sono necessari $n-1$ messaggi per arrivare ad esso, 
 poi altri $n$ messaggi per diffondere il nuovo ID massimale, 
 e infine altri $n$ messaggi \emph{Elected}, quindi $3n-1$.
+
+Si fa notare infine che elezioni multiple non sono un problema, infatti 
+il flag \emph{partecipante}, \emph{non partecipante} permette di evitare la propagazione 
+di un'elezione concorrente.

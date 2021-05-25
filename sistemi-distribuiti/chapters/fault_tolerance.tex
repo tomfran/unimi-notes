@@ -15,13 +15,13 @@ Si può pensare di \emph{ridondare le informazioni},
 tramite bit extra. Esiste anche la \emph{ridondanza in termini 
 temporali}, se una transazione è abortita essa può essere 
 ripetuta. Infine si parla di \emph{ridondanza fisica} quando 
-esiste hardware o processi addizionali usati per sistemare
+esistono hardware o processi addizionali usati per sistemare
 guasti.
 
 \paragraph{Resilienza dei processi}
 Per aumentare la fault tolerance dei processi 
-si può ricorrere ad utilizzare gruppi di processi 
-equivalenti dove ogni processo riceve i messaggi indirizzati al gruppo.
+si utilizzano gruppi di processi 
+equivalenti dove ognuno riceve i messaggi indirizzati al gruppo.
 
 Servono metodi di accesso ai gruppi e la domanda che 
 sorge spontanea è, quanta ridondanza serve?
@@ -55,7 +55,7 @@ I problemi che si tentanto di risolvere sono:
 Tutti i problemi sono complicati e un algoritmo per uno di essi 
 porta ad una soluzione per gli altri in maniera facile.
 
-\paragraph{Soluzione generali Bizantini}
+\paragraph{Soluzione generali Bizantini sistema sincrono}
 Nel problema dei generali bizantini sono necessari almeno 
 $N = 3k + 1$ processi per compensare $k$ processi malfunzionanti.
 L'esecuzione con $k = 1, N = 4$ procede come segue: 
@@ -65,7 +65,7 @@ L'esecuzione con $k = 1, N = 4$ procede come segue:
     \item Ora si distinguono alcuni casi:
     \begin{itemize}
         \item nel caso in cui uno dei messaggeri fosse malfunzionante, 
-        gil altri possono applicare uan funzione di maggioranza 
+        gil altri possono applicare una funzione di maggioranza 
         per capire quale valore ha mandato il comandante
         \item se il comandante è malfunzionante, gli altri 3 processi 
         riconoscono che il valore del comandante non è affidabile, 
@@ -94,13 +94,18 @@ il fallimento di alcune soluzioni ed eventuali deadlock.
 Quando il delay sui link di comunicazione è arbitrario 
 non esiste una soluzione ai generali Bizantini e a totally-ordered
 multicast, anche se solo un nodo è malfunzionante.
-
 Esistono però soluzioni per sistemi parzialmente sincroni.
 
 \paragraph{Teorema CAP}
-In un sistema ideale si vogliono \emph{consistenza}, \emph{disponibilità} 
+In un sistema ideale si vogliono \emph{consistenza}, ovvero leggo sempre 
+lo stesso valore da nodi differenti, \emph{disponibilità}, cioè ogni richiesta riceve
+una risposta 
 e \emph{tolleranza} ad un numero arbitrario di \emph{messaggi persi} o 
 arrivati tardi.
 
-In un sistema asincrono si possono ottenere solo due 
+Il teorema dice che in un sistema asincrono si possono ottenere solo due 
 di questi requisiti in storage read e write.
+
+\paragraph{Paxos e Raft}
+Esistono due algoritmi che offrono $k$ fault tolerance su sistemi non sincroni, 
+risolvo il problema di consenso sotto parziale assunzione di sincronicità.
