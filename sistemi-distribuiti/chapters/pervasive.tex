@@ -241,18 +241,39 @@ e realization, ovvero quali sono i concetti che catturano
 un set di osservazioni.
 Esistono strumenti automatizzati per generare ontologie.
 
-% \subsection{Data privacy}
+\subsection{Data privacy}
 
-% \paragraph{Dati personali}
-% Sono sostanzialmente informazioni legate ad un singolo individuo, 
-% identificato o identificabile.
+\paragraph{Dati personali}
+Sono sostanzialmente informazioni legate ad un singolo individuo, 
+identificato o identificabile.
 
-% \paragraph{Privacy dei dati}
-% Capacità di un individuo di controllare il rilascio dei propri dati.
+\paragraph{Privacy dei dati}
+Capacità di un individuo di controllare il rilascio dei propri dati.
 
-% \paragraph{Quasi identifier}
-% Dati che non identificano da sè un individuo, ma che combinati possono 
-% diventare identifier. Un esempio è l'unione dell'età e dell'indirizzo, 
-% i due di per sè non identificano nessuno, ma mettendoli insieme 
-% potrebbero restringere il campo di molto.
+\paragraph{Quasi identifier}
+Dati che non identificano da sè un individuo, ma che combinati possono 
+diventare identifier. Un esempio è l'unione dell'età e dell'indirizzo, 
+i due di per sè non identificano nessuno, ma mettendoli insieme 
+potrebbero restringere il campo di molto.
 
+\paragraph{Posizione sensibile}
+Dati di posizione potrebbero essere sfruttati per inferire caratteristiche di un utente, un esempio potrebbe 
+essere il fatto che i ristoranti visitati siano tutti 
+vegetariani, o ad esempio la visita a centri di cura.
+
+\paragraph{Privacy by design}
+È più facile progettare un sistema pensando alla privacy fin da subito che 
+adattare un sistema già fatto.
+
+La progettazione di un sistema privacy aware deve rispettare alcune 
+caratteristiche: 
+\begin{itemize}
+    \item \emph{Transparency}: tutto il processing di dati sensibili deve essere
+    capito e ricostruito in ogni istante di tempo;
+    \item \emph{Unlinkability}: devo evitare linking attack, nello specifico, significa 
+    applicare tecniche, quali k-anonymity, data generalization, de identificazione o molte altre;
+    \item \emph{Interveneability}: deve esistere un modo, in casi estremi, di accedere ai dati e 
+    di modificarli, oppure di intervenire in una procedura automatica. 
+    Inoltre, deve esistere il \emph{right to be forgotten}, ovvero 
+    la capacità di eliminare i propri dati online.
+\end{itemize}
