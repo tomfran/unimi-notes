@@ -43,13 +43,13 @@ I problemi che si tentanto di risolvere sono:
 \begin{itemize}
     \item \emph{Problemi di consenso}: in questo caso ogni processo 
     propone un singolo valore e i processi devono mettersi d'accordo 
-    sullo stesso valore
+    sullo stesso valore;
     \item \emph{Generali Bizantini}: un processo propone un valore $v$, 
     tutti i processi corretti devono mettersi d'accordo su $v$, se 
-    il processo iniziale non è faulty
+    il processo iniziale non è faulty;
     \item \emph{Interactive consistency}: ogni processo propone un valore, 
     e tutti devono mettersi d'accordo su un vettore di valori, 
-    ovvero su tutti i valori proposti dai singoli processi
+    ovvero su tutti i valori proposti dai singoli processi.
 \end{itemize}
 
 Tutti i problemi sono complicati e un algoritmo per uno di essi 
@@ -60,16 +60,16 @@ Nel problema dei generali bizantini sono necessari almeno
 $N = 3k + 1$ processi per compensare $k$ processi malfunzionanti.
 L'esecuzione con $k = 1, N = 4$ procede come segue: 
 \begin{itemize}
-    \item Il comandante manda il valore ai messaggeri
-    \item Essi mandano in broadcast agli altri
+    \item Il comandante manda il valore ai messaggeri;
+    \item Essi mandano in broadcast agli altri;
     \item Ora si distinguono alcuni casi:
     \begin{itemize}
         \item nel caso in cui uno dei messaggeri fosse malfunzionante, 
         gil altri possono applicare una funzione di maggioranza 
-        per capire quale valore ha mandato il comandante
+        per capire quale valore ha mandato il comandante;
         \item se il comandante è malfunzionante, gli altri 3 processi 
         riconoscono che il valore del comandante non è affidabile, 
-        procedono come devono
+        procedono come devono.
     \end{itemize}
 \end{itemize}
 

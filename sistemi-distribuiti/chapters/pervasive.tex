@@ -15,22 +15,25 @@ cui si osserva il fenomeno fisico.
 Si possono disinguere tra i sensori fisici tre tipologie:
 \begin{itemize}
     \item \emph{Movimento}: misurano forse di accellerazione 
-    e rotazione sui tre assi
+    e rotazione sui tre assi;
     \item \emph{Ambientali}: misurano parametri ambientali, 
-    quali la temperatura, pressione, illuminazione e umidità
+    quali la temperatura, pressione, illuminazione e umidità;
     \item \emph{Posizione}: misurano la posizione fisica del 
-    dispositivo
+    dispositivo.
 \end{itemize}
 
 \paragraph{Componenti si un sensore}
 Tra i componenti di un sensore si individuano sicuramente:
 \begin{itemize}
     \item \emph{Sensing subsystem}: parte che cattura i fenomeni
-    fisici
-    \item \emph{Processing subsystem}: processing dei segnali individuati
-    \item \emph{Wireless communication}: comunicazione con altri apparati
+    fisici;
+    \item \emph{Processing subsystem}: processing dei segnali individuati;
+    \item \emph{Wireless communication}: comunicazione con altri apparati;
     \item \emph{Power source}: fonte di energia, batteria, pannello solare, etc.
 \end{itemize}
+
+Esistono poi parti opzionali, che potrebbero essere uno \emph{storage per i dati} o 
+una \emph{wired interface}.
 
 \paragraph{Sensori virtuali}
 Un esempio di un sensore virtuale sono le Google Places API, 
@@ -49,8 +52,18 @@ di switch.
 Un esempio sono dispositivi che aprono porte, aprono valvole, 
 etc.
 
+\paragraph{Sensor Networking}
+Le reti che si formano tra i sensori sono di tipo mesh. 
+L'idea è quella di avere tutti i dispositivi collegati tra loro 
+in modo da evitare problemi di disconnessione da un nodo centrale, 
+ma anche per avere più affidabilità.
+
+Per collegare i dispositivi si utilizza la tecnologia \emph{Z-Wave}
+che ha un range di 10-30 metri, e consuma molto poco. Essa 
+crea la rete mesh tra i sensori.
+
 \paragraph{Discovery e pairing}
-Smart devices possono apparire e scomparire frequentemente in rete. 
+Gli smart devices possono apparire e scomparire frequentemente in rete. 
 Nella pratica serve un modo di registrare un dispositivo, assegnandogli un 
 indirizzo, simile a DHCP, per poi associare il device.
 
@@ -63,24 +76,29 @@ dai classici problemi legati ai database.
 Esiste la necessità di interrogare sensori in modo continuo, l'opposto 
 delle query in database, che sono solitamente one-time, 
 i dati hanno inoltre una forte caratterizzazione spazio-temporale, ad esempio, 
-tenedo sotto controllo una temperatura, mi basterebbe capire quando 
-questa cambia, senza continuare ad interrogare.
+tenendo sotto controllo una temperatura, mi basterebbe capire quando 
+questa cambia, senza continuare ad interrogare i sensori.
 
 Si fa notare che non è ragionevole ripetere una query one-time ogni secondo 
 per simulare un flusso continuo di dati.
 
-\paragraph{Processing}
+\paragraph{Metodi di acquisizione}
 Esistono alcuni approcci semplici per il processing dei dati dai sensori:
 \begin{itemize}
-    \item \emph{Batch processing}: i sensori possono fare buffering, e poi processati offline sulla base station, 
+    \item \emph{Batch processing}: i sensori possono fare buffering dei dati, 
+    successivamente questi 
+    vengono processati offline dalla base station
     o su un server.
-    Non c'è processing sul sensore
+    Non c'è processing sul sensore, ma la comunicazione 
+    costa molto, la base station riceve i dati ma con un delay;
     \item \emph{Sampling}: si campionano le misurazioni, anche se non 
     è una misurazione completa come nel primo approccio, esistono delle garanzie 
-    di qualità
+    di qualità;
     \item \emph{Sliding window}: si fornisce una risposta approssimata 
     basata su un gruppo di letture consecutive, la base station 
-    riceve questa misurazione aggregata approssimata.
+    riceve questa misurazione aggregata approssimata. Questa tecnica potrebbe utilizzare 
+    window sovrapposte, in modo da non perdere cambi repentini delle misurazioni, in tal 
+    caso si parla di \emph{overlapping sliding window}.
 \end{itemize}
 
 \paragraph{In-network query processing}
@@ -88,15 +106,31 @@ L'idea di base di questo approccio è quello
 di creare una overlay network, ad esempio uno spanning tree, 
 per aggregare i dati in modo gerarchico.
 
-\subsubsection{Data compression}
+Un altro modo è il \emph{Duty cycling} che permette 
+di mettere a dormire e svegliare dispositivi quando serve 
+o meno comunicazione, in modo da risparmiare energia.
+
+Un'altro caso è quello in cui la base station si muove, 
+in quel caso si possono sfruttare gli spostamenti per 
+trasferire i dati \emph{quando conviene}.
+
+\subsubsection{Pulizia e compressione dei dati}
+
+L'idea di base della data compression è quella 
+comprimere i dati in qualche modo in modo da 
+ridurre la comunicazione necessaria. Per la pulizia 
+di dati invece si punta a eliminare misurazioni 
+estreme, che si verificano nel caso in cui i 
+sensori non siano troppo precisi.
 
 \paragraph{Approcci model-based}
-I dati raccolti possono avere forte correlazione spazio-temporale.
-Si potrebbe sfruttare tale correlazione per ridurre il sampling necessario.
+I dati raccolti possono avere forte correlazione spazio temporale, quindi
+si potrebbe sfruttare tale correlazione per ridurre il sampling necessario.
 
 Tale correlazione è utile sia per ridurre il numero di campionamenti 
 necessari, sia per pulire i dati provenienti dai sensori, tipicamente 
-poco precisi, sfruttando tecniche statistiche.
+poco precisi, sfruttando tecniche statistiche, ovvero, sfrutto un modello allenato per capire 
+se una misurazione è un outlier.
 
 Un'altra applicazione degli approcci model based è la compressione dei dati 
 provenienti dai sensori.
@@ -104,12 +138,12 @@ Queste tecniche sono solitamente leggere, di possibile utilizzo direttamente
 sul dispositivo stesso.
 
 \paragraph{Poor Man's Compression MidRange}
-È un piece wise constant approximation method.
+È un piece-wise constant approximation method.
 In questa tecnica di compressione si approssima un segmento, 
 ovvero un certo numero di misurazioni nel tempo, consecutive, 
-con un valore costante, ad esempio il minimo, massimo, media etc.
+con una loro funzione aggregata, ad esempio il minimo, massimo, media etc.
 
-\paragraph{Model based compression}
+\paragraph{Model-based compression}
 In questo caso si applica un modello alla task di compressione, il risultato è 
 una compressione potenzialmente più sofisticata, 
 si può pensare ad una regressione lineare o polinomiale dei dati di un 
@@ -118,7 +152,7 @@ segmento.
 \subsection{Context awareness}
 
 \paragraph{Contesto}
-Le applicazionio classiche non sono in grado capire il constesto delle richieste.
+Le applicazioni classiche non sono in grado capire il contesto delle richieste.
 Un esempio di interrogazione ad un sistema classico 
 potrebbe essere, \emph{qual è la strada più veloce da X a Y considerando 
 che è l'ora di punta e non voglio prendere autostrade?}
@@ -205,5 +239,20 @@ Tale modello permette ad esempio di riconoscere in modo automatico
 subsumption, ovvero concetti che sono specializzazioni di altri, 
 e realization, ovvero quali sono i concetti che catturano 
 un set di osservazioni.
-
 Esistono strumenti automatizzati per generare ontologie.
+
+% \subsection{Data privacy}
+
+% \paragraph{Dati personali}
+% Sono sostanzialmente informazioni legate ad un singolo individuo, 
+% identificato o identificabile.
+
+% \paragraph{Privacy dei dati}
+% Capacità di un individuo di controllare il rilascio dei propri dati.
+
+% \paragraph{Quasi identifier}
+% Dati che non identificano da sè un individuo, ma che combinati possono 
+% diventare identifier. Un esempio è l'unione dell'età e dell'indirizzo, 
+% i due di per sè non identificano nessuno, ma mettendoli insieme 
+% potrebbero restringere il campo di molto.
+

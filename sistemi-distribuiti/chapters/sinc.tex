@@ -114,12 +114,12 @@ L'aggiornamento del counter $C_i$ per il
 processo $P_i$ avviene come segue: 
 \begin{enumerate}
     \item Prima di eseguire un evento, il processo $P_i$ 
-    esegue $C_i \gets C_i + 1$
+    esegue $C_i \gets C_i + 1$;
     \item Se il processo $P_i$ manda un messaggio $m$ a $P_j$, 
     setta il timestamp di $m$ con il valore del counter attuale, 
-    $ts(m) \gets C_i$
+    $ts(m) \gets C_i$;
     \item $P_j$ quando riceve il messaggio aggiorna il suo 
-    contatore secondo la logica $C_j \gets \max(C_j, ts(m)) + 1$
+    contatore secondo la logica $C_j \gets \max(C_j, ts(m)) + 1$.
 \end{enumerate}
 Si nota che non è detto che si riesca a dare un ordine per ogni 
 coppia di eventi, ma solo tra quelli collegati da un messaggio.
@@ -228,14 +228,14 @@ al precedente coordinatore e ai processi con identifier più alto.
 L'esecuzione procede come segue 
 \begin{itemize}
     \item Per esempio, dati 7 processi, il 4, accortosi che il coordinatore 
-    è crashato, manderà un messaggio a 5, 6 e 7, dove l'ultimo è il coordinatore
+    è crashato, manderà un messaggio a 5, 6 e 7, dove l'ultimo è il coordinatore;
     \item I processi 5 e 6 si prendono in carico l'elezione, 
     mandando un messaggio di ok, 5 e 6 ripetono il procedimento 
-    di 4
+    di 4;
     \item A questo punto 6 risponde ok a 5.
     6 prova ad eseguire il procedimento di 4, 7 non risponde più
-    e quindi capisce che è il nuovo coordinatore
-    \item 6 manda in broadcast che è il nuovo coordinatore
+    e quindi capisce che è il nuovo coordinatore;
+    \item 6 manda in broadcast che è il nuovo coordinatore.
 \end{itemize}
 
 \paragraph{Problematiche}
@@ -262,17 +262,17 @@ L'esecuzione dell'algoritmo procede come segue, si assume che
 tutti i processi inizialmente sono \emph{non partecipanti}:
 \begin{itemize}
     \item Un processo $P_k$ che si accorge che il coordinatore è fallito, 
-    si setta \emph{partecipante} e invia al successore un messaggio 
+    si setta \emph{partecipante} e invia al successore un messaggio;
     del tipo $[\mathit{Election}, \mathit{ID}(P_k)]$
     \item Un processo $P_m$ che riceve $[\mathit{Election}, \mathit{ID}(P_k)]$:
     \begin{itemize}
         \item Se $\mathit{ID}(P_k) > \mathit{ID}(P_m)$ manda il messaggio 
-        marcandosi come \emph{partecipante}
+        marcandosi come \emph{partecipante};
         \item Se $\mathit{ID}(P_k) < \mathit{ID}(P_m)$ se il processo 
         non è partecipante si setta e manda $[\mathit{Election}, \mathit{ID}(P_m)]$
-        al successore
+        al successore;
         \item Se $k = m$ il processo è diventato coordinatore, si setta 
-        come non partecipante e manda al successore $[\mathit{Elected}, \mathit{ID}(P_m)]$
+        come non partecipante e manda al successore $[\mathit{Elected}, \mathit{ID}(P_m)]$.
     \end{itemize}
 \end{itemize}
 

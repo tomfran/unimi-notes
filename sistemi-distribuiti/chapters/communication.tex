@@ -61,15 +61,15 @@ tra due nodi:
     a Unix, si può pensare a una socket come 
     un descrittore, simile ad esempio ai descrittori per standard input,
     output ed error. Alla creazione di una nuova socket si restituisce un descrittore
-    sul quale scrivere e leggere
-    \item \emph{Bind}: si collega un indirizzo locale, ovvero una porta, a una socket
-    \item \emph{Listen}: segnala la disponibilità a ricevere messaggi
-    \item \emph{Accept}: si blocca il caller fino a quando non arriva una connessione
+    sul quale scrivere e leggere;
+    \item \emph{Bind}: si collega un indirizzo locale, ovvero una porta, a una socket;
+    \item \emph{Listen}: segnala la disponibilità a ricevere messaggi;
+    \item \emph{Accept}: si blocca il caller fino a quando non arriva una connessione;
     \item \emph{Connect}: tentativo di stabilire una connessione, c'è bisogno di ip 
-    e porta
-    \item \emph{Send}: invio di dati sulla socket
-    \item \emph{Receive}: ricezione di dati sulla socket
-    \item \emph{Close}: rilascio delle risorse
+    e porta;
+    \item \emph{Send}: invio di dati sulla socket;
+    \item \emph{Receive}: ricezione di dati sulla socket;
+    \item \emph{Close}: rilascio delle risorse.
 \end{itemize}
 
 \paragraph{Queuing systems}
@@ -79,10 +79,10 @@ Si garantisce la persistenza, ovvero, un nodo manda ad una coda, i router
 indirizzano il messaggio al destinatario e lo inseriscono nella loro coda.
 Tra le primitive del sistema si potrebbero trovare:
 \begin{itemize}
-    \item \emph{Put}: append del messaggio a una coda
-    \item \emph{Get}: prelevo il messaggio da una coda, primitiva bloccante
-    \item \emph{Poll}: controlla se una coda ha messaggi e rimuove il primo, non bloccante
-    \item \emph{Notify}: notifica quando un messaggio è inserito in una certa coda
+    \item \emph{Put}: append del messaggio a una coda;
+    \item \emph{Get}: prelevo il messaggio da una coda, primitiva bloccante;
+    \item \emph{Poll}: controlla se una coda ha messaggi e rimuove il primo, non bloccante;
+    \item \emph{Notify}: notifica quando un messaggio è inserito in una certa coda.
 \end{itemize}
 In un sistema di questo tipo, il ruolo dei broker è quello di garantire la persistenza, 
 ma anche quello di effettuare eventuali conversioni. Il secondo scenario accade quando 
@@ -90,10 +90,10 @@ due nodi che vogliono comunicare hanno convenzioni diverse.
 
 Il sistema a code è preferibile quando :
 \begin{itemize}
-    \item si vuole comunicazione asincrona e persistente 
-    \item quando si può aumentare la scalabilità ammettendo ritardi di gestione delle richieste, 
-    \item quando i producer sono più veloci dei consumer
-    \item quando si sta implementando un pattern pub-sub
+    \item si vuole comunicazione asincrona e persistente;
+    \item quando si può aumentare la scalabilità ammettendo ritardi di gestione delle richieste;
+    \item quando i producer sono più veloci dei consumer;
+    \item quando si sta implementando un pattern pub-sub.
 \end{itemize}
 
 \paragraph{Remote proceduce call}
@@ -104,10 +104,10 @@ Non è possibile inviare al processo remoto il semplice indirizzo di memoria dei
 dati sul client, bensì serve mandare al processo remoto una funzione con parametri.
 La logica quindi si riassume in questi punti:
 \begin{enumerate}
-    \item Arrivo ad un'istruzione da eseguire in remoto
-    \item Serializzazione dei parametri e invio nella rete del messaggio
-    \item Ricezione del server, deserializzazione ed esecuzione della funzione
-    \item Invio del risultato al client
+    \item Arrivo ad un'istruzione da eseguire in remoto;
+    \item Serializzazione dei parametri e invio nella rete del messaggio;
+    \item Ricezione del server, deserializzazione ed esecuzione della funzione;
+    \item Invio del risultato al client.
 \end{enumerate}
 L'implementazione di questo scambio di messaggi è offerta da uno standard, 
 non bisogna "inventarsi" nulla al contrario della comunicazione con socket.
@@ -115,8 +115,8 @@ Il passaggio da dati a messaggio e viceversa è chiamato:
 \begin{itemize}
     \item \emph{Marshalling}: formattazione dei parametri in messaggio, prevede
     eventuale serializzazione, bisogna anche porre attenzione all'architettura
-    di partenza e arrivo, potrebbero differire in termini di codifica
-    \item \emph{Unmarshalling}: procedure inversa di marshalling
+    di partenza e arrivo, potrebbero differire in termini di codifica;
+    \item \emph{Unmarshalling}: procedure inversa di marshalling.
 \end{itemize}
 Il binding tra client e server è trasparente, alcuni sistemi offrono la possibilità 
 di scoprire dinamicamente quale server offre una determinata funzione.

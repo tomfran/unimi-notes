@@ -28,21 +28,21 @@ da tutti i nodi. Esistono poi collegamenti tra loro.
 Esistono alcune problematiche legate al mondo blockchain, che sostanzialmente 
 sono quelle dei sistemi asincroni:
 \begin{itemize}
-    \item l'arrivo di una transazione potrebbe differire tra nodi
-    \item alcune transazioni potrebbero contraddirsi
-    \item nodi differenti potrebbero costruire blocchi diversi
-    \item nodi differenti potrebbero finire su diverse chain
+    \item l'arrivo di una transazione potrebbe differire tra nodi;
+    \item alcune transazioni potrebbero contraddirsi;
+    \item nodi differenti potrebbero costruire blocchi diversi;
+    \item nodi differenti potrebbero finire su diverse chain.
 \end{itemize}
 
 \paragraph{Consenso in blockchain}
 Il processo per ottenere consenso in blockchain è:
 \begin{itemize}
-    \item hash di ogni transazione e di un blocco
-    \item hash di un block includendo il blocco precedente
+    \item hash di ogni transazione e di un blocco;
+    \item hash di un block includendo il blocco precedente;
     \item si aggiunge un trick per fare in modo che la computazione 
-    dell'hash del blocco sia molto costosa ma facile da verificare
+    dell'hash del blocco sia molto costosa ma facile da verificare;
     \item i nodi competono su questa operazione e il reward è 
-    il blocco stesso 
+    il blocco stesso.
 \end{itemize} 
 L'idea del mining è quella di trovare l'hash del blocco precedente 
 per firmare la transazione in modo corretto, il reward è la transazione valida.

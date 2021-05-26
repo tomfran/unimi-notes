@@ -1,4 +1,4 @@
-\section{Introduzione ai sistemi distribuiti}
+\section{Introduzione}
 
 \begin{quote}
     \emph{You know you have one when the crash of a computer you've
@@ -21,9 +21,9 @@ ad ognuna una qualche interfaccia.
 Alcuni esempi di sistemi distribuiti possono essere:
 \begin{itemize}
     \item Un set di PC che comunicano tra loro con un 
-    processo che è assegnato dinamicamente
-    \item Online multiplayer
-    \item World Wide Web 
+    processo che è assegnato dinamicamente; 
+    \item Online multiplayer; 
+    \item World Wide Web.
 \end{itemize}
 
 \subsection{Obiettivi}
@@ -34,24 +34,24 @@ accesso delle risorse, trasparenza, apertura e scalabilità.
 Esistono vari tipi di trasparenza da garantire in un contesto distribuito:
 \begin{itemize}
     \item \emph{Accesso}: nasconde la rappresentazione dei dati 
-    e come gli utenti vi accedono
-    \item \emph{Locazione}: si nasconde dove una risorse è mantenuta
+    e come gli utenti vi accedono;
+    \item \emph{Locazione}: si nasconde dove una risorse è mantenuta;
     \item \emph{Migrazione}: non si mostra il fatto che una risorsa ha cambiato 
-    locazione
-    \item \emph{Rilocazione}: come il precedente ma quando la risorsa è in uso
-    \item \emph{Replicazione}: nasconde la replicazione delle risorse
+    locazione;
+    \item \emph{Rilocazione}: come il precedente ma quando la risorsa è in uso;
+    \item \emph{Replicazione}: nasconde la replicazione delle risorse;
     \item \emph{Concorrenza}: nasconde il fatto che una risorsa è condivisa
-    da più utenti
-    \item \emph{Fallimento}: non mostra fallimenti e relativi recovery del sistema
+    da più utenti;
+    \item \emph{Fallimento}: non mostra fallimenti e relativi recovery del sistema.
 \end{itemize}
 Solitamente non è possibile garantire tutti questi punti.
 
 \paragraph{Apertura}
 Un sistema distribuito aperto dovrebbe riuscire a fornire
 \begin{itemize}
-    \item Interoperabilità
-    \item Portabilità
-    \item Possibilità di estensione
+    \item Interoperabilità;
+    \item Portabilità;
+    \item Possibilità di estensione.
 \end{itemize}
 Può essere ottenuta tramite l'uso di protocolli standard, API, \dots
 
@@ -62,11 +62,11 @@ del sistema, bisogna perciò evitare la centralizzazione,
 in particolare di servizi, dati e algoritmi.\\
 In algoritmo decentralizzato ad esempio:
 \begin{itemize}
-    \item Nessuna macchina ha complete informazioni sul sistema
-    \item Le decisioni sono prese guardando conoscenze locali
+    \item Nessuna macchina ha complete informazioni sul sistema;
+    \item Le decisioni sono prese guardando conoscenze locali;
     \item Il fallimento di una singola macchina non pregiudica lo stato
-    del sistema
-    \item Non ci sono implicazioni implicite sull'esistenza di un clock globale
+    del sistema;
+    \item Non ci sono implicazioni implicite sull'esistenza di un clock globale.
 \end{itemize}
 L'opposto di un sistema centralizzato.\\
 Un esempio di scalabilità si trova nella divisione del DNS in zone, 
@@ -82,8 +82,8 @@ stesso sistema operativo.
 Esistono due tipologie:
 \begin{enumerate}
     \item \emph{Asimmetrico}: esiste un nodo master che coordina 
-    e controlla gli altri nodi, un esempio è Google Borg
-    \item \emph{Simmetrico}: tutti i nodi hanno lo stesso software
+    e controlla gli altri nodi, un esempio è Google Borg;
+    \item \emph{Simmetrico}: tutti i nodi hanno lo stesso software.
 \end{enumerate}
 
 \paragraph{Cloud computing}
@@ -92,21 +92,21 @@ computer in modo conveniente e on demand, caratterizzato dalla
 facilità di riconfigurazione delle macchine.
 Alcune caratteristiche sono che:
 \begin{itemize}
-    \item I nodi sono eterogenei
-    \item Le connessioni sono eterogenee, in termini di capacità e di affidabilità
-    \item On-demand self-service, ovvero la facile configurazione che si è discussa sopra
+    \item I nodi sono eterogenei;
+    \item Le connessioni sono eterogenee, in termini di capacità e di affidabilità;
+    \item On-demand self-service, ovvero la facile configurazione che si è discussa sopra;
     \item La capacità di calcolo è accessibile tramite la rete, tramite meccanismi 
-    standard
-    \item Le risorse sono condivise tra molti utenti, in modo da ottimizzare il loro utilizzo
-    \item Elasticità rapida, ovvero le risorse sono facilmente assegnabili
+    standard;
+    \item Le risorse sono condivise tra molti utenti, in modo da ottimizzare il loro utilizzo;
+    \item Elasticità rapida, ovvero le risorse sono facilmente assegnabili;
     \item Esistono sistemi di misura, ovvero metriche che indicano l'utilizzo 
-    del sistema cloud
+    del sistema cloud.
 \end{itemize}
 Esistono poi alcune categorie: 
 \begin{itemize}
-    \item Software as a Service: utilizzo di un software che gira in cloud
-    \item Platform as a Service: deploy che utilizza tool del cloud provider
-    \item Infrastructure as a Service: software che gira sfruttando l'infrastruttura cloud
+    \item Software as a Service: utilizzo di un software che gira in cloud;
+    \item Platform as a Service: deploy che utilizza tool del cloud provider;
+    \item Infrastructure as a Service: software che gira sfruttando l'infrastruttura cloud.
 \end{itemize}
 
 \paragraph{Edge computing}
