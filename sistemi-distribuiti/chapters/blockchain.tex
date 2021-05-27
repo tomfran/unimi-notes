@@ -44,17 +44,25 @@ Il processo per ottenere consenso in blockchain è:
     \item i nodi competono su questa operazione e il reward è 
     il blocco stesso.
 \end{itemize} 
-L'idea del mining è quella di trovare l'hash del blocco precedente 
-per firmare la transazione in modo corretto, il reward è la transazione valida.
+L'idea del mining è quella di computare l'hash di un nuovo blocco, 
+che è computazionalmente impegnativo, conoscendo l'hash del 
+blocco precedente.
 
-L'arrivo del blocco validato a uno dei nodi corrisponde all'aggiunta 
-alla blockchain, dopo una verifica, potrebbero arrivare catene che si intersecano, 
-in tal caso la chain sarà un albero.
+\paragraph{Cambio storia di transazioni}
+Per cambiare una transazione un nodo malevolo dovrebbe 
+ricomputare tutta la catena di blocchi successivi, cosa infattibile perchè 
+computazionalmente troppo costosa. Infatti deve mantenere 
+il consenso sulla catena che sta modificando.
 
-\paragraph{Proprietà blockchain}
-Se la maggior parte dei nodi lavora sulla stessa catena, quello più lunga è la più
-attendibile. 
+Ovviamente se un nodo sta cercando di manomettere ad esempio 
+gli ultimi nodi, il costo è minore. È buona norma quindi in blockchain 
+aspettare che una transazione sia sufficientemente profonda nella 
+catena. 
 
-Un attacco deve calcolare l'hash dei blocchi precedenti, bastano che la metà
-dei nodi siano onesti per evitare interventi malevoli.
+\paragraph{Limitazioni PoW}
+Il consenso in blockchain ha alcuni difetti, uno su tutti 
+la power consumption e il costo dell'hardware. L'alto consumo 
+di elettricità e il costo di smaltimento dell'hardware non lo rendono 
+sostenibile.
 
+Inoltre la frequenza delle transazioni è molto bassa.
