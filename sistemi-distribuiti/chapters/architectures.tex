@@ -26,8 +26,10 @@ per fare caching, oppure avere un \emph{multi-tier} client server, dove esiste
 una divisione dei nodi in base alla loro funzionalità.
 
 \paragraph{Vertical e horizontal distribution}
-Si parla di \emph{vertical distribution} quando esiste un nodo per ogni funzionalità, 
-offerta dal server, si definisce invece \emph{horizontal distribution} la replica del 
+Si parla di \emph{vertical distribution} quando esiste un nodo per ogni funzionalità
+offerta dal server.
+
+Si definisce invece \emph{horizontal distribution} la replica del 
 server su più nodi, in modo da soddisfare richieste in contemporanea.
 Si può pensare a una combinazione di distribuzione verticale e orizzontale.
 
@@ -58,15 +60,13 @@ in particolare gli obiettivi sono:
 \end{itemize}
 
 \paragraph{Peer-to-peer middleware}
-L'idea è quella di offrire in modo trasparente locazione e comunicazione 
-delle risorse, e aggiunta e rimozione di risorse e nodi.
+I requisiti base di un middleware che gestisce un sistema di questo tipo sono offrire 
+in modo trasparente locazione e comunicazione 
+delle risorse e aggiunta e rimozione di risorse e nodi.
 
 \paragraph{Overlay network}
-Rete logica costruita sulla rete fisica, serve a garantire l'efficienza
+Rete logica costruita sulla rete fisica, serve ad ottenere l'efficienza
 delle operazioni che deve garantire un peer-to-peer middleware.
-
-Ad esempio deve fare routing delle richieste a livello applicativo, 
-basato su identificatori globali.
 
 Esistono due tipi di overlay network:
 \begin{itemize}
@@ -87,6 +87,28 @@ Nel secondo caso invece, se un nodo sparisce dalla rete non si verificano
 particolari problemi, ma il numero di messaggi può essere molto alto, 
 inoltre, essendo il numero di hop per la ricerca limitato, una risorsa 
 presente in rete si potrebbe anche non raggiungere.
+
+\paragraph{Chord}
+È un overlay network strutturata, si garantisce quindi di trovare la risorsa
+se presente in rete.
+Sfrutta delle distributed hash tables chiamate \emph{finger tables} in ogni nodo. 
+
+L'idea è avere ogni risorsa indicizzata da un valore $k$, gestita dal nodo 
+con il più piccolo id maggiore uguale a $k$.
+Esiste uno spazio di indirizzamento di $n$ bit e ogni nodo e risorsa hanno un id 
+in quello spazio di indirizzamento.
+Le finger table contendono alla riga $i$-esima il valore del successore $p + 2^{i-1}$.
+
+La lookup di una risorsa quindi scorre la finger table, identifica il più grande 
+nodo che sia minore di $k$ e delega la lookup ad esso.
+
+\paragraph{CAN}
+Si parla ancora di un overlay strutturato ma in questo caso lo spazio di indirizzamento 
+è bidimensionale e partizionato in rettangoli. 
+
+Ogni nodo della rete gestisce una regione dello spazio. All'ingresso di un nuovo nodo 
+quindi un rettangolo viene diviso, mentre all'uscita viene potenzialmente riunito, 
+se possibile, altrimenti bisogna ricomputare la divisione.
 
 \subsection{Microservizi}
 L'idea è quella di spingere nella vertical distribution, separando 

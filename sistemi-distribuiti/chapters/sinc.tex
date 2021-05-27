@@ -13,7 +13,12 @@ inaspettati, è necessaria una sincronizzazione.
 \paragraph{È possibile una sincronizzazione perfetta?}
 Sostanzialmente no, non è possibile pensare di avere una 
 sincronizzazione perfetta in un sistema distribuito, 
-si punta ad una certa precisione.
+si punta ad una certa precisione. 
+
+Per risolvere il problema 
+della compilazione ad esempio si potrebbe puntare ad una sincronizzazione al 
+secondo, assumendo che l'editing di un sorgente impieghi 
+qualche minuto.
 
 \subsection{Orologi fisici}
 
@@ -263,7 +268,7 @@ tutti i processi inizialmente sono \emph{non partecipanti}:
 \begin{itemize}
     \item Un processo $P_k$ che si accorge che il coordinatore è fallito, 
     si setta \emph{partecipante} e invia al successore un messaggio;
-    del tipo $[\mathit{Election}, \mathit{ID}(P_k)]$
+    del tipo $[\mathit{Election}, \mathit{ID}(P_k)]$;
     \item Un processo $P_m$ che riceve $[\mathit{Election}, \mathit{ID}(P_k)]$:
     \begin{itemize}
         \item Se $\mathit{ID}(P_k) > \mathit{ID}(P_m)$ manda il messaggio 

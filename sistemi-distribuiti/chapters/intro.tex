@@ -35,7 +35,7 @@ Esistono vari tipi di trasparenza da garantire in un contesto distribuito:
 \begin{itemize}
     \item \emph{Accesso}: nasconde la rappresentazione dei dati 
     e come gli utenti vi accedono;
-    \item \emph{Locazione}: si nasconde dove una risorse è mantenuta;
+    \item \emph{Locazione}: si nasconde dove una risorsa è mantenuta;
     \item \emph{Migrazione}: non si mostra il fatto che una risorsa ha cambiato 
     locazione;
     \item \emph{Rilocazione}: come il precedente ma quando la risorsa è in uso;
@@ -47,7 +47,7 @@ Esistono vari tipi di trasparenza da garantire in un contesto distribuito:
 Solitamente non è possibile garantire tutti questi punti.
 
 \paragraph{Apertura}
-Un sistema distribuito aperto dovrebbe riuscire a fornire
+Un sistema distribuito aperto dovrebbe riuscire a fornire:
 \begin{itemize}
     \item Interoperabilità;
     \item Portabilità;
@@ -59,8 +59,8 @@ Può essere ottenuta tramite l'uso di protocolli standard, API, \dots
 La scalabilità è fondamentale in un contesto distribuito, 
 l'obiettivo è che le prestazioni non peggiorino all'estensione
 del sistema, bisogna perciò evitare la centralizzazione, 
-in particolare di servizi, dati e algoritmi.\\
-In algoritmo decentralizzato ad esempio:
+in particolare di servizi, dati e algoritmi.
+In un algoritmo decentralizzato ad esempio:
 \begin{itemize}
     \item Nessuna macchina ha complete informazioni sul sistema;
     \item Le decisioni sono prese guardando conoscenze locali;
@@ -68,18 +68,20 @@ In algoritmo decentralizzato ad esempio:
     del sistema;
     \item Non ci sono implicazioni implicite sull'esistenza di un clock globale.
 \end{itemize}
-L'opposto di un sistema centralizzato.\\
+L'opposto di un sistema centralizzato.
 Un esempio di scalabilità si trova nella divisione del DNS in zone, 
 evitando quindi di avere un singolo name server centrale.
 
 \subsection{Tipologie}
 Esistono varie tipologie di sistemi distribuiti che variano a seconda degli 
-scopi. SI definiscono i computing systems, information systems e pervasive computing.
+scopi. Si definiscono i \emph{computing systems}, \emph{information systems} e \emph{pervasive computing}.
+
 \subsubsection{Computing systems}
-\paragraph{Clusters} collezione di workstations uguali o molto simili, 
+
+\paragraph{Clusters} 
+Collezione di workstation uguali o molto simili, 
 collegate tra solo da una rete locale ad alta velocità, fanno girare lo 
-stesso sistema operativo.
-Esistono due tipologie:
+stesso sistema operativo. Esistono due tipologie:
 \begin{enumerate}
     \item \emph{Asimmetrico}: esiste un nodo master che coordina 
     e controlla gli altri nodi, un esempio è Google Borg;
@@ -136,7 +138,7 @@ Un sistema distribuito pervasivo ha alcune caratteristiche che
 lo discostano da un sistema classico, in particolare si possono trovare 
 nodi non convenzionali, ad esempio smart objects vari e il principio 
 di adattività, ovvero la capacità di adattare il comportamento del sistema
-in base all'obiettivo del sistema.
+in base al suo obiettivo.
 
 Alcuni esempi possono essere l'uso di dispositivi smart in casa, oppure 
 la guida autonoma.

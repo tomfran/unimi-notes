@@ -1,22 +1,22 @@
 \section{Modelli di comunicazione}
 Nei sistemi distribuiti i nodi comunicano tra loro tramite qualche
-mezzo, esiste una grande eterogeneità riguardo al tipo dei canali utilizzati, 
-ma essi vengono utilizzati per scambiare messaggi.
+mezzo, esiste una grande eterogeneità riguardo al tipo dei canali utilizzati.
 
 \paragraph{Middleware}
-Considerano la coda iso osi, si possono fondere sessione e presentazione 
+Considerano la coda ISO-OSI, si possono fondere sessione e presentazione 
 in un unico livello middleware. In questo livello possono essere collocati i 
 servizi di comunicazione di alto livello trattati a seguire.
 
 Considerando ad esempio un client che effettua una richiesta ad un 
 server, un middleware potrebbe gestire il messaggio mandato 
-dal client e ad esempio fornire feedback sullo stato della richiesta, 
-ad esempio la ricezione del server, il processing etc.
+dal client e fornire feedback sullo stato della richiesta, 
+come la ricezione del server, il processing etc.
+
 \subsection{Comunicazione persistente e transiente}
 Un esempio intuitivo di comunicazione persistente consiste nello scambio 
 di lettere da post office a post office, i messaggi sono 
-memorizzati nel transito, mentre un sistema transiente non 
-prevede la memorizzazione dei messaggi in transito, un esempio è una chiamata 
+memorizzati nel transito, l'opposto si un sistema transiente,
+ad esempio una chiamata 
 telefonica.
 
 Esistono molte varianti di queste comunicazioni, legate a quanto 
@@ -88,7 +88,7 @@ In un sistema di questo tipo, il ruolo dei broker è quello di garantire la pers
 ma anche quello di effettuare eventuali conversioni. Il secondo scenario accade quando 
 due nodi che vogliono comunicare hanno convenzioni diverse. 
 
-Il sistema a code è preferibile quando :
+Il sistema a code è preferibile quando:
 \begin{itemize}
     \item si vuole comunicazione asincrona e persistente;
     \item quando si può aumentare la scalabilità ammettendo ritardi di gestione delle richieste;
@@ -110,7 +110,7 @@ La logica quindi si riassume in questi punti:
     \item Invio del risultato al client.
 \end{enumerate}
 L'implementazione di questo scambio di messaggi è offerta da uno standard, 
-non bisogna "inventarsi" nulla al contrario della comunicazione con socket.
+non bisogna inventarsi nulla al contrario della comunicazione con socket.
 Il passaggio da dati a messaggio e viceversa è chiamato:
 \begin{itemize}
     \item \emph{Marshalling}: formattazione dei parametri in messaggio, prevede
