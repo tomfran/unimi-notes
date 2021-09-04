@@ -18,14 +18,13 @@ These notes are considered finished, they will probably not be updated:
 * ***Algoritmi e complessità*** :it: [notes](https://github.com/tomfran/unimi-notes/blob/main/algoritmi-complessita/algo_comp.pdf) are basically completed, 
 they miss only the last data structure;
 * ***Sistemi distribuiti e pervasivi*** :it: [notes](https://github.com/tomfran/unimi-notes/blob/main/sistemi-distribuiti/sistemi-distribuiti.pdf) about all the course.
-
+* ***Statistical methods for machine learning*** :gb: [notes](https://github.com/tomfran/unimi-notes/blob/main/statistical-methods/statistical-methods.pdf)  they miss some parts and proofs, they will not be updated anymore.
 <br>
-
+<!-- 
 <h2> Work in progress</h2>
 
 <p align="justify">
 This is a list of courses I am currently following, thus the notes 
 might not be complete:
 </p>
-
-* ***Statistical methods for machine learning*** :gb: [notes](https://github.com/tomfran/unimi-notes/blob/main/statistical-methods/statistical-methods.pdf)  they miss some parts and proofs.
+-->
