@@ -1,28 +1,60 @@
 \section{Algoritmi di approssimazione}
 In questa parte si introdurranno gli algoritmi di approssimazione, 
 dopo aver accennato ad alcuni concetti preliminari legati alla complessità.
-Si defineranno in particolari classi di problemi, e si definiranno alcune 
+Si definiranno in particolare classi di problemi e alcune 
 tecniche note nella risoluzione di problemi di ottimizzazione.
+
+\subsection{Notazioni}
+
+\paragraph{Insiemi numerici come interi}
+Si indicheranno alcuni insiemi numerici con un singolo intero, 
+es $$k = \{0, 1, \dots, k-1\}$$
+
+\paragraph{Insieme delle funzioni} L'insieme delle funzioni che hanno come dominio $A$ e codominio $B$ si indica come segue: 
+$$B^A = \{ f | f : A \rightarrow B\}$$
+
+\paragraph{Insieme delle parti} L'insieme dei sottoinsiemi di $A$ si indica con $2^A = P(A)$.
+
+\paragraph{Alfabeto} Fissato un alfabeto $\Sigma$, indichiamo con $\Sigma^*$ l'insieme delle stringhe ottenute da 
+$\Sigma$.
+
+\paragraph{Esempio}
+La notazione $2^{2^*}$ indica l'insieme dei linguaggi binari.
 
 \subsection{Classi di complessità}
 Partiamo dalla definizione di algoritmo, per poi arrivare a definire la 
 complessità algoritmica e strutturale.
 \paragraph{Algoritmo}
-Un algoritmo per un problema $\Pi$ può essere visto come una \emph{balck-box}
-che verrà indicata con $A$, che opera come segue:
+Un algoritmo per un problema $\Pi$ è una macchina di Turing, che verrà indicata con $A$, che opera come segue:
+$$x \in I_{\Pi} \longrightarrow A \longrightarrow y \in O_{\Pi}\;\;t.c.\;\;y \in Sol_{\Pi}(x)$$
+$$Sol_{\Pi}: I_\Pi \longrightarrow (2^{O_\Pi} \setminus \{\emptyset\})$$
+La funzione associa ad un input l'insieme dei suoi output corretti.
 
-dato un input $x \in I_{\Pi}$, l'algoritmo $A$ produrrà un output 
-$y \in O_{\Pi}$, tale che $y \in Sol_{\Pi}(x)$.
+\begin{remark}
+    Gli input di un problema devono essere codificati in qualche modo. 
+    Ad esempio, considerando una macchina di Turing, gli input sono 
+    pensati come stringhe binarie. 
+    Esistono molti modi di codificare per esempio due interi, si potrebbe pensare di utilizzare la coppia di Cantor, oppure di raddoppiare i bit.
+    La complessità di un algoritmo non varia se le codifiche sono 
+    polinomialmente contenute le une nelle altre. Ovvero, una codifica esponenziale cambierebbe la complessità rispetto a una codifica polinomiale, 
+    ma nel nostro caso non succederà.
+\end{remark}
 
 \subsubsection{Complessità algoritmica}
 La complessità algoritmica è lo studio del dispendio di risorse di 
-un algoritmo.\\
-Un esempio è il tempo: $T_a : I_\Pi \rightarrow \mathbb{N}$, possiamo passare
-in una notazione $t_a : \mathbb{N} \rightarrow \mathbb{N}$ dove il dominio è 
-la lunghezza di input, in quel caso si avrà che $t_a(n) : \max\{ T_a(n),\; x \in I_{\Pi},\; |x| = n\}$
+un algoritmo. Sostanzialmente ci si sta chiedendo come un algoritmo risolve un certo problema.
 
-Date due soluzioni, è preferibile quella asintoticamente minima, 
-più formalmente, quella a numeratore tale che $\lim_{x \to \infty} \frac{t_1}{t_2} = \infty $.
+Una delle risorse considerabili è il tempo: $$T_A : I_\Pi \rightarrow \mathbb{N}$$
+Alternativamente possiamo considerare questa funzione, che ragione per taglia piuttosto 
+che per singolo input: 
+$$t_A : \mathbb{N} \rightarrow \mathbb{N}$$ dove il dominio è 
+la lunghezza di input, in quel caso si avrà che 
+$$t_A(n) : \max\{ T_A(x),\; x \in I_{\Pi},\; |x| = n\}$$
+
+Si possono considerare limiti alla complessità algoritmica, un upper bound si ottiene 
+esibendo una soluzione con quella complessità, per esempio, trovo una soluzione quadratica 
+al problema dell'ordinamento. Posso anche trovare un lower bound, per esempio, 
+dimostro che ordinare $n$ valori richiede almeno $O(n \log n)$ operazioni.
 
 \subsubsection{Complessità strutturale}
 Si definiscono ora due classi di problemi, \emph{P} e \emph{NP}, per 
@@ -45,9 +77,13 @@ in tempo polinomiale su una macchina non deterministica, ovvero:
     \end{aligned}
 \end{equation}
 
+\begin{remark}
+    Un problema è decisionale se dato un input da un output binario.
+\end{remark}
+
 \paragraph{Riducibilità polinomiale}
-Un problema si dice riducibile polinomialmente se esiste un mapping del suo 
-input in un input per un algoritmo polinomiale, ovvero:
+Un problema $\Pi_1$ si dice riducibile polinomialmente ad un problema $\Pi_2$ se esiste 
+un mapping tra input del primo e del secondo problema che rispetta le seguenti proprietà:
 $$\Pi_1 \leqslant _p \Pi_2 \;sse\; \exists f : 2^* \rightarrow 2^*\; t.c$$
 \begin{enumerate}
     \item $f$ è calcolabile in tempo polinomiale
@@ -146,7 +182,7 @@ sopra.
 
 \paragraph{NPO completezza}
 Un problema si dice NPO completo sse il problema di decisione associato è NP completo.\\
-$$\mathit{NPOcomp} = \{\Pi \in \mathit{NPO} | \hat{\Pi} \in mathit{NP}\}$$
+$$\mathit{NPOcomp} = \{\Pi \in \mathit{NPO} | \hat{\Pi} \in \mathit{NP}\}$$
 
 \begin{theorem}
     Se $\Pi \in \mathit{NPOcomp}$, $\Pi \notin PO$, a meno che $P=NP$

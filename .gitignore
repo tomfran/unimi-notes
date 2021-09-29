@@ -1,5 +1,6 @@
 ##ignore folders
 /material
+/algoritmica-web
 *slides*
 ## Core latex/pdflatex auxiliary files:
 *.aux
