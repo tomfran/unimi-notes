@@ -111,24 +111,36 @@ livelli più bassi.
 
 \paragraph{Memorizzazione offline} 
 Si mantengono solo file su disco e non strutture in memoria. 
-I file vengono ordinati e fusi spesso. In particolare, si hanno a disposizione tre file: 
+I file vengono ordinati e fusi spesso. In particolare, si hanno a disposizione: 
 \begin{itemize}
-    \item Url da visitare
-    \item Frontiera
-    \item Url visti 
+    \item \emph{VIS}: url da visitare
+    \item \emph{F}: frontiera
+    \item \emph{V}: url visti
 \end{itemize}
-Il crawler accumula gli url nella frontiera, quando si terminano i siti da visitare 
-oppure lo spazio su disco, la frontiera viene ordinata e de-duplicata.
+Il crawler accumula gli url che trova nelle pagine nel file $F$, 
+fino a che si terminano i siti da visitare, contenuti 
+in \emph{VIS}, oppure lo spazio su disco.
 
-A questo punto si fondono frontiera e visti: 
+A questo punto la frontiera viene ordinata e de-duplicata. 
+L'operazione è necessaria poiché il file potrebbe contenere duplicati, 
+visto che non esiste nessuna struttura 
+in memoria che impedisce l'aggiunta di ripetizioni.
+
+A questo punto si fondono i file \emph{F} e \emph{V}: 
 \begin{itemize}
     \item Se un url sta in entrambi non faccio nulla;
-    \item Se trovo un url in visti ma non in frontiera non faccio nulla;
-    \item Se trovo un url in frontiera ma non in visti, lo aggiungo a visti e 
-    a quelli da visitare.
+    \item Se trovo un url in $V$ ma non in $F$ non faccio nulla;
+    \item Se trovo un url in $F$ ma non in $V$, lo aggiungo a $V$ e 
+    a \emph{VIS}.
 \end{itemize}
-Procedo a questo punto con la visita.
+La fusione è lineare nella lunghezza dei file $F$ e $V$, poiché gli url sono in ordine lessicografico.
+Procedo a questo punto con la visita, dagli url contenuti in \emph{VIS}.
 \begin{remark}
     Questa tecnica è utilizzata dal crawler Nutch, le operazioni su disco 
     sono effettuate tipicamente da architetture distribuite quali map-reduce.
+\end{remark}
+\begin{remark}
+    È possibile mantenere all'interno di $V$ solo gli hash dei siti 
+    in modo da risparmiare memoria, a patto di ordinare gli url di $F$ secondo il 
+    loro hash e di effettuare i confronti sugli url hashati.
 \end{remark}
