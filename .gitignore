@@ -1,5 +1,8 @@
 ##ignore folders
 /material
+/combinatori*
+/heuris*
+
 *slides*
 ## Core latex/pdflatex auxiliary files:
 *.aux
