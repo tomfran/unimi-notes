@@ -113,17 +113,18 @@ considerando.
 Nella definizione di un problema di ottimizzazione bisogna tenere conto dei 
 seguenti parametri:
 \begin{enumerate}
-    \item Insieme di input $I_\Pi$
-    \item Insieme di output $O_\Pi$
+    \item Insieme di input $I_\Pi \subseteq 2^*$;
+    \item Insieme di output $O_\Pi \subseteq 2^*$;
     \item $F_\Pi : I_\Pi \rightarrow 2^{O_\Pi} \setminus \{\emptyset\}$, $F_\Pi(x)$ indica 
-    le soluzioni accettabili per l'input $x$
+    le soluzioni accettabili per l'input $x$;
     \item $C_\Pi : I_\Pi \times O_\Pi \rightarrow \mathbb{Q}^{>0}$, funzione obiettivo, 
-    con $C_\Pi(x,y)$ si indica il valore della funzione obiettivo per l'input \emph{x}, con soluzione $y \in O_\Pi$
+    con $C_\Pi(x,y)$ si indica il valore della funzione obiettivo per l'input \emph{x}, con soluzione $y \in O_\Pi$;
     \item $t_\Pi \in \{min, \;max\}$, ovvero il criterio del problema.
 \end{enumerate}
-\begin{remark}
-    $Sol(x) = \{y^* \in O_\Pi | y^* \in F_\Pi, \forall y^\prime \in F_\Pi, c(x, y^*) \leqslant (\geq ) c(x, y^\prime)\}$
-\end{remark}
+L'insieme delle soluzioni per $x$ si può definire come:
+$$Sol(x) = \{y^* \in O_\Pi | y^* \in F_\Pi, \forall y^\prime \in F_\Pi, c(x, y^*) \leqslant (\geq ) c(x, y^\prime)\}$$
+Ovvero l'insieme delle $y$ possibili per quella fissata $x$, tale che minimizzano o massimizzano la funzione $C_\Pi$.
+
 \paragraph{Problema di decisione associato}
 Dato un problema di ottimizzazione $\Pi$ esiste un problema di decisione associato $\hat{\Pi}$.
 \\L'idea è quella di considerare un input del problema originale e un costo alla soluzione, e rispondere
@@ -131,9 +132,20 @@ in base all'esistenza di una soluzione con quel costo.\\
 In particolare: $$I_{\hat{\Pi}} = I_\Pi \times \mathbb{Q}^{>0}$$ 
 $$(x, \theta) = C_\Pi(x, y^*(x)) \leqslant (\geq ) \theta$$
 
+Ovvero, rispondo sì se e solo se il costo della soluzione ottima è minore, 
+o maggiore, di $\theta$.
+Pensando al problema MaxSat, che massimizza il numero di clausole risolte. 
+Posso considerare il problema di decisione associato, che preso in input 
+una CNF e un intero, risponde si, se esiste un assegnamento che soddisfa quel
+numero di clausole.
+
+Se avessi un algoritmo per il problema di ottimizzazione, avrei anche quello 
+di decisione, non vale il contrario, perché dovrei iterare tutti gli interi
+per capire il bound del problema di ottimizzazione.
+
 \subsubsection{Classi di ottimizzazione}
 Data una definizione di problema di ottimizzazione e individuato il problema di decisione 
-assocciato, si passa ora alla definizione delle classi di problemi di ottimizzazione, \emph{PO}
+associato, si passa ora alla definizione delle classi di problemi di ottimizzazione, \emph{PO}
 e \emph{NPO}.
 
 \paragraph{PO}
@@ -209,7 +221,7 @@ formalmente:
 \exists \rho \geq 1, A, \\\mathit{t.c\;} x\rightarrow A \rightarrow y(x)\;\mathit{con}\;R_\Pi(x, y) \leq \rho\}
     \end{aligned}
 \end{equation}
-La definizione di classe APX permette una stratificazione per $\rho$, si fa notare poi che APX 
+La definizione di classe APX permette una stratificazione per $\rho$, vale che APX 
 con valore 1 equivale alla classe PO.
 
 \paragraph{PTAS}
@@ -222,12 +234,12 @@ che si può decidere in modo arbitrario, formalmente:
 y \in F_\Pi, R_\Pi(x, y) \leq r, \\\mathit{polinomiale\;in\;} |x|\}
     \end{aligned}
 \end{equation}
-Si fa notare che r può essere molto vicino ad 1, ma il tempo polinomiale
+Si fa notare che $r$ può essere molto vicino ad 1, ma il tempo polinomiale
 potrebbe aumentare esponenzialmente.
 
 \subsubsection{BiMaxMatching}
 Si presenta ora un problema della classe PO, ovvero un problema di ottimizzazione
-per cui essite un algoritmo esatto in tempo polinomiale.
+per cui esiste un algoritmo esatto che opera in tempo polinomiale.
 
 \emph{Input}: grafo non orientato $G = (V,E)$\\
 \emph{Output}: matching $M \subseteq E$ tale che $\forall x\;\exists!\;xy \in M$\\
