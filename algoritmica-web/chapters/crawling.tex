@@ -144,3 +144,131 @@ Procedo a questo punto con la visita, dagli url contenuti in \emph{VIS}.
     in modo da risparmiare memoria, a patto di ordinare gli url di $F$ secondo il 
     loro hash e di effettuare i confronti sugli url hashati.
 \end{remark}
+
+\subsection{Crivelli}
+
+Un crivello è una struttura dati che accetta le seguenti primitive: 
+\begin{itemize}
+    \item \emph{add(u)}: aggiunge un url alla struttura;
+    \item \emph{get()}: preleva un elemento dalla struttura. 
+\end{itemize}
+Un crivello ha un aspetto insiemistico, ovvero ricorda cosa è stato inserito 
+o no, gestisce anche l'ordine in cui restituisce i dati, tipicamente 
+si considera una visita in ampiezza. 
+
+Un' implementazione base è un' hashtable in memoria, per i già visti, ovvero $V \cup F$, 
+e una coda in memoria per gestire l'ordine di visita, BFS nel caso di una coda classica.
+
+\begin{remark}
+    È necessario comunque del processing degli url estratti dal crivello, ad esempio, 
+    potremmo ordinarli per dominio, in modo da raggruppare richieste allo stesso sito.
+\end{remark}
+
+\paragraph{Implementazione}
+È già stata accennata la possibilità di avere una hashtable più una coda. 
+L'hashtable potrebbe, come introdotto a sottosezione precedente, solo le firme degli url, in modo da ridurre lo spazio in memoria necessario.
+
+\paragraph{Graceful degradation}
+È importante garantire il \emph{graceful degradation}, ovvero, il sovraccarico della 
+struttura ne peggiora le performance ma non fa crollare l'intero processo. 
+Una struttura dati classica, come una hashtable, non garantisce questa proprietà, 
+al termine della memoria essa fallisce.
+
+\subsubsection{Filtri di Bloom}
+Un filtro di Bloom è un dizionario approssimato, che garantisce una certa probabilità di errore positivo assumendo un certo upper bound al numero di chiavi inserite. 
+
+L'impronta in memoria di un filtro di questo tipo è costante, non varia quindi al variare 
+del carico della struttura.
+
+\paragraph{Funzionamento}
+
+Sia $b$ un vettore di $m$ bit, sia $d$ il parametro che regola la precisione del filtro,
+e $f_i : U \rightarrow m, 0 < i < d$ funzioni di hash che mappano un elemento dell'universo 
+in un indice del vettore. 
+
+Le primitive disponibili sono, dato $x \in U$: 
+\begin{itemize}
+    \item \emph{add(x)}: imposto ad uno le posizioni date dalle funzioni di hash, 
+    ovvero $f_0(x), \dots, f_{d-1}(x)$;
+    \item \emph{contains(x)}: restituisco l'and logico delle posizioni $b[f_i(x)]$.
+\end{itemize}
+
+L'operazione contains restituisce zero se e solo se $x$ non è stato inserito nel filtro. 
+Un risultato positivo però può significare che $x$ sia stato inserito oppure che 
+inserimenti precedenti abbiano settato ad uno tutte le celle relative agli hash di $x$.
+
+\paragraph{Probabilità di falsi positivi}
+Se fissiamo $d$ ad uno non si sta guadagnando rispetto ad una classica tabella di hash.
+Più $d$ è grande, più sono improbabili i falsi positivi, ma più uni si vanno ad aggiungere, quindi i falsi positivi aumentano.
+
+Bisogna quindi trovare un tradeoff tra $m$ e $d$ per minimizzare la probabilità di falsi positivi.
+Si considera ora un $n$, ovvero il numero di chiavi inserite. 
+
+Si ottiene che la probabilità di un falso positivo equivale a $\frac{1}{2}^d$ e la 
+dimensione $m = 1.44 dn$. 
+Questo implica che fissata una precisione e il numero di chiavi massimo, si può ottenere lo 
+spazio necessario, similmente, fissato $m$ e $n$ si può ottenere la precisione ottenuta.
+
+\begin{remark}
+    La struttura ha degrado grazioso, infatti, eccedendo $n$ l'analisi di precisione non vale più e 
+    i falsi positivi aumentano. Si nota anche che sotto la soglia $n$ la probabilità di falsi 
+    positivi diminuisce. 
+    La struttura non fallisce, peggiora in precisione fino a che è satura, restituendo sempre positivo.
+\end{remark}
+\begin{remark}
+    Gli accessi in cache sono pessimi per quanto riguarda un filtro di bloom, 
+    dovendo controllare celle di memoria non correlate e sostanzialmente casuali, 
+    quindi con poca probabilità di essere in cache.
+\end{remark}
+\begin{remark}
+    I risultati negativi in media accedono a solo due celle.
+\end{remark}
+
+\paragraph{Blocked Bloom filter}
+Si può pensare di dividere un filtro di Bloom in due filtri più piccoli di dimensione $1.44d\frac{n}{2}$ ciascuno.
+Una funzione $g$ sceglie quale filtro scegliere, poi, si inserisce l'elemento nel filtro selezionato.
+
+La divisione permette di mantenere i filtri in cache e velocizzare il tutto. 
+Un'analisi avanzata individua un degrado di precisione. Questo perché alcuni filtri 
+mantengono poche chiavi, ed altri saranno più sovraccarichi.
+
+\paragraph{Calcolo funzioni di hash}
+Supponendo di avere due funzioni di hash $h(x)$ e $g(x)$, siano $a = h(x)$ e 
+$b = g(x)$, considerando l'i-esima funzione di hash come $ai + b$, 
+l'analisi sulla precisione di falsi positivi rimane valida. 
+\begin{remark}
+    Il calcolo fatto in questo modo è estremamente più efficiente di calcolare 
+    $d$ funzioni separate. 
+\end{remark}
+
+\subsubsection{NoSQL}
+Un database di questo tipo mantiene coppie chiave-valore. 
+Il sovraccarico di un database di questo tipo lo rende più lento ma non meno preciso.
+
+\paragraph{LSM tree}
+Un \emph{Log-Structure-Merge} tree memorizza file di log in cui si scrive solo in append. 
+
+A differenza di un classico \emph{B-tree}, i registri non cambiano.
+Questi alberi funzionano molto bene quando si scrive molto e legge poco.
+
+L'idea di base di un \emph{LMS} tree è avere un certo numero di livelli nella struttura 
+dati. Idealmente i vari livelli possono essere mantenuti in mezzi di memorizzazione 
+differenti. 
+Si assume ora che il primo livello sia in memoria, in una struttura classica 
+come un B-tree e i successivi su disco come registri di coppie chiave-valore ordinate. 
+
+Ogni livello ha memorizzate un certo numero di coppie chiave-valore, ed ogni livello successivo occupa 
+dieci volte più del precedente. 
+
+Per trovare una chiave, si cerca nei livelli in maniera sequenziale, una volta individuata, 
+al livello più alto possibile\footnote{potrebbe comparire anche in livelli successivi, visto che si ammettono duplicati}
+
+L'aggiunta all'albero inserisce la chiave al livello zero. Se la chiave non è presente il B-tree sale di dimensione, se eccede la dimensione massima: 
+si considera un segmento contiguo di chiavi e si fondono con il livello uno\footnote{la fusione 
+è molto veloce essendo le due strutture ordinate}.
+Si procede fino a che non si trova un livello che riesce a mantenere le chiavi. 
+Se si raggiunge l'ultimo livello, se ne crea uno nuovo. 
+
+Il principio di base è che le fusioni dei livelli, che sono molto costose, avvengono sempre 
+più raramente allo scendere nell'albero.
+

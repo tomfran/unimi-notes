@@ -419,10 +419,10 @@ la ricerca del minimo con coda di priorità si ottiene $O(n\log(m))$.
 \end{theorem}
 \begin{proof}
     Si considerano $m > \frac{1}{\epsilon}$ macchine e $n = m(m-1) + 1$ task.\\
-    Tutti i task ad eccezzione dell'ultimo hanno lunghezza 1, mentre l'ulitmo ha lunghezza $m$.
+    Tutti i task ad eccezione dell'ultimo hanno lunghezza 1, mentre l'ultimo ha lunghezza $m$.
 
     L'assegnamento di Greedy Balance assegna tutte le task grandi 1 a tutte le macchine, 
-    infine si assegna l'ulitma task lunga $m$ a una macchina causale, visto che sono 
+    infine si assegna l'ultima task lunga $m$ a una macchina causale, visto che sono 
     tutte piene allo stesso modo. Il tempo totale è $L = 2m-1$.
 
     Esiste però un assegnamento migliore, ovvero, alla prima macchina si assegna la task lunga $m$, 
