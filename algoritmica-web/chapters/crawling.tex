@@ -74,7 +74,7 @@ associato ad ogni nodo.
     tempi di risposta, race condition, influenzano sull'ordine di visita effettivo.
 \end{remark}
 
-\subsection{Esempio strutture dati}
+\subsubsection{Esempio strutture dati}
 
 \paragraph{Visti hashati}
 Una prima idea per mantenere l'insieme $V$ è non memorizzare url completi ma una certa firma digitale 
@@ -108,42 +108,6 @@ altrimenti di dizionari classici, in parte memorizzati su disco.
 Si utilizzano anche LSM-Tree, alberi che dividono per livelli le chiavi e mantengono 
 chiavi utilizzate di frequente all'inizio, spostando chiavi poco frequenti nei 
 livelli più bassi.
-
-\paragraph{Memorizzazione offline} 
-Si mantengono solo file su disco e non strutture in memoria. 
-I file vengono ordinati e fusi spesso. In particolare, si hanno a disposizione: 
-\begin{itemize}
-    \item \emph{VIS}: url da visitare
-    \item \emph{F}: frontiera
-    \item \emph{V}: url visti
-\end{itemize}
-Il crawler accumula gli url che trova nelle pagine nel file $F$, 
-fino a che si terminano i siti da visitare, contenuti 
-in \emph{VIS}, oppure lo spazio su disco.
-
-A questo punto la frontiera viene ordinata e de-duplicata. 
-L'operazione è necessaria poiché il file potrebbe contenere duplicati, 
-visto che non esiste nessuna struttura 
-in memoria che impedisce l'aggiunta di ripetizioni.
-
-A questo punto si fondono i file \emph{F} e \emph{V}: 
-\begin{itemize}
-    \item Se un url sta in entrambi non faccio nulla;
-    \item Se trovo un url in $V$ ma non in $F$ non faccio nulla;
-    \item Se trovo un url in $F$ ma non in $V$, lo aggiungo a $V$ e 
-    a \emph{VIS}.
-\end{itemize}
-La fusione è lineare nella lunghezza dei file $F$ e $V$, poiché gli url sono in ordine lessicografico.
-Procedo a questo punto con la visita, dagli url contenuti in \emph{VIS}.
-\begin{remark}
-    Questa tecnica è utilizzata dal crawler Nutch, le operazioni su disco 
-    sono effettuate tipicamente da architetture distribuite quali map-reduce.
-\end{remark}
-\begin{remark}
-    È possibile mantenere all'interno di $V$ solo gli hash dei siti 
-    in modo da risparmiare memoria, a patto di ordinare gli url di $F$ secondo il 
-    loro hash e di effettuare i confronti sugli url hashati.
-\end{remark}
 
 \subsection{Crivelli}
 
@@ -241,16 +205,13 @@ l'analisi sulla precisione di falsi positivi rimane valida.
     $d$ funzioni separate. 
 \end{remark}
 
-\subsubsection{NoSQL}
-Un database di questo tipo mantiene coppie chiave-valore. 
-Il sovraccarico di un database di questo tipo lo rende più lento ma non meno preciso.
-
-\paragraph{LSM tree}
+\subsubsection{LMS tree}
 Un \emph{Log-Structure-Merge} tree memorizza file di log in cui si scrive solo in append. 
 
 A differenza di un classico \emph{B-tree}, i registri non cambiano.
 Questi alberi funzionano molto bene quando si scrive molto e legge poco.
 
+\paragraph{Livelli}
 L'idea di base di un \emph{LMS} tree è avere un certo numero di livelli nella struttura 
 dati. Idealmente i vari livelli possono essere mantenuti in mezzi di memorizzazione 
 differenti. 
@@ -260,11 +221,17 @@ come un B-tree e i successivi su disco come registri di coppie chiave-valore ord
 Ogni livello ha memorizzate un certo numero di coppie chiave-valore, ed ogni livello successivo occupa 
 dieci volte più del precedente. 
 
-Per trovare una chiave, si cerca nei livelli in maniera sequenziale, una volta individuata, 
-al livello più alto possibile\footnote{potrebbe comparire anche in livelli successivi, visto che si ammettono duplicati}
+\paragraph{Ricerca}
+Per trovare una chiave, si cerca nei livelli in maniera sequenziale, 
+una volta individuata, al livello più alto possibile\footnote{Potrebbe comparire 
+anche in livelli successivi, visto che si ammettono duplicati}, si restituisce.
+Visto che le chiavi sono ordinate, si potrebbe effettuare una ricerca 
+dicotomica\footnote{Bisogna stare attenti al tipo di memoria, a volte accessi sequenziali 
+sono molto più veloci di accessi aleatori, un esempio è nel nastro.}.
 
+\paragraph{Inserimento}
 L'aggiunta all'albero inserisce la chiave al livello zero. Se la chiave non è presente il B-tree sale di dimensione, se eccede la dimensione massima: 
-si considera un segmento contiguo di chiavi e si fondono con il livello uno\footnote{la fusione 
+si considera un segmento contiguo di chiavi e si fondono con il livello uno\footnote{La fusione 
 è molto veloce essendo le due strutture ordinate}.
 Si procede fino a che non si trova un livello che riesce a mantenere le chiavi. 
 Se si raggiunge l'ultimo livello, se ne crea uno nuovo. 
@@ -272,3 +239,64 @@ Se si raggiunge l'ultimo livello, se ne crea uno nuovo.
 Il principio di base è che le fusioni dei livelli, che sono molto costose, avvengono sempre 
 più raramente allo scendere nell'albero.
 
+\paragraph{Rimozione}
+La rimozione consiste nella ricerca della chiave e nella sostituzione del suo 
+valore con una \emph{tombstone}. Una ricerca successiva troverà questo valore e capirà 
+che la chiave è stata rimossa.
+
+\paragraph{Frammentazione livelli}
+Ogni livello nella pratica è frammentato in tanti file piccoli. Questo offre 
+molti vantaggi, ad esempio operazioni di merge parallele. Inoltre, favorisce 
+l'evitare collisioni di concorrenza. 
+
+La ricerca poi è più veloce, poiché è 
+possibile mantenere un indice sparso, con un sottoinsieme di chiavi, con puntatori 
+ai frammenti relativi alla chiave. Ogni livello ha poi un filtro di Bloom.
+La ricerca quindi testa il filtro e se la risposta è negativa si procede al 
+livello successivo, altrimenti, si controlla l'indice sparso in ricerca dicotomica, 
+e si procede sequenzialmente dalla maggior chiave minore uguale di quella ricercata.
+
+\subsubsection{Memorizzazione offline} 
+Si mantengono solo file su disco e non strutture in memoria. 
+I file vengono ordinati e fusi spesso. In particolare, si hanno a disposizione: 
+\begin{itemize}
+    \item \emph{VIS}: url da visitare
+    \item \emph{F}: frontiera
+    \item \emph{V}: url visti
+\end{itemize}
+Il crawler accumula gli url che trova nelle pagine nel file $F$, 
+fino a che si terminano i siti da visitare, contenuti 
+in \emph{VIS}, oppure lo spazio su disco.
+
+A questo punto la frontiera viene ordinata e de-duplicata. 
+L'operazione è necessaria poiché il file potrebbe contenere duplicati, 
+visto che non esiste nessuna struttura 
+in memoria che impedisce l'aggiunta di ripetizioni.
+
+A questo punto si fondono i file \emph{F} e \emph{V}: 
+\begin{itemize}
+    \item Se un url sta in entrambi non faccio nulla;
+    \item Se trovo un url in $V$ ma non in $F$ non faccio nulla;
+    \item Se trovo un url in $F$ ma non in $V$, lo aggiungo a $V$ e 
+    a \emph{VIS}.
+\end{itemize}
+La fusione è lineare nella lunghezza dei file $F$ e $V$, poiché gli url sono in ordine lessicografico.
+Procedo a questo punto con la visita, dagli url contenuti in \emph{VIS}.
+\begin{remark}
+    Questa tecnica è utilizzata dal crawler Nutch, le operazioni su disco 
+    sono effettuate tipicamente da architetture distribuite quali map-reduce.
+\end{remark}
+\begin{remark}
+    È possibile mantenere all'interno di $V$ solo gli hash dei siti 
+    in modo da risparmiare memoria, a patto di ordinare gli url di $F$ secondo il 
+    loro hash e di effettuare i confronti sugli url hashati.
+\end{remark}
+
+\subsubsection{LRU cache}
+Può essere una buona idea anteporre al crivello una cache LRU, questo rimuove 
+molti duplicati, infatti se un url è all'interno della cache è già stato inserito 
+all'interno del crivello. 
+
+Ogni tanto un url verrà inserito più volte, perché finito fuori dalla cache.
+
+\subsection{Paralelizzazione}
