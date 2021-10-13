@@ -1,0 +1,39 @@
+\section{Retrieval}
+L'attenzione passa ora alle pagine scaricate. 
+Ogni documento è numerato e contiene una certa quantità di caratteri, l'obiettivo 
+ora è indicizzarli.
+
+\begin{remark}
+    Tipicamente bisogna fare guessing per capire la codifica del testo, esistono 
+    tabelle dedicate a questo in ogni browser.
+\end{remark}
+
+\paragraph{Segmentazione dei documenti}
+Partendo da un documento di ottengono sequenze di token, in qualche modo, per esempio 
+spezzando il testo agli spazi, rimuovendo le stop-words etc.
+Tipicamente si applicano operazioni di normalizzazione, come troncamento, lemmatizzazione, etc.
+
+\paragraph{Matrice termini-documenti}
+Ordinando la totalità dei termini nei documenti si può ottenere una rappresentazione
+matriciale con documenti sulle colonne e termini per righe. Una cella indica 
+la presenza o meno di una certa parola nel testo di un documento.
+
+Quello che si fa poi è creare la trasposta ordinata, ovvero una matrice che 
+per ogni token ha una lista di interi che rappresentano i documenti in cui esso 
+è contenuto.
+
+\subsection{Codici istantanei}
+
+Un codice è un sottoinsieme di parole binarie: $C \subseteq 2^* = \{0,1\}^*$.
+
+\begin{definition}
+    Si dice che $x$ è un prefisso di $y$, $x \preceq y$ se $\exists z \in 2^*\;t.c.\;xz = y$, ovvero se concatenato ad un altra parola binaria ottengo $y$.    
+\end{definition}
+
+\begin{definition}
+    Due parole $x$ e $y$ sono confrontabili se $x \preceq y$ oppure $y \preceq x$.
+\end{definition}
+
+\begin{definition}
+    Un codice $C$ si dice istantaneo se $\forall x,y$, $x$ e $y$ sono inconfrontabili, ovvero privo di prefissi.
+\end{definition}

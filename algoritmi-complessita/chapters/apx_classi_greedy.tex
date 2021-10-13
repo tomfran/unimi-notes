@@ -528,7 +528,7 @@ $\rho^*$, ovvero la soluzione ottima.
     \begin{enumerate}
         \item se l'algoritmo emette un $C$, l'approssimazione è $\leq \frac{2r}{\rho^*}$
         \item se $r \geq \rho^*$, l'algoritmo emette un output
-        \item se il risultato è impossibile, allora $r \leq \rho^*$
+        \item se il risultato è impossibile, allora $r < \rho^*$
     \end{enumerate}
 \end{theorem}
 \begin{proof}
@@ -601,7 +601,7 @@ aggiungere a $C$ il punto piu sfortunato, ovvero quello con distanza dai centri 
     \begin{equation}
         \begin{aligned}
             d(\bar{s}_i,\bar{C}_i)&\geq d(\hat{s},\bar{C}_i) && \text{per massimizzazione}\\
-            d(\hat{s},\bar{C}_i) &\leq d(\hat{s}, C) \leq 2\rho^*
+            d(\hat{s},\bar{C}_i) &\geq d(\hat{s}, C) \geq 2\rho^* && \text{poichè espando C e per ipotesi}
         \end{aligned}
     \end{equation}
     Questo caso coincide con le prime $k$ iterazioni di Center Selection Plus con $r = \rho^*$.

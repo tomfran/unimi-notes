@@ -299,4 +299,165 @@ all'interno del crivello.
 
 Ogni tanto un url verrà inserito più volte, perché finito fuori dalla cache.
 
-\subsection{Paralelizzazione}
+\subsection{Quasi duplicati}
+Per molteplici ragioni, è possibile incontrare spesso le stesse pagine, 
+per esempio, la stessa pagina con http e https, pagine che differiscono per una 
+sola data, etc.
+
+È necessario un sistema che decida se due pagine sono quasi identiche.
+
+\paragraph{Digest}
+Si puo generare un digest dalla pagina web, buttando via alcuni elementi, 
+per esempio i tag html, le maiuscole, etc.
+Si può anche campionare la pagina in qualche intervallo e memorizzare solo 
+i campionamenti.
+
+Una volta generati questi digest saranno inseriti in un filtro di Bloom.
+
+\paragraph{SimHash}
+L'idea di base è generare hash simili per testi simili. La distanza tra due testi 
+si misura in distanza di Hamming.
+Si risolvono problemi come ad esempio il considerare due pagine diverse per un 
+singolo errore ortografico.
+
+A partire dal testo si ottengono delle feature da esso. Un esempio potrebbe essere 
+estrarre le parole, oppure considerare tre-gram da esso, ovvero sotto-sequenze di tre 
+caratteri o magari tre parole alla volta, etc.
+N-gram corti implicano il non considerare troppo importanti errori di ortografia.
+
+Siano ora $s \in S$ le feature estratte e $h : \mathit{Stringhe} \rightarrow 2^b$ funzione 
+di hash.
+Consideriamo ora il valore di hash per ogni feature, $h(s)$, l'hash finale del documento 
+si ottiene contando la maggioranza per ogni bit degli hash delle feature, per esempio: 
+\begin{itemize}
+    \item $s_0$ : $1,0,1,1,0$;
+    \item $s_1$ : $0,1,0,0,1$;
+    \item $s_2$ : $0,1,0,1,1$;
+\end{itemize}
+L'hash finale del documento sarà: $0, 1, 0, 1, 1$
+
+Il calcolo effettuato in questo modo sistema i casi di poche differenze tra i testi, 
+dipende ovviamente dalle feature che si considerano, ma è auspicabile che poche 
+feature differenti tra due documenti non modifichino i voti di maggioranza, oppure, che influiscano su pochi bit. 
+
+\subsection{Politeness}
+
+Dal punto di vista etico, una persona che mette una pagina sul web 
+deve accettare che sarà visitata, da umani. 
+
+La visita e l'indicizzazione automatica tramite crawler non dovrebbe 
+continuare per periodi troppo prolungati.
+
+\paragraph{Politeness assoluta}
+Intervallare di un certo numero di secondi le richieste consecutive ad 
+un sito, oppure allo stesso ip. Esempio, faccio 10 richieste, pausa di qualche secondo, altre 10 richieste.
+
+\paragraph{Politeness relativa}
+Per un certo intervallo di tempo scarico tutto quello che posso. Poi mi 
+adatto in base a come la pagina ha risposto, ad esempio, 
+scarico per un secondo tutto quello che riesco, ma la pagina impiega 
+10 secondi a rispondere, aspetto quindi 30 secondi prima di effettuare 
+una nuova richiesta.
+
+Potrei usare HTTP 1.1, per mantenere aperta la connessione. 
+
+\begin{remark}
+    È necessario quindi un'architettura multiflusso per raccogliere dati 
+    da molti siti contemporaneamente, altrimenti si aspetterebbe molto 
+    per ragioni di politeness e si diventerebbe troppo dipendenti 
+    dall'ordine della coda dei siti da visitare, infatti, dovrei aspettare 
+    se il prossimo sito fosse nello stesso dominio di quello attuale, no altrimenti.
+\end{remark}
+
+\paragraph{Robots.txt}
+File che deve comparire nella radice di un sito web dove si possono 
+escludere parti di sito da visitare.
+Se uno ignorasse i contenuti del file probabilmente sarebbe bannato. 
+
+\subsection{Concorrenza}
+Ogni host estratto dal crivello ha una coda con gli url relativi ad esso. 
+Bisogna quindi ora capire quale host considerare e visitarne gli url associati.
+
+Visite ad host diversi possono essere fatte in concorrenza, per capire 
+quale host è disponibile, secondo le regole di politeness, si utilizza una priority queue.
+
+\subsubsection{Componenti di un crawler}
+
+\paragraph{Coda di host}
+Si considera una coda di host, ordinati per tempo da aspettare 
+prima di poter scaricare dal sito. 
+
+Se il sito in testa ha tempo minore uguale a quello attuale esso si estrae, 
+si scaricano tutti i siti che si riescono da quell'host, poi si reinserisce 
+in coda con timestamp uguale al tempo attuale più intervallo di politeness.
+
+La coda è gestita da un semaforo per permettere concorrenza.
+
+\begin{remark}
+    Considerando una dimensione massima per la coda potrei dover
+    escludere dei siti se il timer crescesse troppo. Sta a chi progetta 
+    il crawler decidere se potare la coda nel caso in cui cresca troppo in 
+    memoria.
+\end{remark}
+
+\paragraph{Coda di ip}
+Il discorso si complica nel caso si considerino gli ip. 
+Si considera una coda di ip con un timestamp,\footnote{Si può assumere
+un timer di politeness di 10 secondi.}, ogni ip ha una coda di host 
+come quella presentata in precedenza.
+Il timestamp dell'ip equivale al massimo tra il timestamp suo e quello 
+della testa della sua coda di host.
+
+Una volta individuato l'ip da estrarre si estrae dalla coda e si procede 
+come in precedenza.
+
+Questo garantisce di rispettare la politeness anche verso ip con molti 
+host associati.
+
+\paragraph{Fetching e parsing threads}
+Nella pratica ci sono fetching thread che scaricano secondo le policy descritte 
+negli ultimi due paragrafi, che scrivono anche su disco.
+
+I parsing thread poi, molto minori rispetto a quelli di fetching, 
+si occupano di processare i dati scaricati.
+Quello che fanno è scrivere da qualche parte i dati, cercare gli 
+url nuovi e passarli al crivello.
+
+\begin{remark}
+    Si potrebbero inserire filtri tra fetching e parsing threads, per evitare 
+    di processare alcune pagine troppo lunghe, troppo corte, di lingua differente etc.
+\end{remark}
+
+\subsubsection{Strutture concorrenti}
+
+Non è auspicabile utilizzare strutture bloccanti basate su semafori poichè i thread 
+paralleli sono troppi, quindi moltissimi sarebbero costretti ad aspettare lo 
+sblocco della struttura condivisa.
+
+\paragraph{CAS}
+L'istruzione compare and swap, cas(p,a,b), assegna il valore $b$ al puntatore $p$ se il suo contenuto è $a$. È atomica ed utilizzata per implementare concorrenza.
+
+\paragraph{Linked list lock-free}
+L'inserimento in una linked list lock-free cerca la posizione dove si vuole inserire, e si inserisce con compare and swap.
+
+L'algoritmo ripete l'assegnamento quando due thread stanno modificando in maniera 
+concorrente lo stesso nodo, infatti la cas di uno dei due fallisce.
+
+Non si possono prevedere quante iterazioni del ciclo ci vorranno, ma ad ogni 
+iterazione si ha del progresso verso la fine delle operazioni, visto che se il thread 
+attuale fallisce è perché un'altro ha avuto accesso alla struttura.
+
+Non si sta avendo nè deadlock ne starvation, infatti la struttura sta facendo progresso. 
+È un concetto leggermente diverso dal busy waiting, poiché sebbene si stia facendo polling, la struttura sta evolvendo e non è ferma.
+
+\begin{remark}
+    Una coda lock-free potrebbe essere inserita tra fetching threads e la coda di host, 
+    che regola l'ordine di visita attuale. Questa coda potrebbe influenzare l'ordine 
+    di visita regolato dalla coda a priorità di host.
+\end{remark}
+
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{images/crawling}
+    \caption{Componenti di un crawler}
+\end{figure}
+\newpage
