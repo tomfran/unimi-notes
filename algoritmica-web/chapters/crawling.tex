@@ -460,4 +460,82 @@ Non si sta avendo nè deadlock ne starvation, infatti la struttura sta facendo p
     \includegraphics[width=\textwidth]{images/crawling}
     \caption{Componenti di un crawler}
 \end{figure}
+
+\subsection{Parallelismo}
+
+\paragraph{Coordinazione agenti}
+È auspicabile avere più agenti che fanno attività di crawling in parallelo, 
+bisogna pensare a come distribuire il carico, un'esempio potrebbe essere quello di 
+dividere per host.
+
+Fare ciò non è molto efficiente, si può ricorrere a qualcosa di centralizzato.
+Ogni agente chiede al coordinatore se tocca a lui occuparsi di un determinato host. 
+Ovviamente è un single point of failure, si può pensare quindi di avere una distribuzione
+del coordinatore\footnote{Un algoritmo possibile è PAXOS, una delle sue implementazioni 
+è ZOOKEEPER}. Non si affronterà un algoritmo del genere, si vede ora un altro approccio.
+
+\paragraph{Gestione statica}
+Tolta la condizione di rottura degli agenti, quindi assumendo staticità, assegnare 
+un url ad un agente richiede calcolare una funzione di hash modulo n, oppure 
+sfruttare un approccio round robin. 
+
+Il problema di questo approccio è che non funziona bene se gli agenti cambiano nel tempo.
+
+\paragraph{Requisiti di gestione dinamica}
+
+P agenti
+
+A agenti vivi $\subset$ B 
+$\delta_A : U \rightarrow A$
+
+$\delta_A(u) \in A$
+
+$\delta_A^{-1}(a) \approx \frac{|U|}{|A|}$
+
+$A \subset B \implies \delta_B^{-1}(a) \subset \delta_A^{-1}(a) \forall a \in A$
+
+\subsubsection{Permutazioni aleatorie}
+Arrivato un url, creo un generatore di numeri casuali con seed pari a u. 
+Permuto l'insieme $P$ di agenti e scorro finché non trovo un agente attivo $a \in A$.
+
+Se si aggiunge un nuovo agente, gli unici url che cambiano assegnamento 
+sono quelli che hanno nella lista degli agenti generata per essi, hanno un  nuovo agente che precede quello attivo selezionato precedentemente.
+Quindi, gli url che cambiano posto vanno solo ad agenti nuovi.
+
+\paragraph{Knuth-Fisher–Yates shuffle}
+Parto da un array lungo $n$.
+Scorro l'array, all'$i$-esimo passo, seleziono una posizione $k \in [i, n-1]$ e 
+scambio l'elemento $k$ e $i$.
+
+Sono possibili $n!$ scelte, l'algoritmo genera in modo equiprobabile una permutazione possibile.
+
+Si nota che, una volta individuato un elemento di $A$ posso fermarmi, tanto sarà
+lui a gestire l'url. 
+In media quindi effettuo $\frac{|A|}{|P|}$ scambi.
+
+\paragraph{Min-hash}
+Sia $u$ un url e $A$ l'insieme degli agenti, $h$ una funzione di hash. 
+Un url viene assegnato all'agente $a = \argmin_{a\in A}\;h(u,a)$.
+
+Una collisione si risolve in maniera deterministica. Questo e l'approccio
+precedente sono molto simili.
+
+\paragraph{Hashing coerente}
+Un'interpretazione geometrica  è  la seguente: 
+si considera una circonferenza, per ogni agente si inseriscono $C$ punti casuali 
+sulla circonferenza. 
+Ogni agente inizializza un seed con l'identificativo degli altri, 
+generando casualmente i loro punti, quindi ogni agente ha la stessa circonferenza 
+con $C$ punti per ogni $a \in A$.
+
+Per capire dove va un url $u$, si parte dal punto definito da $h(u)$, si procede in senso orario finché non si incontra un agente.
+Le repliche servono a rendere più bilanciati gli assegnamenti.
+
+\begin{remark}
+    È possibile in generale capire chi si occupava dell'url prima dell'arrivo di un 
+    nuovo agente, l'approccio cambia a seconda della tecnica di hashing utilizzata, 
+    nello shuffle basta procedere con l'estrazione, nel min-hashing si può mantenere 
+    una finestra di k minimi. Nell'ultimo caso si può procedere nello scan della 
+    circonferenza. 
+\end{remark}
 \newpage

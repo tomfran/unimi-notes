@@ -35,5 +35,91 @@ Un codice è un sottoinsieme di parole binarie: $C \subseteq 2^* = \{0,1\}^*$.
 \end{definition}
 
 \begin{definition}
-    Un codice $C$ si dice istantaneo se $\forall x,y$, $x$ e $y$ sono inconfrontabili, ovvero privo di prefissi.
+    Un codice $C$ si dice istantaneo se $\forall x,y \in C$, $x$ e $y$ sono inconfrontabili, ovvero privo di prefissi.
 \end{definition}
+
+\begin{definition}
+    Un codice $C$ si dice completo se ogni parola binaria è confrontabile 
+    con una parola $x \in C$. Ovvero, aggiungendo una qualsiasi parola binaria, 
+    il codice non è più istantaneo.
+\end{definition}
+
+\paragraph{Motivazioni}
+Memorizzare sequenze di interi ordinate in maniera crescente può essere fatto in maniera
+efficiente memorizzando gli scarti, differenze, tra due interi consecutivi.
+$$1, 6, 7, 10, 12 \longrightarrow 1, 5, 1, 3, 2$$
+Queste liste potrebbero essere le righe della matrice termini-documenti.
+
+Un'altra proprietà interessante di un codice istantaneo è l'univocità di decodifica 
+scorrendo una sequenza di parole concatenate. 
+Infatti, visto che nessuna parola è prefisso di un'altra, ho un solo modo di decodificare una 
+sequenza di zeri e uni.
+
+\paragraph{Ordinamento nei codici istantanei}
+Due esempi di codici istantanei sono:
+\begin{itemize}
+    \item $k = 0^k1$
+    \item $k = 1^k0$
+\end{itemize}
+Il secondo codice mantiene l'ordine, il secondo no.
+
+\paragraph{Importanza della completezza}
+Se un codice è istantaneo e completo si può decodificare ogni stringa binaria 
+casuale in modo univoco, altrimenti no.
+
+\subsubsection{Disuguaglianza di Kraft-Mcmillan}
+
+\begin{definition}
+    Sia $C$ un codice istantaneo, vale: 
+    $$\sum_{w \in C} \frac{1}{2^{|w|}} \leq 1$$
+\end{definition}
+Se $C$ istantaneo, $C$ è anche completo sse $\sum_{w \in C} \frac{1}{2^{|w|}} = 1$.
+Nell'interpretazione geometrica\footnote{Vedi dimostrazione} non sarebbe
+libero nessun intervallo. 
+
+\begin{remark}
+    Il fatto che la sommatoria dia un valore piccolo non dice nulla su un linguaggio 
+    qualsiasi, non è vera quindi l'implicazione inversa.
+\end{remark}
+
+\paragraph{Teorema interi}
+Siano $t_0 \leq t_1 \leq \dots \leq t_n$ interi, se vale:
+$$\sum_{i \in N} \frac{1}{2^{t_i}} \leq 1$$
+Allora esiste un codice istantaneo con $n$, dove la parola i-esima ha lunghezza $t_i$.
+
+Questo fatto rende possibile un'eventuale correzione, infatti, se avessi un codice con quelle lunghezze 
+ma non fosse istantaneo, so che potrei sistemarlo.
+
+\paragraph{Visione probabilistica}
+La quantità $\frac{1}{2^{|w|}}$ si può vedere come una probabilità, visto che nel caso 
+in cui un codice sia istantaneo tutte quelle quantità si sommano ad uno.
+
+Potrei pensare di codificare probabilità maggiori a parole più corte. 
+La disuguaglianza di prima, e l'algoritmo greedy associato\footnote{Non presentato qui, ma simile a Huffman}
+genera il codice ottimo per una distribuzione di probabilità del tipo $\frac{1}{2}, \frac{1}{4}, \dots, \frac{1}{2^k}$.
+
+\subsubsection{Codice $\gamma$}
+
+Ogni numero, sarà scritto in binario, preceduto dalla sua rappresentazione unaria.
+L'uno finale della rappresentazione unaria si butta, oppure il primo uno della 
+rappresentazione binaria.
+\begin{center}
+    \begin{tabular}{|l | r | r |}
+        \hline
+        Numero & Codifica $\gamma$ & Unario\\
+        \hline
+        1 & 1 & 1\\
+        2 & 010 & 01\\
+        3 & 011 & 001\\ 
+        4 & 00100 & 0001\\ 
+        5 & 00101 & 00001\\ 
+        6 & 00110 & 000001\\ 
+        \dots & \dots & \dots\\
+        \hline
+    \end{tabular}
+\end{center}
+
+La lunghezza di $x$ nella codifica $\gamma$ è $2\lambda(x) + 1$, dove $\lambda$ è
+$\lfloor \log_2 x\rfloor$.
+In binario invece spenderei $\lambda(x)$, ma non è istantaneo. In unario invece 
+spendo una quantità pari a $x$, che in casi in cui i numeri siano piccoli va bene, altrimenti no.
