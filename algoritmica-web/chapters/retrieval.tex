@@ -98,11 +98,23 @@ Potrei pensare di codificare probabilità maggiori a parole più corte.
 La disuguaglianza di prima, e l'algoritmo greedy associato\footnote{Non presentato qui, ma simile a Huffman}
 genera il codice ottimo per una distribuzione di probabilità del tipo $\frac{1}{2}, \frac{1}{4}, \dots, \frac{1}{2^k}$.
 
-\subsubsection{Codice $\gamma$}
+\subsection{Esempi di codici}
 
-Ogni numero, sarà scritto in binario, preceduto dalla sua rappresentazione unaria.
-L'uno finale della rappresentazione unaria si butta, oppure il primo uno della 
-rappresentazione binaria.
+\subsubsection{Codici binari}
+
+\paragraph{Notazione binaria ridotta}
+Codice binario in cui si rimuove il primo 1. Per esempio: $$1001010 \rightarrow 001010$$
+
+\paragraph{Codice binario minimale} 
+Sia $s = \lceil \log k \rceil$, se $x < 2^s - k$, esso è codificato dall'$x$-esima parola binaria
+di lunghezza $s-1$, altrimenti tramite la $(x-k + 2^s)$-esima parola binaria di lunghezza $s$.
+
+
+
+\subsubsection{Elias}
+
+\paragraph{Codice $\gamma$}
+Ogni numero è scritto in notazione binaria ridotta, ovvero in binario senza il primo uno, preceduto dalla sua rappresentazione unaria.
 \begin{center}
     \begin{tabular}{|l | r | r |}
         \hline
@@ -123,3 +135,102 @@ La lunghezza di $x$ nella codifica $\gamma$ è $2\lambda(x) + 1$, dove $\lambda$
 $\lfloor \log_2 x\rfloor$.
 In binario invece spenderei $\lambda(x)$, ma non è istantaneo. In unario invece 
 spendo una quantità pari a $x$, che in casi in cui i numeri siano piccoli va bene, altrimenti no.
+
+\paragraph{Codice $\delta$}
+Molto simile al precedente, invece che usare l'unario, 
+scrivo davanti alla rappresentazione binaria ridotta la lunghezza 
+del codice $\gamma$ associato all'x-esimo numero.
+
+Confrontando i codici visti fin'ora: 
+\begin{center}
+    \begin{tabular}{|l | l |}
+        \hline
+        Codifica & Lunghezza\\
+        \hline
+        Unario & $x+1 = O(x)$\\
+        Elias $\gamma$ & $2\lambda (x+1) + 1 = 2\log (x+1) + 1$\\
+        Elias $\delta$ & $x$\\ 
+        \hline
+    \end{tabular}
+\end{center}
+
+Il codice $\delta$ sui dice asintoticamente ottimo, visto che utilizza 
+un numero logaritmico di bit più qualcosa di più piccolo. 
+Nel lungo termine risparmia rispetto agli altri due codici.
+
+\subsubsection{Golomb}
+
+Si fissa un parametro $b$ che si dice modulo del codice. Preso un 
+$x > 0$ si codifica in unario la quantità $\lfloor x/ b \rfloor$, 
+seguito dalla binaria minimale di $x\;\textit{mod}\;b$.
+
+Dato un codice, posso tornare al numero con $b\lfloor x/ b \rfloor + x\;\textit{mod}\;b$.
+
+Fissato $b = 3$, il codice diventa 
+
+\begin{center}
+    \begin{tabular}{|l | r | r |}
+        \hline
+        Numero & Codifica Golomb \\
+        \hline
+        0 & 10\\
+        1 & 110\\
+        2 & 111\\ 
+        3 & 010\\ 
+        4 & 0110\\ 
+        5 & 0111\\ 
+        \dots & \dots\\
+        \hline
+    \end{tabular}
+\end{center}
+
+\begin{remark}
+    Golomb con $b = 1$ la prima parte del codice equivale all'unario. Inoltre, questo codice ha problemi simili all'unario, 
+    la prima parte infatti cresce asintoticamente come $x$, 
+    nella pratica è minore, ma comunque occupa molto spazio. 
+\end{remark}
+
+\subsubsection{Codici a blocchi a lunghezza variabile}
+Quello che si fa è memorizzare tanti blocchi per un singolo 
+numero. Il primo bit di ogni byte contiene il fatto che 
+il codice è terminato oppure no. Nel caso in cui non sia terminato 
+bisogna leggere uno o più altri byte per completarlo. 
+
+Un miglioramento è mettere tutti i bit \emph{di continuazione} 
+nel primo byte, per capire fin da subito quanto proseguire.
+
+Sio può pensare dal punto di vista logico ad una lista concatenata 
+che contiene pezzi di un numero, la decodifica consiste nello scorrere 
+la lista e concatenare i valori in ogni nodo.
+
+\subsubsection{Distribuzione intesa}
+Ogni codice crea implicitamente una distribuzione intesa, 
+ovvero parole più corte hanno probabilità maggiore, quindi, si 
+può studiare come varia questa probabilità in relazione alla lunghezza 
+che assumono le parole nei vari codici.\footnote{Vedi appunti, distribuzioni intese.}
+
+Conoscendo la distribuzione di probabilità dei dati si può utilizzare 
+
+\subsubsection{PFOR-DELTA}
+Compressione che funziona molto bene quando numeri piccoli compaiono 
+molto più frequentemente di quelli grandi.
+
+Si fissa una dimensione di blocco $B \approx 256$, la compressione avviene 
+per blocchi di $B$ elementi alla volta.
+Quello che si fa è scorrere gli elementi di un blocco e scegliere 
+un numero di bit $b$ che rappresenti almeno una percentuale $\alpha \approx 90\%$ della totalità dei numeri del blocco. 
+
+\paragraph{Compressione}
+A questo punto scorro la lista, 
+se un numero è rappresentabile in $b$ bit lo scrivo, altrimenti 
+scrivo un codice di escape, per esempio tutti uni o zeri.\footnote{Necessito quindi di un valore libero per questo codice nei $b$ bit.} Accodo alla fine i numeri non rappresentabili, tutti a lunghezza $a$,
+la minima per rappresentarli tutti.
+All'inizio della lista inserisco il numero $b$ e il valore $a$.
+
+\paragraph{Decompressione}
+La decompressione della lista è lineare, bastano due puntatori, uno all'inizio e uno che parte 
+prima dei numeri accodati.
+Si ottiene una buona compressione, $b$ viene molto piccolo se tanti valori sono piccoli, inoltre nell'$alpha$-percento dei casi 
+non devo accedere alla memoria accodata alla lista, che è la parte più 
+costosa della decompressione.
+

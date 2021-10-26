@@ -343,11 +343,14 @@ in quell'istante.
     \begin{equation}
         \begin{aligned}
             \sum_{e \in E} l_1(e) - \sum_{e \in E} l_2(e)&= \sum_{e \in E} (l_1(e) - l_2(e))\\
-            &= \sum_{e \in E} (l_1(e) - l_2(e)) = \sum_{e \in \Pi} (\beta l_1(e) - l_2(e))\\
+            &= \sum_{e \in \Pi} (l_1(e) - l_2(e)) = \sum_{e \in \Pi} (\beta l_1(e) - l_2(e))\\
             &= \sum_{e \in \Pi} (\beta -1)l_1(e) = (\beta -1) \sum_{e \in \Pi} l_1(e)\\
             &= (\beta -1)l(\Pi) \leq (\beta -1)\beta^c \leq \beta^{c+1}
         \end{aligned}
     \end{equation}
+    Ovvero, le uniche lunghezze che cambiano sono quelle relative al cammino $\Pi$ poi, 
+    il cammino selezionato è corto, quindi la sommatoria delle lunghezze sul cammino è minore di 
+    $\beta^{c}$.
     Considerando l'inizio della dimostrazione, visto che ad ogni passo la lunghezza aumenta di al 
     massimo $\beta^{c+1}$, il lemma vale.
 \end{proof}
@@ -357,7 +360,7 @@ in quell'istante.
     \begin{equation}
         \begin{aligned}
             \sum_{i \in I^* \setminus I} \bar{l}(\Pi_i^*) \geq \beta^c|I^* \setminus I| && \text{dal lemma \ref{ldis1}}\\
-            \sum_{i \in I^* \setminus I} \bar{l}(\Pi_i^*) \leq c\sum_{e \in E} \bar{l}(e) \leq c(\beta ^{c+1}|\bar{I} + m|)
+            \sum_{i \in I^* \setminus I} \bar{l}(\Pi_i^*) \leq c\sum_{e \in E} \bar{l}(e) \leq c(\beta ^{c+1}|\bar{I}| + m)
             && \text{per il lemma \ref{ldis2}}
         \end{aligned}
     \end{equation}
