@@ -316,7 +316,9 @@ in quell'istante.
 
 \begin{lemma}
     \label{ldis1}
-    Se $i \in I^* \setminus I$, allora $\bar{l}(\Pi_i^*) \geq \beta^c$
+    Se $i \in I^* \setminus I$, allora $\bar{l}(\Pi_i^*) \geq \beta^c$, ovvero,
+    se una certa coppia $i$ appartiene alla differenza tra la nostra e la soluzione ottima, 
+    la lunghezza del cammino nella soluzione ottima è maggiore uguale di $\beta ^c$.
 \end{lemma}
 \begin{proof}
     Se valesse $\bar{l}(\Pi_i^*) < \beta^c$, il cammino $\Pi_i^*$ sarebbe corto e
@@ -330,7 +332,8 @@ in quell'istante.
 \end{lemma}
 \begin{proof}
     All'inizio dell'algoritmo, $\sum_{e \in E} l(e) = m$.
-    Consideriamo ora le due funzioni di lunghezza dopo la selezione di un cammino
+    Consideriamo ora le la funzione di lunghezza ottenuta dopo aver selezionato 
+    un cammino:
     $$l_1 \longrightarrow \Pi \longrightarrow l_2$$
     \[ 
         l_2(e) = 
@@ -460,8 +463,7 @@ Ovvero:\\
     \[
         2(n+m)\;\mathit{volte}
         \begin{cases}
-            x_i \geq 0 \;\forall i \in V\\
-            x_i \leq 1 \;\forall i \in V\\
+            0 \leq x_i \leq 1  \;\forall i \in V\\
             x_i + x_j \geq 1 \;\forall ij \in E\\
         \end{cases}
     \]

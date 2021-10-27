@@ -234,3 +234,62 @@ Si ottiene una buona compressione, $b$ viene molto piccolo se tanti valori sono 
 non devo accedere alla memoria accodata alla lista, che è la parte più 
 costosa della decompressione.
 
+\subsubsection{Asymmetric Numeral System}
+Sono sistemi in cui cifre diverse sono scritte con numero diverso di bit, 
+il che permette di scrivere numeri dove alcune cifre costano tanto, 
+altre di meno.
+
+\paragraph{Premessa}
+Vorremmo che, dato un messaggio $x$, l'aggiunta di un simbolo 
+che compare con probabilità $p$, crei un messaggio $x^\prime \approx \frac{x}{p}$.\\
+Quindi, $\log(x^\prime) \approx \log(x) + \log(\frac{1}{p})$.
+Ovvero, vorrei che, aggiungendo ad un messaggio un simbolo che compare 
+frequentemente, tale messaggio si allunghi di molto poco.
+
+La codifica binaria risponde alla richiesta precedente, dove i simboli 
+sono equiprobabili.
+Dato un messaggio infatti, l'aggiunta di un simbolo corrisponde a raddoppiare il valore precedente e aggiungerne uno, ovvero 
+aumentare di un fattore $x/\frac{1}{2}$.
+
+Codificando ad esempio il numero $0100110$ in decimale, quello che sto facendo sono operazioni del tipo 
+$x^\prime = 2x + p$, dove $p$ è 0 oppure 1. Ciò è coerente con la premessa, 
+sto aggiungendo simboli che sono equiprobabili.
+
+\paragraph{Caso asimmetrico}
+Il caso binario è semplice, codifica e decodifica si fanno 
+mettendo e spostando caratteri, bisogna ora capire come fare una cosa 
+simile quando la probabilità dei simboli cambia.
+
+Siano $0,1, \dots, n-1$ simboli con una relativa probabilità associata  $p_i$.
+
+Rappresento in maniera discreta le probabilità, considerando $2^d$ blocchi, divisi in segmenti in base alle probabilità. 
+Vorrei che per ogni segmento, che ha lunghezza $f_i$, valga $f_i/2^d \approx p_i$.
+
+Calcolo l'inizio di ogni segmento in maniera cumulativa e lo chiamo $c_i$, semplicemente sommo gli $f_j, j \leq i$.
+
+Ogni simbolo quindi ha associato un segmento di dimensione $f_i$, lungo 
+in maniera proporzionale alla sua probabilità associata.
+
+\paragraph{Esempio}
+Considero tre simboli con probabilità: $$\frac{9}{10}, \frac{1}{30}, \frac{2}{30}$$
+Fisso $d$ a 10, ottengo tre blocchi lunghi $f_i$ rispettivamente: 
+$$\frac{922}{1024}, \frac{34}{1024}, \frac{68}{1024}$$
+Calcolo ora i $c_i$, ottengo rispettivamente: 
+$$0, 922, 956$$
+\begin{remark}
+    Se estraggo a caso da 1024, usando i $c_i$ per capire in che segmento sono finito, 
+    ottengo ogni valore quasi con le probabilità iniziali. 
+\end{remark}
+
+\paragraph{Primitive}
+Definiamo ora le primitive \emph{push}, \emph{sym} e \emph{pop}:
+$$\mathit{push}(x, s) = \big( \big\lfloor x/ f_s \big\rfloor << d \big)
++ c_s + \big( x\;\textit{mod}\;f_s \big)$$
+Quindi, eseguo uno shift e metto nei bit più bassi quella quantità.
+
+$$\mathit{sym}(x) = s\; | \; c_s \leq x \leq c_{s+1}$$
+L'ultimo simbolo è quello associato agli ultimi $d$ bit. 
+
+$$\mathit{pop}(x) = \langle \big(x >> d\big) \cdot f_s + \big( x\;\textit{mod}\;2^d \big) - c_s, s \rangle$$
+La decodifica riporta la $x$ a prima dell'inserimento.
+
