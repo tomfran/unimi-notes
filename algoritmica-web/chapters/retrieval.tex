@@ -293,3 +293,107 @@ L'ultimo simbolo è quello associato agli ultimi $d$ bit.
 $$\mathit{pop}(x) = \langle \big(x >> d\big) \cdot f_s + \big( x\;\textit{mod}\;2^d \big) - c_s, s \rangle$$
 La decodifica riporta la $x$ a prima dell'inserimento.
 
+\subsection{Liste di affissioni, rango}
+\subsubsection{Liste di affissioni}
+\dots
+\subsubsection{Riassunto processo di crawling}
+Possiamo riassumere il processo di crawling come: 
+\begin{enumerate}
+    \item \emph{Crawling}: raccolta di pagine dal web e salvataggio
+    \item \emph{Parsing}: processing dei testi, come tokenizzazione, 
+    normalizzazione etc.. Ogni documento diventa quindi una sequenza di 
+    token numerati. In 
+    pratica si ottiene un flusso di unità da analizzare della forma 
+    $$\langle\mathit{token}, \mathit{doc}, \mathit{posizione}\rangle$$
+    Il tutto viene memorizzato in maniera intelligente, tramite codici 
+    istantanei per ridurre lo spazio in memoria.
+    Quando la memoria si riempie, scarico tutti i documenti indicizzati 
+    su disco. Ottengo quindi indici inversi funzionanti per una certa 
+    sequenza di documenti.
+    Inoltre su disco memorizzo: 
+    \begin{itemize}
+        \item Liste dei termini ordinata lessicograficamente;
+        \item Liste di affissioni;
+        \item Lista di puntatori alle liste di affissione.
+    \end{itemize}
+    Successivamente fondo gli indici, che sono ordinati, con una fusione
+    multivia, per ottenere l'indice totale.
+\end{enumerate}
+
+\subsubsection{Rango lessicografico efficiente}
+
+Sono necessarie strutture efficaci per il rango lessicografico, ovvero 
+per sapere l'ordine delle parole.
+
+Si fa leva sulle strutture statiche, ovvero strutture che una volta costruite
+non si cambiano. 
+L'obiettivo è avere per ogni termine associato il rango, per esempio: 
+\begin{equation}
+    a \longrightarrow 0,
+    b \longrightarrow 1,
+    c \longrightarrow 2,
+    d \longrightarrow 3
+\end{equation}
+
+Consideriamo ora $U$ l'insieme delle stringhe, $X \subseteq U$, i termini,
+ed $f : X \longrightarrow 2^b$ la funzione che associa ad un termine il 
+suo rango.
+Un dizionario classico, risponde un valore se la chiave è contenuta, 
+altrimenti un valore di default. Il che significa che mantiene in qualche modo 
+tutte le chiavi possibili. Il che significa che un dizionario 
+classico occupa almeno $$\log\bigg( \frac{|U|}{|X|} \bigg) + |X|b = \log(2^b)^{|X|}$$
+Il primo termine per le chiavi, il secondo per il valore delle chiavi.
+
+A noi interessa solo rispondere a chiavi in $X$, potremmo pensare quindi a come risparmiare spazio, occupandone solo $|X|b$, mantenendo accesso costante.
+
+\paragraph{Idea}
+Creo un sistema lineare aleatorio, lo risolviamo. 
+Consideriamo $m = c|X|$ numero di variabili del sistema, dove $c > 1$. Siano ora $g, h: U \longrightarrow m$ funzioni di hash.
+
+Per ogni chiave $x$, aggiungiamo al sistema l'equazione: 
+$$V_{g(x)} \oplus  V_{h(x)} = f(x)$$
+
+Supponiamo ora di avere una soluzione del sistema, ovvero un vettore lungo $|X|$, 
+che occupa $b$ bit per ogni variabile, posso computare $f(x)$ per qualsiasi $x$, 
+computando $V_{g(x)} \oplus  V_{h(x)}$.
+Occupo quindi uno spazio pari a $mb = c|X|b$ più lo spazio per mantenere le funzioni 
+di hash, che sono definite da qualche parametro, irrisorio rispetto al resto.
+
+\paragraph{Risoluzione del sistema}
+
+Costruisco un grafo dove sui nodi ho le variabili e sugli archi la variabile 
+associata all'equazione.
+
+Iterativamente efoliamo il grafo, ovvero, trovo una foglia (nodo con grado 1), sia essa 
+per esempio $V_2$, collegata al nodo $V_3$.
+Trovo che $V_2 = f(x) \oplus V_3$.
+Stacco $V_2$, trovo un'altra foglia, proseguo così. Metto da parte quindi tante equazioni 
+di quel tipo.
+
+Prima o poi svuoto il grafo, parto dall'ultima equazione e risolvo all'indietro. 
+
+\begin{remark}
+    Questo funziona solo se il grafo è aciclico.
+\end{remark}
+
+\begin{theorem}
+    Sia $m$ il numero di nodi di un grafo, $n$ il numero di archi, se vale $m \geq 2.09 n$ la probabilità che un grafo aleatorio sia aciclico tende a 1.
+\end{theorem}
+
+Il teorema precedente vale anche con un numero di nodi non troppo alto. 
+Ho ottenuto quindi un modo di ottenere un grafo aciclico per far andare l'algoritmo risolutivo, 
+basta usare una costante $c \geq 2.09$, fissare due funzioni e ottenere un grafo 
+del sistema. Se esso presenta cicli, cambio le funzioni di hash.
+
+\paragraph{Complicazioni}
+Esistono versioni con più funzioni di hash. Se ne usassi $3$, otterrei un multigrafo, 
+dove gli archi coinvolgono 3 vertici. Per quel caso la costante $c$ equivale a $1.23$.
+
+\paragraph{Ammettere cicli}
+Se si ammettono cicli bisogna ricorrere alla riduzione Gaussiana del sistema, cubica nel numero di variabili. 
+Per pensare di applicarla bisogna partizionare le chiavi e risolvere sottosistemi.
+
+\paragraph{Dire se una chiave fa parte o no di X}
+Considero $s$ funzione di hash crittografica, mantengo le firme in $S$, sia $\bar{f} : U \longrightarrow 2^b$.
+Presa una $x$ calcolo $s(x)$, se vale $s(x) \neq S[\bar{f}(x)]$, allora $x$ non appartiene 
+al dizionario creato in precedenza.
