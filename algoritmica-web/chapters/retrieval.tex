@@ -294,7 +294,7 @@ $$\mathit{pop}(x) = \langle \big(x >> d\big) \cdot f_s + \big( x\;\textit{mod}\;
 La decodifica riporta la $x$ a prima dell'inserimento.
 
 \subsection{Liste di affissioni, rango}
-\subsubsection{Liste di affissioni}
+\subsubsection{TODO: Liste di affissioni}
 \dots
 \subsubsection{Riassunto processo di crawling}
 Possiamo riassumere il processo di crawling come: 
@@ -394,6 +394,105 @@ Se si ammettono cicli bisogna ricorrere alla riduzione Gaussiana del sistema, cu
 Per pensare di applicarla bisogna partizionare le chiavi e risolvere sottosistemi.
 
 \paragraph{Dire se una chiave fa parte o no di X}
-Considero $s$ funzione di hash crittografica, mantengo le firme in $S$, sia $\bar{f} : U \longrightarrow 2^b$.
-Presa una $x$ calcolo $s(x)$, se vale $s(x) \neq S[\bar{f}(x)]$, allora $x$ non appartiene 
-al dizionario creato in precedenza.
+Siano $S:U \longrightarrow 2^b$, $S^\prime : X \longrightarrow 2^b$. 
+Creo la funzione $\bar{S^\prime}$ con la tecnica del sistema, occupando $\approx 1.23|X|b$.
+
+Se vale $S(x) = \bar{S^\prime}(x)$ allora $x \in X$, a meno di collisioni.
+
+\subsection{Risoluzione di interrogazioni}
+
+L'attenzione ora passa alla risoluzione di interrogazioni a un insieme di
+documenti indicizzato.
+
+Siano ora $Q$ le query, $D$ l'insieme di documenti, vogliamo computare la seguente 
+funzione: 
+$$Q \times D \longrightarrow \mathbb{R}$$
+che associa ad ogni documento, data una query, un punteggio.
+
+Tra le tipologie di query posso avere ricerche ad un singolo termine, 
+dove il risultato è la semantica di esso, ovvero, l'insieme dei documenti in cui il termine compare, oppure posso avere cose come unione, intersezione e negazione 
+di query.
+
+\paragraph{Query di unione}
+Date più query, il risultato singolo sono insiemi di documenti, uso una fusione 
+multivia\footnote{Simile al merge, ma uso un min-heap per ottenere il minimo di k liste in tempo logaritmico.} per unire i risultati.
+È molto facile durante la fusione tenere traccia di quali interrogazioni hanno 
+dato come risultato un certo documento, utile per effettuare ranking.
+
+Abbiamo quindi un insieme di liste di affissione per ogni query, 
+uso un'approccio pigro, ovvero, leggo il documento attuale da ogni lista, 
+poi leggo l'elemento next del minimo, etc.
+Questo approccio è pigro se le liste sono implementate come puntatori al prossimo.\\
+Non si può fare meglio di così, ovvero, serve un numero lineare di accessi 
+al next, visto che l'output contiene l'unione di tutte le liste.
+
+\paragraph{Query di intersezione}
+Consideriamo ora due query di intersezione, l'intersezione delle liste si può 
+fare in tempo lineare, ma si può fare di meglio. Per esempio, 
+se una fosse molto più piccola dell'altra, potrei effettuare ricerca binaria 
+degli elementi della piccola nella grande.
+
+Un'altro approccio usa ricerca esponenziale, procedo ad intervalli sempre più grandi,
+appena scavalco torno all'intervallo precedente e ricomincio.
+Questo approccio è vantaggioso, perché si assume che l'elemento successivo sia 
+abbastanza vicino a quello corrente, cosa che capita se gli elementi della corta 
+sono ben disposti in quella lunga.
+
+Nel nostro caso non si usano questi approcci, consideriamo ora la lista corta 
+che inizia con 5, quella lunga con 0, è facile capire che gli elementi della lunga
+fino a quando non si incontra un 5 sono irrilevanti. Pensiamo ora alla possibilità 
+di utilizzare un iteratore che non solo ha un'operazione di next, ma una di 
+skip-to, che salta al maggiorante di un certo valore, in questo caso si può 
+andare in tempo sub-lineare.
+
+Nel caso in cui si abbiano $k$ liste da intersecare, si utilizza un min-heap 
+per decidere la lista su cui effettuare lo skip-to, infatti, conviene far avanzare la lista più indietro, fino al massimo valore corrente. 
+Se il minimo e massimo coincidono significa che esiste un intersezione.
+
+Purtroppo nella pratica funziona meglio questo approccio: 
+cerco un allineamento tra le prime due, se lo trovo allineo la terza, se non lo trovo, riallineo le prime due etc.
+Quando trovo un allineamento tra le prime tre, cerco nella quarta e così via.
+Il tutto funziona perché, se si ordinano gli elementi per frequenza, trovare un 
+match per termini poco frequenti, ovvero match per le prime liste, farà avanzare 
+le ultime di moltissimo.
+
+\paragraph{Query di not}
+Scorro la lista dei documenti, ogni volta che si incontra un buco tra gli 
+elementi si emettono tutti quelli in mezzo.
+
+\paragraph{Implementazione dello skip-to}
+Mantengo in memoria un campione ogni tot elementi della lista, da decidere. 
+Quando richiedo uno skip-to, ricerco in dicotomica i puntatori, poi procedo 
+linearmente da quello che trovo.
+
+\paragraph{Albero di operazioni}
+Nella pratica si possono combinare unioni intersezioni e negazioni in maniera molto 
+complessa, quello che si fa è, mentre si chiama next della query composta, 
+tutte le sotto-query avanzano in maniera indipendente per dare in output il 
+risultato complessivo.
+
+\paragraph{Early termination}
+In realtà non si completerà mai del tutto un'interrogazione, ma tramite la struttura
+pigra si estraggono quanti risultati di cui ho bisogno.
+
+\paragraph{Operatore frasale}
+La query è una frase, si cercano i documenti che presentano i termini nell'ordine specificato nell'interrogazione.
+L'operazione soggiacente è l'intersezione, cerco quindi documenti che hanno 
+almeno tutti i termini della frase, però devo considerare anche 
+la posizione dei token.
+L'idea su cui si basa l'algoritmo è raccogliere le posizioni dei termini 
+in un documento. 
+Si ottengono quindi $k$ liste, se sottraggo alle posizioni delle liste 0, 1, 2, etc. devo risolvere una semplice intersezione. 
+
+Si osserva comunque che l'operatore frasale potrebbe fare molto lavoro
+per nulla, poichè tipicamente query frasali hanno meno risultati.
+
+\paragraph{Operatore finestra}
+La richiesta ora è trovare termini all'interno di una finestra lunga $k$, 
+in qualsiasi ordine.
+Si utilizza un min-heap per tenere conto della posizione dei termini 
+in un documento. 
+
+\subsection{TODO: Punteggi endogeni}
+\dots
+

@@ -1,0 +1,78 @@
+\section{Ranking}
+
+\subsection{Ranking endogeni}
+
+\subsection{Ranking esogeni}
+
+L'idea di base è quella di avere un grafo orientato di qualche tipo e associare 
+un valore di importanza ai vertici osservando la sola struttura della rete.
+Ogni arco è considerato un \emph{endorsement} dalla sorgente per la 
+destinazione.
+
+\paragraph{Tecnica banale}
+Una delle tecniche base per misurare l'importanza di un vertice in un grafo 
+è contare l'in-degree del nodo. Questa tecnica è altamente influenzabile nel 
+mondo attuale, basti pensare a comprare follower, voti etc.
+
+\paragraph{Closeness centrality}
+L'idea è considerare la somma dei cammini verso gli altri, e considerarla 
+come misura di perifericità $p$. Chiaramente un nodo alla periferia di un grafo 
+ha tantissime distanze grandi. La centralià $c$ è l'inverso della perifericità.
+$$p(x) = \sum_{y \in N} d(x, y),\;\;c(x) = \frac{1}{\sum_{y \in N} d(x, y)}$$
+
+Esiste anche la nozione negativa, che è diversa su un grafo orientato, più
+interessante perché meno influenzabile:
+$$c(x) = \frac{1}{\sum_{y \in N} d(y, x)}$$
+
+\paragraph{Harmonic centrality}
+È necessario gestire le distanze infinite, ovvero le coppie per cui non 
+esiste un cammino. Una pezza potrebbe essere considerare le sole distanze finite
+nella sommatoria, però idealmente non è corretto, inoltre potrei avere casi in 
+cui la centralità diminuisce all'aumentare di collegamenti entranti, che non ha 
+senso.
+
+Quello che si fa è considerare la media armonica, ovvero il totale fratto la 
+somma dei reciproci delle misurazioni.
+$$c(x) = \frac{1}{\frac{N}{\sum_{y \in N} \frac{1}{d(y, x)}}} \rightarrow \sum_{y \in N, x \neq y} \frac{1}{d(y, x)}$$
+L'idea della formula è considerare con peso uno i vicini immediati, con peso 
+$\frac{1}{2}$ quelli con distanza 2, etc.
+Esistono varianti che considerano al posto dell'1 al numeratore un valore di 
+peso per ogni vertice, oppure una qualche informazione esterna, per esempio 
+la correlazione di un nodo verso un'altro.
+
+\paragraph{Betweenness}
+L'idea è quella che un nodo è importante se sta in mezzo a molti cammini minimi.
+Siano ora $\sigma_{yz}$ il numero di cammini minimi da $y$ a $z$ e $\sigma_{yz}(x)$ 
+il numero di cammini minimi da $y$ a $z$ che passano per $x$.
+
+La betweenness di $x$ si calcola sommando i rapporti: 
+$$b(x) = \sum_{y, z \in N, y } \frac{\sigma_{yz}(x)}{\sigma_{yz}}$$
+
+Questa misura funziona molto male in alcuni casi, per esempio in un grafo con un nodo 
+che fa da bridge tra due componenti, ovvero che ha un arco verso l'una e uno verso 
+l'altra, la betweenness di quel nodo sarebbe enorme, ma basterebbe un singolo arco 
+tra le due componenti ad azzerarla. 
+Una variante per risolvere un caso del genere è quella di considerare passeggiate 
+aleatorie tra due nodi piuttosto che cammini minimi.
+
+\subsection{Ranking spettrali}
+
+Si parte dalla matrice di incidenza del grafo e un vettore di pesi per ogni vertice. 
+Se si moltiplica il vettore per la matrice ottengo un vettore in cui il valore 
+di un nodo corrisponde alla somma del peso dei predecessori.
+
+Posso pensare di iterare il processo all'infinito, la tecnica stimerà l'autovettore 
+dominante della matrice.
+
+\paragraph{Cammini lunghi k con moltiplicazione}
+Se ho una matrice dove sulle righe ho gli archi uscenti e sulle colonne quelli entranti, 
+se moltiplico la matrice per se stessa ottengo in una componente $x$ $y$
+il numero di cammini di lunghezza 2 da $x$ a $y$. 
+
+Questo perché, se sulla riga $x$ ho un'uno in posizione $k$, significa che posso raggiungere $k$ da $x$. Nella colonna 
+$y$ invece, un'uno in posizione $k$ implica che $k$ raggiunge $y$.
+Sommare il prodotto delle componenti significa calcolare il numero di cammini del tipo 
+$x \rightarrow k \rightarrow y$.
+
+Se quindi elevo la matrice alla $k$, ottengo il numero di cammini lunghi $k$ per ogni 
+coppia di nodi.
