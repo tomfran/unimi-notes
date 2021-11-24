@@ -143,3 +143,23 @@ Al solito, quello che si vuole trovare è il vettore stabile di questa catena,
 che è l'autovettore dominante.
 L'introduzione del salto casuale corrisponde di fatto ad aggiungere tutti gli archi 
 mancanti al grafo, rendendolo una cricca.
+
+\subsection{Metodi computazionali}
+
+\paragraph{Calcolo autovettore}
+Per calcolare un autovettore si parte da un array iniziale $r_0$, quello unitario per esempio, 
+oppure nel caso di PageRank tutto a $\frac{1}{n}$. moltiplico per la matrice $M$, fino 
+a che due risultati consecutivi differiscono, in qualche norma, di una quantità minore 
+di $\epsilon$, ovvero $||r_{i} - r_{i-1}|| < \epsilon$.
+
+La matrice $M$ non è in memoria ma memorizzata in memoria in qualche modo, per esempio
+triplette $(i,j, M[i][j])$ ordinate.
+
+Assumendo che la matrice arrivi colonna per colonna, quello che si fa è moltiplicare 
+il vettore $r_i$ attuale per la colonna, volendo in multiprocessing, assumendo che la 
+variabile che mantiene il risultato sia incrementabile atomicamente. 
+È necessario però avere il grado dei predecessori, per esempio per PageRank, 
+si deve mantenere quindi il grado per ogni riga in memoria.
+
+Se la matrice arrivasse per riga, dovrei calcolare il prodotto riga colonna a pezzi, 
+mantenendo i risultati parziali in un vettore.
