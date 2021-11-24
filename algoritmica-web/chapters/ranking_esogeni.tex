@@ -14,7 +14,7 @@ Una delle tecniche base per misurare l'importanza di un vertice in un grafo
 è contare l'in-degree del nodo. Questa tecnica è altamente influenzabile nel 
 mondo attuale, basti pensare a comprare follower, voti etc.
 
-\paragraph{Closeness centrality}
+\subsubsection{Closeness centrality}
 L'idea è considerare la somma dei cammini verso gli altri, e considerarla 
 come misura di perifericità $p$. Chiaramente un nodo alla periferia di un grafo 
 ha tantissime distanze grandi. La centralià $c$ è l'inverso della perifericità.
@@ -24,7 +24,7 @@ Esiste anche la nozione negativa, che è diversa su un grafo orientato, più
 interessante perché meno influenzabile:
 $$c(x) = \frac{1}{\sum_{y \in N} d(y, x)}$$
 
-\paragraph{Harmonic centrality}
+\subsubsection{Harmonic centrality}
 È necessario gestire le distanze infinite, ovvero le coppie per cui non 
 esiste un cammino. Una pezza potrebbe essere considerare le sole distanze finite
 nella sommatoria, però idealmente non è corretto, inoltre potrei avere casi in 
@@ -40,7 +40,7 @@ Esistono varianti che considerano al posto dell'1 al numeratore un valore di
 peso per ogni vertice, oppure una qualche informazione esterna, per esempio 
 la correlazione di un nodo verso un'altro.
 
-\paragraph{Betweenness}
+\subsubsection{Betweenness}
 L'idea è quella che un nodo è importante se sta in mezzo a molti cammini minimi.
 Siano ora $\sigma_{yz}$ il numero di cammini minimi da $y$ a $z$ e $\sigma_{yz}(x)$ 
 il numero di cammini minimi da $y$ a $z$ che passano per $x$.
@@ -69,10 +69,77 @@ Se ho una matrice dove sulle righe ho gli archi uscenti e sulle colonne quelli e
 se moltiplico la matrice per se stessa ottengo in una componente $x$ $y$
 il numero di cammini di lunghezza 2 da $x$ a $y$. 
 
-Questo perché, se sulla riga $x$ ho un'uno in posizione $k$, significa che posso raggiungere $k$ da $x$. Nella colonna 
-$y$ invece, un'uno in posizione $k$ implica che $k$ raggiunge $y$.
+Questo perché, se sulla riga $x$ ho un'uno in posizione $k$, significa che posso raggiungere 
+$k$ da $x$. Nella colonna $y$ invece, un'uno in posizione $k$ implica che $k$ raggiunge $y$.
 Sommare il prodotto delle componenti significa calcolare il numero di cammini del tipo 
 $x \rightarrow k \rightarrow y$.
 
 Se quindi elevo la matrice alla $k$, ottengo il numero di cammini lunghi $k$ per ogni 
 coppia di nodi.
+
+\paragraph{Numero di cammini entranti}
+Se moltiplico il vettore unario per la matrice $A^k$ ottengo il numero di cammini 
+lunghi $k$ entranti in ogni nodo, se inverto la moltiplicazione ottengo quelli 
+uscenti.
+
+\paragraph{Esempio}
+Siano gli indici della matrice $A$ giocatori di scacchi, se $i$ ha battuto $j$ 
+si troverà un 1 in posizione $A[i][j]$ e uno zero in posizione $A[j][i]$, $\frac{1}
+{2}$ in entrambi
+in caso di patta.
+
+Per capire chi ha vinto basta moltiplicare la matrice per il vettore unario trasposto, 
+per avere un concetto di importanza, basta eseguire moltiplicazioni del tipo 
+$$A(A(\dots A\cdot 1^T))$$
+L'ordine però cambia sempre, dobbiamo quindi trovare un vettore p per cui vale 
+$$\lambda p = T p$$
+dove $T$ è la matrice del torneo. Semplicemente $p$ è un autovettore della matrice $T$, 
+con autovettore $\lambda$.
+
+\subsubsection{Eigenvector centrality}
+Considerando l'autovettore dominante di una matrice che rappresenta un grafo, 
+possiamo considerare la componente di valore massimo come il nodo più centrale del grafo.
+La computazione di basa sul \emph{power method}, e il senso è quello di considerare come punteggio di un nodo la somma dei punteggi di chi lo punta, e continuare a 
+raffinare questo punteggio continuando a ricalcolare.
+
+\begin{theorem}
+    Sia $A$ una matrice con tutte le componenti non negative e il grafo definito da $A$
+    fortemente connesso, $\forall i,j\;\exists\;k\;t.c\; (A)^k_{ij} > 0$. 
+    Per una matrice di questo tipo esiste un solo autovalore dominante reale positivo, 
+    con autovettore associato maggiore di zero.
+\end{theorem}
+
+\subsubsection{Catena di Markov}
+Si considera un grafo orientato pesato. I pesi sugli archi rappresentano la probabilità 
+di transizione da una sorgente a una destinazione, la somma dei pesi degli archi 
+uscenti da ogni nodo è uno.
+Possiamo al solito rappresentare il grafo con una matrice, dove la somma di ogni riga 
+è uno.
+
+Per calcolare la probabilità di esser in un nodo si sommando le probabilità di 
+essere in uno dei predecessori, moltiplicata per il peso dell'arco verso il nodo stesso.
+Il processo appena descritto corrisponde al moltiplicare la probabilità attuale 
+per la matrice del grafo.
+
+La distribuzione stabile si calcola quindi iterando la moltiplicazione della matrice 
+per una distribuzione iniziale. La distribuzione stabile contiene
+la probabilità, interrompendo una camminata casuale sul grafo, di trovarsi un determinato 
+nodo. 
+
+Esistono casi strani, per esempio due nodi connessi tra loro, in tal caso 
+la massa di probabilità fa ping-pong tra i due nodi, non portando a un risultato 
+utile.
+
+\subsubsection{PageRank}
+L'idea è quella di avere un random surfer nel web, ad ogni passo si tira una 
+moneta di peso $\alpha$ e se esce testa si visita una pagina casuale, 
+altrimenti si procede nel grafo del web.
+Si procede quindi come una catena di Markov classica ma ogni tanto si salta.
+In realtà, si può anche fare qualcosa di più fine riguardo al saltare casualmente, 
+ovvero, potrei muovermi verso siti che trattano lo stesso argomento di quello
+attuale.
+
+Al solito, quello che si vuole trovare è il vettore stabile di questa catena, 
+che è l'autovettore dominante.
+L'introduzione del salto casuale corrisponde di fatto ad aggiungere tutti gli archi 
+mancanti al grafo, rendendolo una cricca.
