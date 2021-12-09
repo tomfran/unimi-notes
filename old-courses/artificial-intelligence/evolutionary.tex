@@ -320,8 +320,8 @@ Una prima soluzione consiste nel determinare il numero di discendenti in base
 al fitness, considerando media e deviazione standard $\mu_f(t)$ e $\sigma_f(t)$:
 \begin{itemize}
     \item se $f(s) < \mu_t(t) - \sigma_f(t)$: 0 figli
-    \item se $\mu_t(t) - \sigma_f(t) < f(s) < \mu_t(t) + \sigma_f(t)$: 1 figlio
-    \item se $f(s) > \mu_t(t) - \sigma_f(t)$: 2 figli
+    \item se $\mu_t(t) - \sigma_f(t) \leq f(s) \leq \mu_t(t) + \sigma_f(t)$: 1 figlio
+    \item se $f(s) > \mu_t(t) + \sigma_f(t)$: 2 figli
 \end{itemize} 
 
 Un'altra soluzione consiste nel considerare una ruota di selezione, 
