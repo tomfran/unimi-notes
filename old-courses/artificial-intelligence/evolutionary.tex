@@ -61,9 +61,9 @@ L'evoluzione simulata si basa sui principi di quella naturale,
 in particolare tenta di generare molta diversità nella generazione iniziale, 
 per favorire un'esplorazione omogenea dello spazio di ricerca.
 
-Utilizza poi il concetto di selezione naturale e di manteninmento di tratti 
+Utilizza poi il concetto di selezione naturale e di mantenimento di tratti 
 vantaggiosi, ovvero, come in natura, gli individui più forti, o adatti all'ambiente 
-in cui si trovano, hanno piu probabilità di riprodursi e di sopravvivere di generazione 
+in cui si trovano, hanno più probabilità di riprodursi e di sopravvivere di generazione 
 in generazione.
 
 \subsubsection{Nozioni di base}
@@ -78,7 +78,7 @@ Parlando di algoritmi evolutivi, bisogna introdurre alcune nozioni di base:
     \item \emph{Genotipo}: codifica di una soluzione candidata
     \item \emph{Popolazione}: set di cromosomi
     \item \emph{Generazione}: popolazione in un certo istante di tempo
-    \item \emph{Riproduzione}: creazione di cromosomi da uno o piu cromosomi
+    \item \emph{Riproduzione}: creazione di cromosomi da uno o più cromosomi
     \item \emph{Fitness}: qualità di una soluzione candidata
 \end{enumerate}
 
@@ -95,7 +95,7 @@ Un problema evolutivo prevede la definizione di vari elementi quali:
 \end{enumerate}
 
 \subsubsection{Schema generale}
-Generalmente un'algoritmo evolutivo opera seguendo questi passi:
+Generalmente un algoritmo evolutivo opera seguendo questi passi:
 \begin{enumerate}
     \item Generazione di una popolazione iniziale
     \item Valutazione del fitness degli individui
@@ -128,7 +128,7 @@ L'applicazione di gradient ascent o descent presuppone che:
     \item Lo spazio di soluzioni $\Omega$ sia un sottoinsieme di $ \mathbb{R}^n$
     \item La funzione di valutazione $f$ sia derivabile in ogni punto
 \end{enumerate}
-Fissati i due prerequisiti, si può procedere con gradient acent (o descent):
+Fissati i due prerequisiti, si può procedere con gradient ascent (o descent):
 \begin{enumerate}
     \item Si sceglie un punto iniziale
     \item Viene calcolato il gradiente del punto corrente
@@ -136,7 +136,7 @@ Fissati i due prerequisiti, si può procedere con gradient acent (o descent):
     \item I punti 2 e 3 si ripetono fino a quando si individua un minimo o massimo locale
 \end{enumerate}
 La procedura ha il grande difetto di rimanere bloccata in un minimo locale. Bisogna quindi 
-ripetere l'algoritmi cambiando punto di partenza.
+ripetere gli algoritmi cambiando punto di partenza.
 
 \subsubsection{Hill Climbing}
 Se la funzione $f$ non è differenziabile, è possibile verificare l'andamento della 
@@ -213,7 +213,7 @@ in massimi locali, e non riuscire ad esplorare a sufficienza lo spazio di soluzi
 
 \subsubsection{Evoluzione differenziale}
 Si utilizza un DE-operator, visto come combinazione di mutazione e ricombinazione.
-L'opertore guida la ricerca, alla creazione di un nuovo individuo, esso può rimpiazzare
+L'operatore guida la ricerca, alla creazione di un nuovo individuo, esso può rimpiazzare
 il padre se la qualità è maggiore.
 
 \subsubsection{Scatter search}
@@ -231,7 +231,7 @@ di un algoritmo evolutivo, a seguire una descrizione più nel dettaglio.
 \subsection{Encoding}
 La scelta del tipo di codifica è cruciale per il giusto funzionamento
 di un algoritmo evolutivo.
-Nonostante non si sia una soluzione generale per tale scelta, un econding deve rispettare 
+Nonostante non si sia una soluzione generale per tale scelta, un encoding deve rispettare 
 alcune caratteristiche:
 \begin{enumerate}
     \item Fenotipi simili devono essere rappresentati da genotipi simili
@@ -242,7 +242,7 @@ alcune caratteristiche:
 La similarità di due genotipi è definita dalla facilità, espressa in numero 
 di mutazioni, di passaggio da uno all'altro. 
 Il problema delle Hamming Cliffs si incontra quando l'encoding usato non rispetta 
-la prima caratteristica iuntrodotta a inizio sezione.
+la prima caratteristica introdotta a inizio sezione.
 
 Non rispettando quel punto infatti, due soluzioni simili sarebbero codificate in maniera
 molto diversa, finendo per rendere difficile il passaggio da una all'altra, rendendo più difficoltosa 
@@ -253,7 +253,7 @@ Il secondo principio da rispettare consiste nell'avere fitness simili per soluzi
 codificate in modo simile.
 Con epistasi si indica l'interazione dei geni in un cromosoma.
 
-Codifiche che presentano alta epistasi sono indesiderabili, poichè andrebbero a 
+Codifiche che presentano alta epistasi sono indesiderabili, poiché andrebbero a 
 impedire un miglioramento graduale delle soluzioni.
 \subsubsection{Chiusura dello spazio di soluzioni}
 Fissato un certo spazio di soluzioni, bisogna fare in modo che gli operatori 
@@ -262,7 +262,7 @@ Elementi fuori da $\Omega$ non sarebbero interpretabili e risulterebbero inutili
 
 Per ovviare al problema è possibile:
 \begin{enumerate}
-    \item Scegliere un econding differente
+    \item Scegliere un encoding differente
     \item Scegliere operatori genetici che non creino elementi al di fuori di $\Omega$
     \item Usare meccanismi di riparazione per gli individui generati in modo errato
     \item Introdurre una penalità che riduca il fitness di tali individui
@@ -307,7 +307,7 @@ Un comportamento simile porta a non avere di fatto selective pressure.
 Una soluzione al problema consiste nello scalare la funzione di fitness, in 
 modo da evitare il comportamento appena descritto:
 \begin{itemize}
-    \item $\sigma scaling$: scalind basato su media e varianza
+    \item $\sigma scaling$: scaling basato su media e varianza
     \item \emph{linear dynamical scaling}: sottrae minimo della fitness function da tutti gli individui 
 \end{itemize}
 
@@ -320,8 +320,8 @@ Una prima soluzione consiste nel determinare il numero di discendenti in base
 al fitness, considerando media e deviazione standard $\mu_f(t)$ e $\sigma_f(t)$:
 \begin{itemize}
     \item se $f(s) < \mu_t(t) - \sigma_f(t)$: 0 figli
-    \item se $\mu_t(t) - \sigma_f(t) < f(s) < \mu_t(t) + \sigma_f(t)$: 1 figlio
-    \item se $f(s) > \mu_t(t) - \sigma_f(t)$: 2 figli
+    \item se $\mu_t(t) - \sigma_f(t) \leq f(s) \leq \mu_t(t) + \sigma_f(t)$: 1 figlio
+    \item se $f(s) > \mu_t(t) + \sigma_f(t)$: 2 figli
 \end{itemize} 
 
 Un'altra soluzione consiste nel considerare una ruota di selezione, 
@@ -342,7 +342,7 @@ considerati direttamente i fitness ma solo l'ordine nella popolazione,
 di conseguenza il valore assoluto del fitness viene ignorato, evitando che 
 alcuni individui dominino gli altri,
 
-Adattando in base al tempo le probabilità associate ai rank, si puo controllare
+Adattando in base al tempo le probabilità associate ai rank, si può controllare
 la selective pressure, mettendo focus sull'esplorazione piuttosto che sul miglioramento
 della popolazione attuale.
 
@@ -369,7 +369,7 @@ Nello specifico, individui che cadono in una zona affollata riceveranno una pena
 nel fitness, andando potenzialmente a ridurre l'affollamento.
 
 \subsection{Operatori genetici}
-Gli operatori genetici sono applicati a un sottoinsieme degli individue in 
+Gli operatori genetici sono applicati a un sottoinsieme degli individui in 
 una generazione per creare mutazioni e combinazioni di soluzioni esistenti.
 Nonostante alcune modifiche possano risultare inconvenienti, la speranza è che 
 alcune possano ottenere individui migliori.
@@ -390,7 +390,7 @@ Si possono applicare vari tipi di mutazione, ad esempio:
     \item \emph{Gaussiana}: aggiunta ad ogni gene di un valore pescato da una distribuzione Gaussiana
 \end{itemize}
 \subsubsection{Crossover}
-Nella tecnica del crossover, si parte da due o piu genitori, e si ricombinano 
+Nella tecnica del crossover, si parte da due o più genitori, e si ricombinano 
 spezzando le loro sequenze e ricombinando.
 
 Esistono varianti quali:
@@ -428,7 +428,7 @@ evolutivi, con alcuni fondamenti teorici legati alla bontà dell'evoluzione simu
 
 \subsection{Fondamenti teorici}
 Sebbene il funzionamento degli algoritmi evolutivi sia chiaro, 
-risulta poco intuitivo il motivo per cui funzionano, ovvero perchè riescano a 
+risulta poco intuitivo il motivo per cui funzionano, ovvero perché riescano a 
 migliorare progressivamente le soluzioni individuate.
 
 \subsubsection{Schema theorem}
@@ -450,7 +450,7 @@ Di conseguenza, sempre più individui andranno a matchare schemi con fitness ele
 la qualità della popolazione.
 
 \subsubsection{No free lunch theorem}
-Il teorema dimostra che gli algoritmi evolutivi, in media, funzoinano tanto bene quanto qualsiasi 
+Il teorema dimostra che gli algoritmi evolutivi, in media, funzionano tanto bene quanto qualsiasi 
 altra metaeuristica. 
 
 Si sta di fatto enunciando l'impossibilità di stabilire a priori la qualità di una soluzione
@@ -460,7 +460,7 @@ individuata da un algoritmo evolutivo per un particolare problema del quale non 
 Swarm e population based optimization sono alcune metaeuristiche utilizzate nel 
 mondo degli algoritmi evolutivi.
 
-L'idea di base fa rifermineto a spiecie naturali capaci di interagire e cooperare tra 
+L'idea di base fa rifermento a specie naturali capaci di interagire e cooperare tra 
 loro, in modo da raggiungere un certo obiettivo.
 
 \subsubsection{Particle swarm}
@@ -534,7 +534,7 @@ migliorando uno dei tre criteri, gli altri peggioreranno.
 
 \subsubsection{Pareto optimal solution}
 Definite le funzioni da ottimizzare, è possibile individuare quei punti nello 
-spazio per cui il miglioramento di una funzoine porta al peggioramento delle altre.
+spazio per cui il miglioramento di una funzione porta al peggioramento delle altre.
 
 Tali punti formano il così detto \emph{Pareto front} e concettualmente
 è proprio uno di quei punti che ottimizza il problema visto nel complesso.
@@ -563,12 +563,12 @@ portano a risultati ottimi, ma con il prezzo di un tempo di esecuzione molto len
 velocizzarlo o migliorarne il risultato.
 Osservando le varie fasi si nota che sono parallelizzabili:
 \begin{itemize}
-    \item la generazione iniziale, stando attendi ad eventuali duplicati, 
+    \item la generazione iniziale, stando attenti ad eventuali duplicati, 
     che comunque non costituiscono grossi problemi
-    \item il calcolo del fitness degli individi, con l'accortezza di raccogliere i dati in un unico processore per 
+    \item il calcolo del fitness degli individui, con l'accortezza di raccogliere i dati in un unico processore per 
     calcolare il fitness relativo
     \item la selezione se costituita da eventi indipendenti, come ad esempio tournament selection, 
-    diventa più complesso gestire etilismo
+    diventa più complesso gestire l'elitismo
     \item l'applicazione degli operatori genetici
     \item il controllo di raggiungimento del criterio di terminazione
 \end{itemize}
