@@ -7,7 +7,7 @@ i processi che stanno svolgendo particolari operazioni.
 Per garantire transazionalità è necessario un controllo sulla concorrenza.
 
 \paragraph{Transazione}
-Sequenza di operazioni che soddifano le proprietà ACID.
+Sequenza di operazioni che soddisfano le proprietà ACID.
 
 \paragraph{Rollback}
 Riportare il sistema allo stato precendete all'operazione eseguita.
@@ -32,7 +32,7 @@ il sistema in uno stato incosistente. Questi file possono diventare molto grandi
 
 \paragraph{Transaction shipping}
 I log possono essere mandati a un server per replicare lo stato del database e avere
-una copia esatta del sistema. È un'operazione molto pesante poichè bisogna scrivere
+una copia esatta del sistema. È un'operazione molto pesante poiché bisogna scrivere
 tutte le operazioni che sono effettuate sulle tabelle.
 
 \subsection{Delta Lake}
@@ -49,7 +49,7 @@ comprimere. Parquet non è abbastanza per garantire transazionalità.
 
 \paragraph{Write-ahead log} 
 Si mantengono quali oggetti fanno parte di una delta table, oltre ad 
-aclune infomazioni statistiche quali massimo, minimo, count, etc \dots\\
+alcune informazioni statistiche quali massimo, minimo, count, etc \dots\\
 Si scrivono poi le operazioni da fare sulle tabelle nel log, prima di eseguirle, 
 oltre a quelle da applicare in caso di rollback.
 
