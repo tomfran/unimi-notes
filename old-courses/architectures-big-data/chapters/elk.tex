@@ -17,7 +17,7 @@ Offre una REST API e costituisce la base dell'EKL stack.
 \paragraph{Processo}
 Per popolare Elasticsearch si seguono solitamente questi passi:
 \begin{enumerate}
-    \item I dati si raccolgono da uan sorgente
+    \item I dati si raccolgono da una sorgente
     \item Parsing e normalizzazione dei dati e indicizzazione Elastic
     \item Query sull'indice, anche molto complesse
     \item Data visualization con Kibana
@@ -30,7 +30,7 @@ Un indice ha varie caratteristiche:
     \item Ogni documento è un JSON
     \item Ogni indice ha un \emph{inverted index} che mantiene le parole presenti in ogni documento, 
     questo garantisce ricerche full-text molto efficienti
-    \item Elastisearch promette di riuscire ad indicizzare ogni documento in meno di un secondo
+    \item Elasticsearch promette di riuscire ad indicizzare ogni documento in meno di un secondo
     \item Un indice è distribuito in shards, garantendo ridondanza e scalabilità
 \end{itemize}
 
@@ -104,7 +104,7 @@ il nodo che contiene le informazioni richieste.
 Ogni cosa è organizzata in shard, ognuno dei quali 
 può essere primario o una replica di uno primario.
 Ogni nodo ha multiple shard.\\
-Uno shard è un search engine funzionante, e può essere utilizzato a sè.
+Uno shard è un search engine funzionante, e può essere utilizzato a sé.
 
 \paragraph{Scalabilità}
 Distribuendo gli shard tra i nodi si possono garantire elevate performace
