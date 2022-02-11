@@ -256,54 +256,46 @@ La ricerca quindi testa il filtro e se la risposta è negativa si procede al
 livello successivo, altrimenti, si controlla l'indice sparso in ricerca dicotomica, 
 e si procede sequenzialmente dalla maggior chiave minore uguale di quella ricercata.
 
-\subsubsection{Memorizzazione offline} 
+\subsubsection{Crivello offline} 
 Si mantengono solo file su disco e non strutture in memoria. 
 I file vengono ordinati e fusi spesso. In particolare, si hanno a disposizione: 
 \begin{itemize}
-    \item \emph{VIS}: url da visitare
-    \item \emph{F}: frontiera
-    \item \emph{V}: url visti
+    \item \emph{Z}: url già visti, $V \cup F$
+    \item \emph{F}: frontiera, ovvero gli url da visitare
+    \item \emph{A}: file che accumula gli url incontrati durante la visita
 \end{itemize}
-Il crawler accumula gli url che trova nelle pagine nel file $F$, 
-fino a che si terminano i siti da visitare, contenuti 
-in \emph{VIS}, oppure lo spazio su disco.
 
-A questo punto la frontiera viene ordinata e de-duplicata. 
-L'operazione è necessaria poiché il file potrebbe contenere duplicati, 
-visto che non esiste nessuna struttura 
-in memoria che impedisce l'aggiunta di ripetizioni.
+All'inizio $Z$ ed $F$ sono inizializzati con il seme ed $A$ è vuoto.
+Durante la visita si estrae con qualche criterio da $F$, accumulando in $A$, 
+quando si esaurisce il primo o il secondo è pieno:
+\begin{enumerate}
+    \item $A$ viene ordinato e deduplicato, diventa $A^\prime$;
+    \item $Z$ diventa $Z^\prime$ pari all'unione di  $A^\prime$ e $Z$: 
+    durante la fusione gli url che compaiono in $A^\prime$ ma non in $Z$ vengono 
+    aggiunti ad $F$.
+\end{enumerate}
 
-A questo punto si fondono i file \emph{F} e \emph{V}: 
-\begin{itemize}
-    \item Se un url sta in entrambi non faccio nulla;
-    \item Se trovo un url in $V$ ma non in $F$ non faccio nulla;
-    \item Se trovo un url in $F$ ma non in $V$, lo aggiungo a $V$ e 
-    a \emph{VIS}.
-\end{itemize}
-La fusione è lineare nella lunghezza dei file $F$ e $V$, poiché gli url sono in ordine lessicografico.
-Procedo a questo punto con la visita, dagli url contenuti in \emph{VIS}.
-\begin{remark}
-    Questa tecnica è utilizzata dal crawler Nutch, le operazioni su disco 
-    sono effettuate tipicamente da architetture distribuite quali map-reduce.
-\end{remark}
-\begin{remark}
-    È possibile mantenere all'interno di $V$ solo gli hash dei siti 
-    in modo da risparmiare memoria, a patto di ordinare gli url di $F$ secondo il 
-    loro hash e di effettuare i confronti sugli url hashati.
-\end{remark}
+Il punto due ha complessità lineare, visto che i due file sono ordinati, 
+l'ordinamento di $A^\prime$ disordina gli url per quanto riguarda l'ordine di accodamento, 
+per ovviare al problema si potrebbe mantenere nel file oltre che l'url, la posizione originale
+di accodamento, in modo da riordinarli una volta accodati ad $F$.
 
-\subsubsection{LRU cache}
+$Z$ potrebbe contenere firme al posto di url, in questo caso $A$, che contiene url, 
+va ordinato indirettamente per firma.
+
+Al crescere della frontiera il crivello diventa lento ma non si blocca, ha perciò graceful 
+degradation.
+
+\paragraph{LRU cache}
 Può essere una buona idea anteporre al crivello una cache LRU, questo rimuove 
 molti duplicati, infatti se un url è all'interno della cache è già stato inserito 
-all'interno del crivello. 
-
+all'interno del crivello. \\
 Ogni tanto un url verrà inserito più volte, perché finito fuori dalla cache.
 
 \subsection{Quasi duplicati}
 Per molteplici ragioni, è possibile incontrare spesso le stesse pagine, 
 per esempio, la stessa pagina con http e https, pagine che differiscono per una 
-sola data, etc.
-
+sola data, etc.\\
 È necessario un sistema che decida se due pagine sono quasi identiche.
 
 \paragraph{Digest}
@@ -311,7 +303,6 @@ Si puo generare un digest dalla pagina web, buttando via alcuni elementi,
 per esempio i tag html, le maiuscole, etc.
 Si può anche campionare la pagina in qualche intervallo e memorizzare solo 
 i campionamenti.
-
 Una volta generati questi digest saranno inseriti in un filtro di Bloom.
 
 \paragraph{SimHash}
@@ -344,7 +335,6 @@ feature differenti tra due documenti non modifichino i voti di maggioranza, oppu
 
 Dal punto di vista etico, una persona che mette una pagina sul web 
 deve accettare che sarà visitata, da umani. 
-
 La visita e l'indicizzazione automatica tramite crawler non dovrebbe 
 continuare per periodi troppo prolungati.
 
@@ -362,7 +352,7 @@ una nuova richiesta.
 Potrei usare HTTP 1.1, per mantenere aperta la connessione. 
 
 \begin{remark}
-    È necessario quindi un'architettura multiflusso per raccogliere dati 
+    È necessaria un'architettura multiflusso per raccogliere dati 
     da molti siti contemporaneamente, altrimenti si aspetterebbe molto 
     per ragioni di politeness e si diventerebbe troppo dipendenti 
     dall'ordine della coda dei siti da visitare, infatti, dovrei aspettare 
@@ -410,7 +400,6 @@ della testa della sua coda di host.
 
 Una volta individuato l'ip da estrarre si estrae dalla coda e si procede 
 come in precedenza.
-
 Questo garantisce di rispettare la politeness anche verso ip con molti 
 host associati.
 
@@ -439,7 +428,6 @@ L'istruzione compare and swap, cas(p,a,b), assegna il valore $b$ al puntatore $p
 
 \paragraph{Linked list lock-free}
 L'inserimento in una linked list lock-free cerca la posizione dove si vuole inserire, e si inserisce con compare and swap.
-
 L'algoritmo ripete l'assegnamento quando due thread stanno modificando in maniera 
 concorrente lo stesso nodo, infatti la cas di uno dei due fallisce.
 
@@ -447,7 +435,7 @@ Non si possono prevedere quante iterazioni del ciclo ci vorranno, ma ad ogni
 iterazione si ha del progresso verso la fine delle operazioni, visto che se il thread 
 attuale fallisce è perché un'altro ha avuto accesso alla struttura.
 
-Non si sta avendo nè deadlock ne starvation, infatti la struttura sta facendo progresso. 
+Non si sta avendo né deadlock né starvation, infatti la struttura sta facendo progresso. 
 È un concetto leggermente diverso dal busy waiting, poiché sebbene si stia facendo polling, la struttura sta evolvendo e non è ferma.
 
 \begin{remark}
@@ -461,7 +449,7 @@ Non si sta avendo nè deadlock ne starvation, infatti la struttura sta facendo p
     \caption{Componenti di un crawler}
 \end{figure}
 
-\subsection{Parallelismo}
+\subsection{Gestione parallela degli url}
 
 \paragraph{Coordinazione agenti}
 È auspicabile avere più agenti che fanno attività di crawling in parallelo, 
@@ -483,18 +471,21 @@ Il problema di questo approccio è che non funziona bene se gli agenti cambiano 
 
 \paragraph{Requisiti di gestione dinamica}
 
-P agenti
+La gestione dinamica deve rispettare alcune proprietà, in particolare, si considerano
+$P$ agenti, di cui $A$ agenti vivi. 
 
-A agenti vivi $\subset$ B 
-$\delta_A : U \rightarrow A$
+La funzione di assegnamento $\delta_A : U \rightarrow A$:
+\begin{itemize}
+    \item $\delta_A(u) \in A$: assegna ogni url ad un agente vivo;
+    \item $\delta_A^{-1}(a) \approx \frac{|U|}{|A|}$: il carico di 
+    ogni agente è circa uguale;
+    \item $A \subset B \implies \delta_B^{-1}(a) \subset \delta_A^{-1}(a) \forall a \in A$: 
+    aggiungendo nuovi agenti, quelli vecchi non si vedono assegnare più cose.
+\end{itemize}
 
-$\delta_A(u) \in A$
 
-$\delta_A^{-1}(a) \approx \frac{|U|}{|A|}$
 
-$A \subset B \implies \delta_B^{-1}(a) \subset \delta_A^{-1}(a) \forall a \in A$
-
-\subsubsection{Permutazioni aleatorie}
+\paragraph{Knuth-Fisher–Yates shuffle}
 Arrivato un url, creo un generatore di numeri casuali con seed pari a u. 
 Permuto l'insieme $P$ di agenti e scorro finché non trovo un agente attivo $a \in A$.
 
@@ -502,7 +493,6 @@ Se si aggiunge un nuovo agente, gli unici url che cambiano assegnamento
 sono quelli che hanno nella lista degli agenti generata per essi, hanno un  nuovo agente che precede quello attivo selezionato precedentemente.
 Quindi, gli url che cambiano posto vanno solo ad agenti nuovi.
 
-\paragraph{Knuth-Fisher–Yates shuffle}
 Parto da un array lungo $n$.
 Scorro l'array, all'$i$-esimo passo, seleziono una posizione $k \in [i, n-1]$ e 
 scambio l'elemento $k$ e $i$.
