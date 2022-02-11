@@ -1,5 +1,5 @@
 \section{Apache Hadoop}
-Apache Hadoop è un framework open source con l'intento di aumentare l'affidabilità di un sistema, basandosi sul fatto che l'hardware puo fallire.
+Apache Hadoop è un framework open source con l'intento di aumentare l'affidabilità di un sistema, basandosi sul fatto che l'hardware può fallire.
 \\Ha tre componenti: \emph{storage}, \emph{resource management} e \emph{computazione parallela}.
 
 \subsection{Elementi}
@@ -28,7 +28,7 @@ Un nodo master è composto da un job tracker, un task tracker, un data node e un
 \end{center}
 Un esempio del processo seguito da Hadoop è il seguente.
 \begin{enumerate}
-        \item Un'applicazione manda un job asincono al \emph{Job Tracker}, aspettando in polling.
+        \item Un'applicazione manda un job asincrono al \emph{Job Tracker}, aspettando in polling.
         \item Il \emph{Job Tracker} cerca i dati nel \emph{Name node} e sceglie i Task Tracker più vicini
         con slot disponibili.
         \item Il \emph{Job Tracker} manda i job ai \emph{Task Tracker}, e ne monitora 
@@ -40,8 +40,8 @@ Un esempio del processo seguito da Hadoop è il seguente.
 \paragraph{Confronto costi}
 Bisogna tenere presente che in un contesto come quello di Hadoop risulta 
 più economico muovere la computazione piuttosto che i dati.
-Bisogna quindi scegliere i task tracer in modo opportuno, tenendoli vicini ai 
-data node interessati, piuttosto che muovere i dati in sè ed eseguire le operazioni.\\
+Bisogna quindi scegliere i task tracker in modo opportuno, tenendoli vicini ai 
+data node interessati, piuttosto che muovere i dati in sé ed eseguire le operazioni.\\
 Nel primo caso infatti si parla di muovere magari GB di informazioni, nel secondo di muovere 
 righe di codice.
 

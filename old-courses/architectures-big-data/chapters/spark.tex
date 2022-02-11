@@ -7,7 +7,7 @@ Apache Spark è un framework open source per il calcolo distribuito.
 Si può ottenere da un HDFS, oppure parallelizzando qualsiasi oggetto.\\
 L'idea è quella di distribuire gli elementi tramite una funzione di hash tra i nodi 
 che offrono computazione, tale distribuzione può essere forzata con un \emph{repartition}.\\
-L'operazione è necessaria poichè ci si potrebbe trovare in casi dove un nodo ha molti più 
+L'operazione è necessaria poiché ci si potrebbe trovare in casi dove un nodo ha molti più 
 elementi degli altri, oppure per raggruppare meglio le chiavi in seguito a una join.
 
 \paragraph{Driver}
@@ -40,11 +40,11 @@ riga dell'RDD.
 \paragraph{Map e reduce}
 Spark offre alcune funzioni di map e reduce. La prima permette di applicare una funzione
 ad ogni entry dell'RDD, mentre la seconda permette di eseguire riduzioni. Le seconde devono essere
-commutative, poichè non è garantito l'ordine con cui si eseguono le operazioni.
+commutative, poiché non è garantito l'ordine con cui si eseguono le operazioni.
 
 \paragraph{DAG Scheduler}
 Ogni qualvolta che si effettua un'operazione su un RDD non si sta facendo altro che 
-aggiugnere una task al DAG Scheduler. Il suo compito è quello di trasformare un 
+aggiungere una task al DAG Scheduler. Il suo compito è quello di trasformare un 
 \emph{execution plan} logico in uno fisico, in modo da effettuare la computazione vera e propria.
 Ogni passo del DAG Scheduler è chiamato \emph{Stage}.
 
@@ -66,7 +66,7 @@ Si introducono le shared variables, che possono essere:
 \end{itemize}
 
 \subsection{Processo}
-Definiti elementi e caratteristiche di Spark l'esecuzione puo essere riassunta 
+Definiti elementi e caratteristiche di Spark l'esecuzione può essere riassunta 
 in questi passi:
 \begin{enumerate}
     \item Submit di un'applicazione utilizzando spark-submit utility
@@ -97,7 +97,7 @@ immediatamente la riga necessaria.
 In fase di inserimento, sono necessarie scritture addizionali per aggiornare l'indice.
 
 \paragraph{Problemi}
-Esistono problemi nella scrittura da Sparkl a SQL. In particolare, le operazioni di 
+Esistono problemi nella scrittura da Spark a SQL. In particolare, le operazioni di 
 write occupano memoria, bisogna stabilire una connessione fisica e le tabelle indexed 
 vanno lockate.
 
@@ -122,7 +122,7 @@ Per connettersi a un dataabase esistono tre metodi:
     \item \emph{Connection pooling}: si mantengono connessioni aperte e vengono assegnate 
     ai client che le richiedono
     \item \emph{Pool fragmentation}: si creano molti pool e ogni client può usare il proprio
-     pool o no, differisce dal secondo perchè ogni client ha il proprio pool
+     pool o no, differisce dal secondo perché ogni client ha il proprio pool
 \end{enumerate}
 
 \paragraph{Creazione e update di un indice}
