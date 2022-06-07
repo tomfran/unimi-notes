@@ -15,7 +15,7 @@
     filecolor=black,      
     urlcolor=black,
 }
-
+\newcommand{\argmin}{\operatornamewithlimits{argmin}}
 \newcommand{\pluseq}{\mathrel{{+}{=}}}
 
 \newtheorem{theorem}{Teorema}
@@ -27,21 +27,19 @@
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
 
-\title{Algoritmi e complessità}
+\title{Algoritmica per il web}
 \author{Francesco Tomaselli}
 \makeindex
 \begin{document}
 \maketitle
 \newpage
-% \setlength{\parskip}{0.15em}
 \tableofcontents
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.8em}
 \newpage
-\input{chapters/apx_classi_greedy.tex}
-\input{chapters/apx_pricing.tex}
-\input{chapters/prob.tex}
-\input{chapters/teo.tex}
-\input{chapters/str.tex}
+\input{chapters/crawling.tex}
+\input{chapters/retrieval.tex}
+\input{chapters/ranking_esogeni.tex}
+
 
 \end{document}

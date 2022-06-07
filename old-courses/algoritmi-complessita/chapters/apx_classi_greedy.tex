@@ -160,7 +160,7 @@ in tempo polinomiale, o meglio:
     \item $I_\Pi, O_\Pi \in P$
     \item Esiste un polinomio \emph{Q} tale che:
         \begin{itemize}
-            \item $\forall x \in I_\Pi, \forall y \in F_\Pi, |y| \leq Q(|x|)$
+            \item $\forall x \in I_\Pi, \forall y \in F_\Pi, |y| \leq Q(|x|)$: ovvero gli output sono lunghi come un polinomio;
             \item $\forall x \in I_\Pi, \forall y \in 2^*, se |y| \leq Q(|x|)$ decidere
             se $t \in F_\Pi$ è polinomiale
         \end{itemize}
@@ -179,7 +179,7 @@ sopra.
     se $\Pi \in \mathit{NPO}, \hat{\Pi} \in \mathit{NP}$ 
 \end{theorem}
 \begin{proof}
-    Dato un problema $\Pi \in P, \exists A$ polinomiale, tale che
+    Dato un problema $\Pi \in P$, $\exists A$ polinomiale, tale che
     $$x \in I_\Pi \longrightarrow A \longrightarrow y^*(x)$$
     Dato il problema di decisione associato, esiste $\hat{A}$ tale che:
     $$(x, \theta) \in I_\Pi \times \mathbb{Q}^{>0} \longrightarrow \hat{A} \longrightarrow yes/no$$
@@ -187,14 +187,13 @@ sopra.
     
     L'algoritmo $\hat{A}$ sarà polinomiale, infatti, basta applicare \emph{A} ad \emph{x} 
     per individuare $y^*(x)$ per poi confrontarlo con $\theta$. 
-
     Similmente, nel caso in cui il problema appartenga a \emph{NP}, sia $A$ che $\hat{A}$ saranno non
-    deterministiche.
+    deterministici.
 \end{proof}
 
 \paragraph{NPO completezza}
 Un problema si dice NPO completo sse il problema di decisione associato è NP completo.\\
-$$\mathit{NPOcomp} = \{\Pi \in \mathit{NPO} | \hat{\Pi} \in \mathit{NP}\}$$
+$$\mathit{NPOcomp} = \{\;\Pi \in \mathit{NPO}\;|\;\hat{\Pi} \in \mathit{NP}\;\}$$
 
 \begin{theorem}
     Se $\Pi \in \mathit{NPOcomp}$, $\Pi \notin PO$, a meno che $P=NP$
@@ -217,8 +216,8 @@ I problemi in APX hanno rapporto di approssimazione limitato da una certa quanti
 formalmente: 
 \begin{equation}
     \begin{aligned}
-        \mathit{APX} = \{\Pi | \Pi \mathit{\;di\;ottimizzazione\;t.c.\;}
-\exists \rho \geq 1, A, \\\mathit{t.c\;} x\rightarrow A \rightarrow y(x)\;\mathit{con}\;R_\Pi(x, y) \leq \rho\}
+        \mathit{APX} = \{\;\Pi\;|\;\Pi \mathit{\;di\;ottimizzazione\;t.c.\;}
+\exists \rho \geq 1, A, \\\mathit{t.c\;} x\rightarrow A \rightarrow y(x)\;\mathit{con}\;R_\Pi(x, y) \leq \rho\;\}
     \end{aligned}
 \end{equation}
 La definizione di classe APX permette una stratificazione per $\rho$, vale che APX 
@@ -229,9 +228,9 @@ I problemi in PTAS hanno rapporto di approssimazione limitato da una certa quant
 che si può decidere in modo arbitrario, formalmente: 
 \begin{equation}
     \begin{aligned}
-        \mathit{PTAS} = \{\Pi | \Pi \mathit{\;di\;ottimizzazione\;t.c.\;}\exists A, \\
+        \mathit{PTAS} = \{\;\Pi | \Pi \mathit{\;di\;ottimizzazione\;t.c.\;}\exists A, \\
 \mathit{t.c\;} (x, r) \in I_\Pi \times \mathbb{Q}^{>1} \rightarrow A \rightarrow y \\
-y \in F_\Pi, R_\Pi(x, y) \leq r, \\\mathit{polinomiale\;in\;} |x|\}
+y \in F_\Pi, R_\Pi(x, y) \leq r, \\\mathit{polinomiale\;in\;} |x|\;\}
     \end{aligned}
 \end{equation}
 Si fa notare che $r$ può essere molto vicino ad 1, ma il tempo polinomiale

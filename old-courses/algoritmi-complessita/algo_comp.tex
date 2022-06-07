@@ -1,13 +1,12 @@
 \documentclass[a4paper]{article}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+\usepackage[italian]{babel}
 \usepackage{amssymb}
 \usepackage{hyperref}
 \usepackage{mathtools}
 \usepackage{amsthm}
 \usepackage[ruled,vlined,noend]{algorithm2e}
-\usepackage{varioref}
 
 \mathtoolsset{showonlyrefs}  
 \hypersetup{
@@ -17,27 +16,34 @@
     urlcolor=black,
 }
 
+
+
 \newcommand{\pluseq}{\mathrel{{+}{=}}}
-
-\newtheorem{theorem}{Theorem}
-\newtheorem{corollary}{Corollary1}
+\newtheorem{theorem}{Teorema}
+\newtheorem{corollary}{Corollario}
 \newtheorem{lemma}{Lemma}
-\newtheorem*{remark}{Remark}
-\newtheorem{definition}{Definition}
+\newtheorem{remark}{Osservazione}
+\newtheorem{definition}{Definizione}
 
-\setcounter{secnumdepth}{2}
-\setcounter{tocdepth}{2}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
 
-\title{Algorithms for massive datasets}
+\title{Algoritmi e complessità}
 \author{Francesco Tomaselli}
 \makeindex
 \begin{document}
 \maketitle
-% \newpage
+\newpage
+% \setlength{\parskip}{0.15em}
 \tableofcontents
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.8em}
 \newpage
-\input{chapters/link-analysis.tex}
+\input{chapters/apx_classi_greedy.tex}
+\input{chapters/apx_pricing.tex}
+\input{chapters/prob.tex}
+\input{chapters/teo.tex}
+\input{chapters/str.tex}
+
 
 \end{document}
